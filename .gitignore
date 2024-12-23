@@ -32,3 +32,13 @@ build
 *.vscode
 
 .DS_Store
+
+# Exclude all files in the report directory
+report/*
+
+# Do not exclude PDF and TeX files in the report directory
+!report/*.pdf
+!report/*.tex
+
+# Do not exclude files in the report/img directory
+!report/img/
