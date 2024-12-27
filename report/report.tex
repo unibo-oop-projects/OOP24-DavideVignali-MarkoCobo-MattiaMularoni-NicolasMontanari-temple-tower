@@ -39,53 +39,17 @@ La meccanica dei livelli circolari prende ispirazione dal gioco \href{https://ri
 	\item Gli elementi di gioco sono rappresentati da tesori (possono contenere punti esperienza, armi, oggetti curativi), trappole (tolgono punti vita), scale (permettono il passaggio a un livello superiore).
 	\item Il giocatore si può muovere all'interno del livello, può combattere contro i nemici,  interagire con gli elementi di gioco.
 	\item Dopo ogni scontro con un nemico o dopo aver attraversato una trappola il giocatore perde i punti vita, al termine dei quali la partita termina e si ritorna alla schermata inziale. È possibile riacquistare punti vita attraverso gli oggetti curativi.
+    \item Generazione casuale della torre per permettere partite sempre diverse.
 \end{itemize}
 
-\subsection*{Elementi negativi}
+\subsection*{Requisiti non funzionali}
 \begin{itemize}
-	\item Si forniscono indicazioni circa le soluzioni che si vogliono adottare.
-	\item Si forniscono dettagli di tipo tecnico o implementativo (parlando di classi, linguaggi di programmazione, librerie, eccetera).
+	\item Una volta arrivato all'ultimo piano il giocatore incontrerà il boss finale, il quale avrà comportamenti  unici e una difficoltà maggiore rispetto ai nemici normali .
+	\item Difficoltà variabile in base al progresso di gioco.
+	\item Musica di sottofondo e feedback sonori associati alle varie azioni.
+	\item Salvataggio risultati delle partite precedenti, visualizzabili in un'apposita schermata.
+	\item Esistono più tipologie di attacchi la quale efficacia varia rispetto al tipo di nemico.
 \end{itemize}
-
-\subsection*{Esempio}
-Il software, commissionato dal centro di ricerca ``Aperture Laboratories Inc.''\footnote{
-\url{https://www.youtube.com/watch?v=f7ZS97eW2yE}
-}, mira alla costruzione di una intelligenza artificiale di nome GLaDOS (Genetic Lifeform and Disk Operating System).
-%
-Per intelligenza artificiale si intende un software in grado di assumere decisioni complesse in maniera semi autonoma sugli argomenti di sua competenza, a partire dai vincoli e dagli obiettivi datigli dall'utente.
-%
-In questo caso particolare, l'intelligenza artificiale dovrà interagire con un soggetto umano
-e guidarlo attraverso il superamento di una serie di labirinti di difficoltà incrementale.
-%
-I labirinti potrebbero richiedere l'uso di oggetti, la pressione di pulsanti, l'azionamento di leve,
-o la costruzione di portali per il teletrasporto.
-%
-Un portale per il teletrasporto è un'apertura bidimensionale nel tessuto spazio-temporale,
-che consente a chiunque vi entri di uscire dall'altro portale.
-%
-I rompicapi sono di tipo fisico (ad
-esempio, manipolazione di oggetti, pressione di pulsanti, azionamento di leve), e si ritengono
-conclusi una volta che il soggetto riesce a trovare l'uscita dalla camera di test.
-%
-Alla conclusione di tutti i labirinti,
-al soggetto verrà offerta una torta.
-\definecolor{lie}{HTML}{FAFAFA}
-\textcolor{lie}{\ldots Or not. The cake is a \underline{lie!}}
-
-\subsubsection{Requisiti funzionali}
-\begin{itemize}
-	\item Il piano preciso ed il numero delle sfide sarà variabile,
-	e GLaDOS dovrà essere in grado di adattarsi dinamicamente e di fornire indicazioni di guida.
-	\item La personalità di GLaDOS dovrà essere modificabile.
-	\item GLaDOS dovrà essere in grado di comunicare col reparto cucina di Aperture
-	per ordinare torte per coloro che completassero tutti i test con successo.
-\end{itemize}
-
-\subsubsection{Requisiti non funzionali}
-\begin{itemize}
-	\item GLaDOS dovrà essere estremamente efficiente nell'uso delle risorse. Le specifiche tecniche parlano della possibilità di funzionare su dispositivi alimentati da una batteria a patata.
-\end{itemize}
-
 
 \section{Modello del Dominio}
 
