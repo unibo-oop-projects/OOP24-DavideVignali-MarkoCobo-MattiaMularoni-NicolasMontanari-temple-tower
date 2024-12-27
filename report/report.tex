@@ -22,35 +22,23 @@
 
 \maketitle
 
-\begin{abstract}
-Il progetto Temple Tower si ispira ai classici dungeon crawler, offrendo un’esperienza di gioco a livelli in cui il giocatore esplora piani di un dungeon circolare per raccogliere tesori, sconfiggere nemici e salire verso il livello successivo. Il gioco culmina in un epico scontro con un boss finale.
-%
-La meccanica dei livelli circolari prende ispirazione dal gioco \href{https://ring-of-pain.fandom.com/wiki/Ring_of_Pain_Wiki}{Ring of Pain}.
-\end{abstract}
-
 \tableofcontents
 
 \chapter{Analisi}
 
 \section{Descrizione e requisiti}
 
-Nella sezione di descrizione va descritto cosa il software deve fare.
+Il progetto Temple Tower si ispira ai classici dungeon crawler, offrendo un’esperienza di gioco a livelli in cui il giocatore esplora piani di un dungeon circolare per raccogliere tesori, sconfiggere nemici e salire verso il livello successivo. Il gioco culmina in un epico scontro con un boss finale.
 %
-Al termine della lettura della sezione,
-il docente deve avere un'idea molto chiara di cosa l'applicazione sia
-e di cosa essa debba fare.
-%
-Si consiglia di elencare i requisiti in modo schematico, idealmente separando i requisiti funzionali
-(\emph{cosa} fa il sistema)
-da quelli non funzionali
-(\emph{come} lo fa, ad esempio in termini di prestazioni, sicurezza, portabilità).
+La meccanica dei livelli circolari prende ispirazione dal gioco \href{https://ring-of-pain.fandom.com/wiki/Ring_of_Pain_Wiki}{Ring of Pain}.
 
-\subsection*{Elementi positivi}
+
+\subsection*{Requisiti funzionali}
 \begin{itemize}
-	\item Si fornisce una descrizione in linguaggio naturale di ciò che il software dovrà fare.
-	\item Gli obiettivi sono spiegati con chiarezza, per punti.
-	\item Se vi sono termini il cui significato non è immediatamente intuibile, essi vengono spiegati.
-	\item Vengono descritti separatamente requisiti funzionali e non funzionali.
+	\item L'area di gioco è circolare ed è composta da diverse caselle contententi gli elementi di gioco che possono essere positivi o negativi per il giocatore.
+	\item Gli elementi di gioco sono rappresentati da tesori (possono contenere punti esperienza, armi, oggetti curativi), trappole (tolgono punti vita), scale (permettono il passaggio a un livello superiore).
+	\item Il giocatore si può muovere all'interno del livello, può combattere contro i nemici,  interagire con gli elementi di gioco.
+	\item Dopo ogni scontro con un nemico o dopo aver attraversato una trappola il giocatore perde i punti vita, al termine dei quali la partita termina e si ritorna alla schermata inziale. È possibile riacquistare punti vita attraverso gli oggetti curativi.
 \end{itemize}
 
 \subsection*{Elementi negativi}
