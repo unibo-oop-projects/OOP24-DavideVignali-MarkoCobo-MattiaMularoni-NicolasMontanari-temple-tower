@@ -88,29 +88,30 @@ reificarli in interfacce.
 \end{itemize}
 
 \subsection*{Esempio}
-GLaDOS dovrà essere in grado di accedere ad un'insieme di camere di test.
+Temple Tower dovrà essere rappresentato da una torre formata da un certo numero di piani (Floor), contenenti delle stanze collegate tra loro, ogni stanza potrà contentere una trappola, un nemico o un tesoro e il
 %
-Tale insieme di camere prende il nome di percorso.
+giocatore che va al suo interno. Una trappola può arrecare danno al giocatore (come il nemico) o al contrario, un tesoro puà fornirgli punti vita/esperienza (oppure un'arma). Il giocatore utilizza
 %
-Ciascuna camera è composta di challenge successivi.
+armi con le quali combattere: in quanto tutti gli attacchi avverranno a turno, bisognerà individuare una strategia per ridurre le
 %
-GLaDOS è responsabile di associare a ciascun challenge un insieme di consigli (suggestions) destinati all'utente (subject), dipendenti da possibili eventi.
+vittorie "matematiche" dovute alla differenza di efficacia.
 %
-GLaDOS dovrà poter comunicare coi locali cucina per approntare le torte.
+Con le armi a disposizione, il giocatore e il nemico avranno a disposizione varie tipologie di mosse di attacco.
 %
-Le torte potranno essere dolci, oppure semplici promesse di dolci che verranno disattese.
+Il giocatore dopo aver oltrepassato le varie stanze, potrà utilizzare le scale per passare al piano successivo della torre.
 %
-Gli elementi costitutivi il problema sono sintetizzati in \Cref{img:analysis}.
-
-Data la complessità di elaborare consigli via AI senza intervento umano, la prima versione del software fornita prevederà una serie di consigli forniti dall'utente.
+Durante tutta la durata della partita, il giocatore e i nemici avranno due barre di stato, una rappresentante la vita e l'altra l'esperienza:
 %
-Il requisito non funzionale riguardante il consumo energetico richiederà studi specifici sulle performance di GLaDOS che non potranno essere effettuati all'interno del monte ore previsto: tale feature sarà oggetto di futuri lavori.
+ad ogni scaglione di esperienza, si sbloccheranno certe abilità o miglioramenti, finita la disponibilità dei punti vita, i quali vengono sottratti dai nemici e dalle trappole
+%
+si perde la partita e si ricomincia da capo.
+%
+Arrivati all'ultimo livello, si affronterà il boss finale, che è un nemico più forte con mosse di attacco particolari e più
+%
+avanzate dei nemici generici.
 
 \begin{figure}[H]
-	\centering{}
-	\includegraphics{img/analysis.pdf}
-	\caption{Schema UML dell'analisi del problema, con rappresentate le entità principali ed i rapporti fra loro}
-	\label{img:analysis}
+	\includegraphics[scale=0.15]{img/design.png}
 \end{figure}
 
 \chapter{Design}
