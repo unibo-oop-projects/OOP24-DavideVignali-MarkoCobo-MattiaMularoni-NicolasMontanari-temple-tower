@@ -12,9 +12,9 @@
 
 \usepackage[italian]{cleveref}
 
-\title{Meta-relazione per\\``Programmazione ad Oggetti''}
+\title{Relazione Temple-Tower per\\``Programmazione ad Oggetti''}
 
-\author{Danilo Pianini}
+\author{Davide Vignali, Marko Cobo, Mattia Mularoni, Nicolas Montanari}
 \date{\today}
 
 
@@ -22,118 +22,34 @@
 
 \maketitle
 
-\begin{abstract}
-Questo documento è una relazione di meta livello, ossia una relazione che spiega come scrivere la relazione.
-%
-Lo scopo di questo documento è quello di aiutare gli studenti a comprendere quali punti trattare nella loro relazione, ed in che modo farlo, evitando di perdere del tempo prezioso in prolisse discussioni di aspetti marginali tralasciando invece aspetti di maggior rilievo.
-%
-Per ciascuna delle sezioni del documento sarà fornita una descrizione di ciò che ci si aspetta venga prodotto dal team di sviluppo, assieme ad un elenco (per forza di cose non esaustivo) di elementi che \emph{non} dovrebbero essere inclusi.
-
-Il modello della relazione segue il processo tradizionale di ingegneria del software fase per fase (in maniera semplificata).
-%
-La struttura della relazione non è indicativa ma \textit{obbligatoria}.
-%
-Gli studenti dovranno produrre un documento che abbia la medesima struttura, non saranno accettati progetti la cui relazione non risponda al requisito suddetto.
-%
-Lo studente attento dovrebbe sforzarsi di seguire le tappe suggerite in questa relazione anche per l'effettivo sviluppo del progetto: oltre ad una considerevole semplificazione del processo di redazione di questo documento, infatti, il gruppo beneficerà di un processo di sviluppo più solido e collaudato, di tipo top-down.
-
-La meta-relazione verrà fornita corredata di un template \LaTeX{} per coloro che volessero cimentarsi nell'uso.
-%
-L'uso di \LaTeX{} è vantaggioso per chi ama l'approccio ``what you mean is what you get'', ossia voglia disaccoppiare il contenuto dall'effettivo rendering del documento, accollando al motore \LaTeX{} l'onere di produrre un documento gradevole con la struttura ed il contenuto forniti.
-%
-Chi non volesse installare l'ambiente di compilazione in locale può valutare l'utilizzo dell'applicazione web \href{https://www.overleaf.com/}{Overleaf}.
-%
-L'eventuale utilizzo di \LaTeX{} non è fra i requisiti,
-non è parte del corso di Programmazione ad Oggetti, e non sarà ovviamente valutato.
-%
-I docenti accetteranno qualunque relazione in formato standard Portable Document Format (pdf), indipendentemente dal software con cui tale documento sarà redatto.
-
-Per la realizzazione degli schemi UML, si raccomanda l'utilizzo di MermaidJS\footnote{\url{https://mermaid.live/}} o PlantUML \footnote{\url{https://plantuml.com/}}.
-%
-Gli schemi in questa relazione furono realizzati con StarUML.
-%
-Come per la prosa, non è importante quale strumento sia utilizzato, ma è vitale che gli schemi siano di buona qualità e ben leggibili.
-
-\end{abstract}
-
 \tableofcontents
 
 \chapter{Analisi}
 
-In questo capitolo andrà fatta l'analisi dei requisiti e quella del problema, ossia verranno elencate le cose che
-l'applicazione dovrà fare (requisiti) e verrà descritto il dominio applicativo (analisi del problema).
-%
-In fase di analisi, è molto importante tenere a mente che non vi deve essere alcun riferimento al design né tantomeno
-alle tecnologie implementative, ovvero, non si deve indicare come il software sarà internamente realizzato.
-%
-La fase di analisi, infatti, \textit{precede} qualunque azione di design o di implementazione.
-
 \section{Descrizione e requisiti}
 
-Nella sezione di descrizione va descritto cosa il software deve fare.
+Il progetto Temple Tower si ispira ai classici dungeon crawler, offrendo un’esperienza di gioco a livelli in cui il giocatore esplora piani di un dungeon circolare per raccogliere tesori, sconfiggere nemici e salire verso il livello successivo. Il gioco culmina in un epico scontro con un boss finale.
 %
-Al termine della lettura della sezione,
-il docente deve avere un'idea molto chiara di cosa l'applicazione sia
-e di cosa essa debba fare.
-%
-Si consiglia di elencare i requisiti in modo schematico, idealmente separando i requisiti funzionali
-(\emph{cosa} fa il sistema)
-da quelli non funzionali
-(\emph{come} lo fa, ad esempio in termini di prestazioni, sicurezza, portabilità).
+La meccanica dei livelli circolari prende ispirazione dal gioco \href{https://ring-of-pain.fandom.com/wiki/Ring_of_Pain_Wiki}{Ring of Pain}.
 
-\subsection*{Elementi positivi}
+
+\subsection*{Requisiti funzionali}
 \begin{itemize}
-	\item Si fornisce una descrizione in linguaggio naturale di ciò che il software dovrà fare.
-	\item Gli obiettivi sono spiegati con chiarezza, per punti.
-	\item Se vi sono termini il cui significato non è immediatamente intuibile, essi vengono spiegati.
-	\item Vengono descritti separatamente requisiti funzionali e non funzionali.
+	\item L'area di gioco è circolare ed è composta da diverse caselle contententi gli elementi di gioco che possono essere positivi o negativi per il giocatore.
+	\item Gli elementi di gioco sono rappresentati da tesori (possono contenere punti esperienza, armi, oggetti curativi), trappole (tolgono punti vita), scale (permettono il passaggio a un livello superiore).
+	\item Il giocatore si può muovere all'interno del livello, può combattere contro i nemici,  interagire con gli elementi di gioco.
+	\item Dopo ogni scontro con un nemico o dopo aver attraversato una trappola il giocatore perde i punti vita, al termine dei quali la partita termina e si ritorna alla schermata inziale. È possibile riacquistare punti vita attraverso gli oggetti curativi.
+    \item Generazione casuale della torre per permettere partite sempre diverse.
 \end{itemize}
 
-\subsection*{Elementi negativi}
+\subsection*{Requisiti non funzionali}
 \begin{itemize}
-	\item Si forniscono indicazioni circa le soluzioni che si vogliono adottare.
-	\item Si forniscono dettagli di tipo tecnico o implementativo (parlando di classi, linguaggi di programmazione, librerie, eccetera).
+	\item Una volta arrivato all'ultimo piano il giocatore incontrerà il boss finale, il quale avrà comportamenti  unici e una difficoltà maggiore rispetto ai nemici normali .
+	\item Difficoltà variabile in base al progresso di gioco.
+	\item Musica di sottofondo e feedback sonori associati alle varie azioni.
+	\item Salvataggio risultati delle partite precedenti, visualizzabili in un'apposita schermata.
+	\item Esistono più tipologie di attacchi la quale efficacia varia rispetto al tipo di nemico.
 \end{itemize}
-
-\subsection*{Esempio}
-Il software, commissionato dal centro di ricerca ``Aperture Laboratories Inc.''\footnote{
-\url{https://www.youtube.com/watch?v=f7ZS97eW2yE}
-}, mira alla costruzione di una intelligenza artificiale di nome GLaDOS (Genetic Lifeform and Disk Operating System).
-%
-Per intelligenza artificiale si intende un software in grado di assumere decisioni complesse in maniera semi autonoma sugli argomenti di sua competenza, a partire dai vincoli e dagli obiettivi datigli dall'utente.
-%
-In questo caso particolare, l'intelligenza artificiale dovrà interagire con un soggetto umano
-e guidarlo attraverso il superamento di una serie di labirinti di difficoltà incrementale.
-%
-I labirinti potrebbero richiedere l'uso di oggetti, la pressione di pulsanti, l'azionamento di leve,
-o la costruzione di portali per il teletrasporto.
-%
-Un portale per il teletrasporto è un'apertura bidimensionale nel tessuto spazio-temporale,
-che consente a chiunque vi entri di uscire dall'altro portale.
-%
-I rompicapi sono di tipo fisico (ad
-esempio, manipolazione di oggetti, pressione di pulsanti, azionamento di leve), e si ritengono
-conclusi una volta che il soggetto riesce a trovare l'uscita dalla camera di test.
-%
-Alla conclusione di tutti i labirinti,
-al soggetto verrà offerta una torta.
-\definecolor{lie}{HTML}{FAFAFA}
-\textcolor{lie}{\ldots Or not. The cake is a \underline{lie!}}
-
-\subsubsection{Requisiti funzionali}
-\begin{itemize}
-	\item Il piano preciso ed il numero delle sfide sarà variabile,
-	e GLaDOS dovrà essere in grado di adattarsi dinamicamente e di fornire indicazioni di guida.
-	\item La personalità di GLaDOS dovrà essere modificabile.
-	\item GLaDOS dovrà essere in grado di comunicare col reparto cucina di Aperture
-	per ordinare torte per coloro che completassero tutti i test con successo.
-\end{itemize}
-
-\subsubsection{Requisiti non funzionali}
-\begin{itemize}
-	\item GLaDOS dovrà essere estremamente efficiente nell'uso delle risorse. Le specifiche tecniche parlano della possibilità di funzionare su dispositivi alimentati da una batteria a patata.
-\end{itemize}
-
 
 \section{Modello del Dominio}
 
@@ -172,29 +88,30 @@ reificarli in interfacce.
 \end{itemize}
 
 \subsection*{Esempio}
-GLaDOS dovrà essere in grado di accedere ad un'insieme di camere di test.
+Temple Tower dovrà essere rappresentato da una torre formata da un certo numero di piani (Floor), contenenti delle stanze collegate tra loro, ogni stanza potrà contentere una trappola, un nemico o un tesoro e il
 %
-Tale insieme di camere prende il nome di percorso.
+giocatore che va al suo interno. Una trappola può arrecare danno al giocatore (come il nemico) o al contrario, un tesoro puà fornirgli punti vita/esperienza (oppure un'arma). Il giocatore utilizza
 %
-Ciascuna camera è composta di challenge successivi.
+armi con le quali combattere: in quanto tutti gli attacchi avverranno a turno, bisognerà individuare una strategia per ridurre le
 %
-GLaDOS è responsabile di associare a ciascun challenge un insieme di consigli (suggestions) destinati all'utente (subject), dipendenti da possibili eventi.
+vittorie "matematiche" dovute alla differenza di efficacia.
 %
-GLaDOS dovrà poter comunicare coi locali cucina per approntare le torte.
+Con le armi a disposizione, il giocatore e il nemico avranno a disposizione varie tipologie di mosse di attacco.
 %
-Le torte potranno essere dolci, oppure semplici promesse di dolci che verranno disattese.
+Il giocatore dopo aver oltrepassato le varie stanze, potrà utilizzare le scale per passare al piano successivo della torre.
 %
-Gli elementi costitutivi il problema sono sintetizzati in \Cref{img:analysis}.
-
-Data la complessità di elaborare consigli via AI senza intervento umano, la prima versione del software fornita prevederà una serie di consigli forniti dall'utente.
+Durante tutta la durata della partita, il giocatore e i nemici avranno due barre di stato, una rappresentante la vita e l'altra l'esperienza:
 %
-Il requisito non funzionale riguardante il consumo energetico richiederà studi specifici sulle performance di GLaDOS che non potranno essere effettuati all'interno del monte ore previsto: tale feature sarà oggetto di futuri lavori.
+ad ogni scaglione di esperienza, si sbloccheranno certe abilità o miglioramenti, finita la disponibilità dei punti vita, i quali vengono sottratti dai nemici e dalle trappole
+%
+si perde la partita e si ricomincia da capo.
+%
+Arrivati all'ultimo livello, si affronterà il boss finale, che è un nemico più forte con mosse di attacco particolari e più
+%
+avanzate dei nemici generici.
 
 \begin{figure}[H]
-	\centering{}
-	\includegraphics{img/analysis.pdf}
-	\caption{Schema UML dell'analisi del problema, con rappresentate le entità principali ed i rapporti fra loro}
-	\label{img:analysis}
+	\includegraphics[scale=0.15]{img/design.png}
 \end{figure}
 
 \chapter{Design}
