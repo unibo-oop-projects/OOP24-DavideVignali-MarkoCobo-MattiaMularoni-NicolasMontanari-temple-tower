@@ -52,155 +52,81 @@ La meccanica dei livelli circolari prende ispirazione dal gioco \href{https://ri
 \end{itemize}
 
 \section{Modello del Dominio}
+\textbf{Temple Tower} sarà rappresentato da una torre composta da un certo numero di piani (\textit{Floor}), 
+%
+ciascuno dei quali conterrà stanze collegate tra loro. Ogni stanza potrà contenere una trappola, un nemico, un tesoro oppure ospitare il giocatore.
 
-In questa sezione si descrive il modello del \textit{dominio
-applicativo}, descrivendo le \textit{entità} in gioco ed i rapporti fra loro.
-%
-Si possono sollevare eventuali aspetti particolarmente impegnativi, descrivendo perché lo sono, senza inserire idee circa possibili soluzioni, ovvero sull'organizzazione interna del software.
-%
-Infatti, la fase di analisi va effettuata \textbf{prima} del progetto: né il progetto né il software esistono nel momento in cui si effettua l'analisi.
-%
-La discussione di aspetti propri del software (ossia, della \textit{soluzione} al problema e non del problema stesso) appartengono alla sfera della progettazione, e vanno discussi successivamente.
-
-È obbligatorio fornire uno schema UML del dominio, che diventerà anche lo scheletro della
-parte ``entity'' del modello dell'applicazione, ovvero degli elementi costitutivi del modello (in ottica MVC - Model View Controller): se l'analisi è ben fatta, dovreste ottenere una gerarchia di concetti che rappresentano le entità che compongono il problema da risolvere.
-%
-Un'analisi ben svolta \textbf{prima} di cimentarsi con lo sviluppo rappresenta un notevole aiuto per
-le fasi successive: è sufficiente descrivere a parole il dominio, quindi estrarre i sostantivi
-utilizzati, capire il loro ruolo all'interno del problema, le relazioni che intercorrono fra loro, e
-reificarli in interfacce.
-
-\subsection*{Elementi positivi}
 \begin{itemize}
-	\item Si modella il dominio in forma di UML\@.
-	\item Viene descritto accuratamente il modello del dominio.
-	\item Il modello cattura le entità di dominio, le loro caratteristiche principali,
-	\item e le relazioni che intercorrono fra di loro.
+    \item \textbf{Trappole}: infliggono danni al giocatore.
+    \item \textbf{Nemici}: attaccano il giocatore in combattimenti a turni.
+    \item \textbf{Tesori}: forniscono punti vita, esperienza o nuove armi.
 \end{itemize}
-
-\subsection*{Elementi negativi}
+%
+Il giocatore potrà utilizzare armi per affrontare i nemici. Poiché gli attacchi avvengono a turni, 
+%
+sarà fondamentale bilanciare le statistiche per evitare vittorie "matematiche" dovute a differenze di efficacia delle armi. 
+%
+Il giocatore e i nemici avranno a disposizione diverse tipologie di mosse di attacco, che possono variare in potenza ed effetto.
+%
+Dopo aver esplorato le stanze di un piano, il giocatore potrà utilizzare le scale per salire al piano successivo della torre. 
+%
+Durante la partita, sia il giocatore sia i nemici avranno due barre di stato: \textbf{vita} ed \textbf{esperienza}.
+%
 \begin{itemize}
-	\item Manca una descrizione a parole del modello del dominio.
-	\item Manca una descrizione UML delle entità del dominio e delle relazioni che intercorrono fra loro.
-	\item Vengono presentati elementi di design, o peggio, implementativi.
-	\item Viene mostrato uno schema UML che include elementi implementativi o non utili alla descrizione del dominio,
-	ma volti alla soluzione (non devono vedersi, ad esempio, campi o metodi privati).
+    \item \textbf{Barra della vita}: si riduce subendo danni da nemici o trappole. Quando arriva a zero, la partita termina e si ricomincia dall'inizio.
+    \item \textbf{Barra dell’esperienza}: aumenta con i tesori o combattendo nemici. Raggiunto un certo livello, il giocatore sbloccherà abilità o miglioramenti.
 \end{itemize}
-
-\subsection*{Esempio}
-Temple Tower dovrà essere rappresentato da una torre formata da un certo numero di piani (Floor), contenenti delle stanze collegate tra loro, ogni stanza potrà contentere una trappola, un nemico o un tesoro e il
 %
-giocatore che va al suo interno. Una trappola può arrecare danno al giocatore (come il nemico) o al contrario, un tesoro puà fornirgli punti vita/esperienza (oppure un'arma). Il giocatore utilizza
+All’ultimo piano, il giocatore affronterà il \textbf{boss finale}, un nemico più forte, dotato di mosse di attacco avanzate e particolari rispetto ai nemici ordinari.
 %
-armi con le quali combattere: in quanto tutti gli attacchi avverranno a turno, bisognerà individuare una strategia per ridurre le
+Per arricchire l’esperienza, sarà presente un sottofondo musicale durante tutto il gioco, accompagnato da effetti sonori che reagiscono alle azioni del giocatore, 
 %
-vittorie "matematiche" dovute alla differenza di efficacia.
+come combattimenti, vittorie o l'apertura di tesori.
 %
-Con le armi a disposizione, il giocatore e il nemico avranno a disposizione varie tipologie di mosse di attacco.
-%
-Il giocatore dopo aver oltrepassato le varie stanze, potrà utilizzare le scale per passare al piano successivo della torre.
-%
-Durante tutta la durata della partita, il giocatore e i nemici avranno due barre di stato, una rappresentante la vita e l'altra l'esperienza:
-%
-ad ogni scaglione di esperienza, si sbloccheranno certe abilità o miglioramenti, finita la disponibilità dei punti vita, i quali vengono sottratti dai nemici e dalle trappole
-%
-si perde la partita e si ricomincia da capo.
-%
-Arrivati all'ultimo livello, si affronterà il boss finale, che è un nemico più forte con mosse di attacco particolari e più
-%
-avanzate dei nemici generici.
-
 \begin{figure}[H]
-	\includegraphics[scale=0.15]{img/design.png}
+	\includegraphics[scale=0.15]{img/analysis.png}
 \end{figure}
 
 \chapter{Design}
 
-In questo capitolo si spiegano le strategie messe in campo per soddisfare i requisiti identificati nell'analisi.
-
-Si parte da una visione architetturale, il cui scopo è informare il lettore di quale sia il funzionamento dell'applicativo realizzato ad alto livello.
-%
-In particolare, è necessario descrivere accuratamente in che modo i componenti principali del sistema si coordinano fra loro.
-%
-A seguire, si dettagliano alcune parti del design, quelle maggiormente rilevanti al fine di chiarificare la logica con cui sono stati affrontati i principali aspetti dell'applicazione.
-
 \section{Architettura}
 
-Questa sezione spiega come le componenti principali del software interagiscono fra loro.
-%
-In particolare, qui va spiegato \textbf{se} e \textbf{come} è stato utilizzato il pattern
-architetturale model-view-controller (e/o alcune sue declinazioni specifiche, come entity-control-boundary).
+L'architettura del gioco \textbf{Temple Tower} segue il pattern architetturale \textbf{Model-View-Controller (MVC)} per garantire una chiara separazione delle responsabilità tra la logica di business, la presentazione e la gestione degli eventi.
 
-Se non è stato utilizzato MVC, va spiegata in maniera molto accurata l'architettura scelta, giustificandola in modo appropriato.
-
-Se è stato scelto MVC, vanno identificate con precisione le interfacce e classi che rappresentano i punti d'ingresso per modello, view, e controller.
-Raccomandiamo di sfruttare la definizione del dominio fatta in fase di analisi per capire quale sia l'entry point del model, e di non realizzare un'unica macro-interfaccia che, spesso, finisce con l'essere il prodromo ad una ``God class''.
-%
-Consigliamo anche di separare bene controller e model, facendo attenzione a non includere nel secondo strategie d'uso che appartengono al primo.
-
-In questa sezione vanno descritte, per ciascun componente architetturale che ruoli ricopre (due o tre ruoli al massimo), ed in che modo interagisce (ossia, scambia informazioni) con gli altri componenti dell'architettura.
-%
-Raccomandiamo di porre particolare attenzione al design dell'interazione fra view e controller: se ben progettato, sostituire in blocco la view non dovrebbe causare alcuna modifica nel controller (tantomeno nel model).
-
-\subsection*{Elementi positivi}
+\subsection*{Composizione del Pattern MVC}
 \begin{itemize}
- \item Si mostrano pochi, mirati schemi UML dai quali si deduce con chiarezza quali sono le parti principali del software e come interagiscono fra loro.
- \item Si mette in evidenza se e come il pattern architetturale model-view-controller è stato applicato, anche con l'uso di un UML che mostri le interfacce principali ed i rapporti fra loro.
- \item Si discute se sia semplice o meno, con l'architettura scelta, sostituire in blocco la view:
- 	in un MVC ben fatto, controller e modello non dovrebbero in alcun modo cambiare se si transitasse da una libreria grafica ad un'altra (ad esempio, da Swing a JavaFX, o viceversa).
+    \item \textbf{Model}: 
+    \begin{itemize}
+        \item Rappresenta la logica principale del gioco e include classi come \texttt{Tower}, \texttt{Floor}, \texttt{RoomBehavior}, \texttt{Player}, e i vari tipi di stanze (\texttt{EnemyRoom}, \texttt{TreasureRoom}, \texttt{StairsRoom}) che implementano il pattern Strategy.
+        \item Questo approccio consente di definire comportamenti specifici per ogni tipologia di stanza in modo modulare, rendendo semplice l'aggiunta di nuovi tipi di stanze senza modificare il codice esistente.
+        \item La logica di gioco, come il movimento del giocatore o gli effetti delle interazioni con nemici, trappole o tesori, è interamente contenuta nel model.
+    \end{itemize}
+
+    \item \textbf{View}: 
+    \begin{itemize}
+        \item La classe \texttt{GameView} gestisce la presentazione grafica del gioco. 
+        \item È responsabile della visualizzazione dello stato attuale della stanza (\texttt{displayRoom}), degli aggiornamenti della barra di stato del giocatore (\texttt{updateStatusBar}) e della gestione di eventi speciali come la vittoria o il game over.
+    \end{itemize}
+
+    \item \textbf{Controller}: 
+    \begin{itemize}
+        \item La classe \texttt{GameController} funge da intermediario tra il modello e la vista, orchestrando il flusso degli eventi nel gioco.
+        \item Gestisce le azioni dell'utente (\texttt{handleAction}), permette al giocatore di muoversi tra le stanze (\texttt{changeRoom}) o salire al piano successivo (\texttt{gotoNextFloor}), e si occupa di iniziare e terminare il gioco.
+    \end{itemize}
 \end{itemize}
 
-\subsection*{Elementi negativi}
+\subsection*{Scalabilità e Manutenibilità}
+Grazie all'uso combinato dei pattern MVC e Strategy:
 \begin{itemize}
- \item L'architettura è fatta in modo che sia impossibile riusare il modello per un software diverso che affronta lo stesso problema.
- \item L'architettura è tale che l'aggiunta di una funzionalità sul controller impatta pesantemente su view e/o modello.
- \item L'architettura è tale che la sostituzione in blocco della view impatta sul controller o, peggio ancora, sul modello.
- \item Si presentano UML caotici, difficili da leggere.
- \item Si presentano UML in cui sono mostrati elementi di dettaglio non appartenenti all'architettura, ad esempio includenti campi o con metodi che non interessano la parte di interazione fra le componenti principali del software.
- \item Si presentano schemi UML con classi (nel senso UML del termine) che ``galleggiano'' nello schema, non connesse, ossia senza relazioni con il resto degli elementi inseriti.
- \item Si presentano elementi di design di dettaglio, ad esempio tutte le classi e interfacce del modello o della view.
- \item Si discutono aspetti implementativi, ad esempio eventuali librerie usate oppure dettagli di codice.
+    \item \textbf{Aggiunta di nuove stanze}: È possibile introdurre nuove tipologie di stanze semplicemente aggiungendo nuove implementazioni dell'interfaccia \texttt{RoomBehavior}, senza modificare altre parti del codice.
+    \item \textbf{Separazione delle responsabilità}: La gestione della logica di gioco, della presentazione grafica e delle interazioni dell'utente è ben separata, favorendo la manutenibilità e la possibilità di cambiare singole componenti senza influenzare le altre.
 \end{itemize}
 
-\subsection*{Esempio}
-
-L'architettura di GLaDOS segue il pattern architetturale MVC.
+Questa architettura rende il sistema flessibile, modulare e facilmente estensibile, adattandosi alle necessità di futuri miglioramenti o aggiunte.
 %
-Più nello specifico, a livello architetturale, si è scelto di utilizzare MVC in forma ``ECB'', ossia ``entity-control-boundary''\footnote{
-Si fa presente che il pattern ECB effettivamente esiste in letteratura come ``istanza'' di MVC, e chi volesse può utilizzarlo come reificazione di MVC.
-}.
-%
-GLaDOS implementa l'interfaccia AI, ed è il controller del sistema.
-Essendo una intelligenza artificiale, è una classe attiva.
-%
-GLaDOS accetta la registrazione di Input ed Output, che fanno parte della ``view'' di MVC, e sono il ``boundary'' di ECB.
-Gli Input rappresentano delle nuove informazioni che vengono fornite all'IA, ad esempio delle modifiche nel valore di un sensore, oppure un comando da parte dell'operatore.
-Questi input infatti forniscono eventi.
-Ottenere un evento è un'operazione bloccante: chi la esegue resta in attesa di un effettivo evento.
-Di fatto, quindi, GLaDOS si configura come entità \textit{reattiva}.
-Ogni volta che c'è un cambio alla situazione del soggetto, GLaDOS notifica i suoi Output,
-informandoli su quale sia la situazione corrente.
-%
-Conseguentemente, GLaDOS è un ``observable'' per Output.
-
-\begin{figure}[h]
-\centering{}
-\includegraphics[width=\textwidth]{img/arch}
-\caption{Schema UML architetturale di GLaDOS. L'interfaccia \texttt{GLaDOS} è il controller del sistema, mentre \texttt{Input} ed \texttt{Output} sono le interfacce che mappano la view (o, più correttamente in questo specifico esempio, il boundary). Un'eventuale interfaccia grafica interattiva dovrà implementarle entrambe.}
-\label{img:goodarch}
+\begin{figure}[H]
+	\includegraphics[scale=0.12]{img/design.png}
 \end{figure}
-
-Con questa architettura, possono essere aggiunti un numero arbitrario di input ed output
-all'intelligenza artificiale.
-%
-Ovviamente, mentre l'aggiunta di output è semplice e non richiede alcuna modifica all'IA, la
-presenza di nuovi tipi di evento richiede invece in potenza aggiunte o rifiniture a GLaDOS.
-%
-Questo è dovuto al fatto che nuovi Input rappresentano di fatto nuovi elementi della business
-logic, la cui alterazione od espansione inevitabilmente impatta il controller del progetto.
-
-In \Cref{img:goodarch} è esemplificato il diagramma UML architetturale.
-
 
 \section{Design dettagliato}
 
