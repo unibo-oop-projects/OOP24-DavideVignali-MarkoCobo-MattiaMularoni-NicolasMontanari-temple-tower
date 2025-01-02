@@ -1,4 +1,4 @@
-package templeTower.model;
+package it.unibo.templetower.model;
 
 public interface RoomBehavior {
     void generateContent();

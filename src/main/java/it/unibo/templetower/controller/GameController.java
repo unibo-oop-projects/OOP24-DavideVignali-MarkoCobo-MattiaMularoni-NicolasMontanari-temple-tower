@@ -1,11 +1,9 @@
-package templeTower.controller;
-
-import javafx.scene.control.skin.TextInputControlSkin.Direction;
+package it.unibo.templetower.controller;
 
 public interface GameController {
     void startGame();
     void endGame();
     void handleAction(String action);
     void goToNextFloor();
-    void changeRoom(Direction direction);
+    void changeRoom(Integer direction);
 }

@@ -1,6 +1,6 @@
-package templeTower.view;
+package it.unibo.templetower.view;
 
-import templeTower.model.RoomBehavior;
+import it.unibo.templetower.model.RoomBehavior;
 
 public interface GameView {
     void displayRoom(RoomBehavior room);
