@@ -9,4 +9,5 @@ public interface Player {
     int getHealth();
     int getExperience();
     void getDamage(int damage);
+    void increaseExperience(int xp);
 }
