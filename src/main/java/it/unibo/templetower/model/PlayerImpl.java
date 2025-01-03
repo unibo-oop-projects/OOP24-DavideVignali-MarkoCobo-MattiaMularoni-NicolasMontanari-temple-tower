@@ -4,8 +4,7 @@ public class PlayerImpl implements Player {
 
     @Override
     public void attack(Enemy enemy) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'attack'");
+        int lifeEnemy = enemy.getLifePoints();
     }
 
     @Override
@@ -43,5 +42,4 @@ public class PlayerImpl implements Player {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getExperience'");
     }
-    
 }
