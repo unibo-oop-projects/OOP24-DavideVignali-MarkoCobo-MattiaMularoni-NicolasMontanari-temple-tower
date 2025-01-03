@@ -1,5 +1,15 @@
 package it.unibo.templetower.model;
 
-public interface Trap {
-    void giveDamage(int damage);
+public class Trap implements RoomBehavior{
+    private final int damage;
+
+    public Trap(final int damage){
+        this.damage = damage;
+    }
+
+    @Override
+    public void interact(Player player) {
+        player.getDamage(this.damage);
+    }
+
 }
