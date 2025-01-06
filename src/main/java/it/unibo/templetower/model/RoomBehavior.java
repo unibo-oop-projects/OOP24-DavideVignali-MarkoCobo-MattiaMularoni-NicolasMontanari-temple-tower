@@ -1,6 +1,18 @@
 package it.unibo.templetower.model;
 
 public interface RoomBehavior {
+    /**
+     * 
+     */
     void generateContent();
-    Enemy getEnemy();
+
+    /**
+     * @param player
+     */
+    void interact(Player player);
+
+    /**
+     * @return
+     */
+    EnemyImpl getEnemy();
 }

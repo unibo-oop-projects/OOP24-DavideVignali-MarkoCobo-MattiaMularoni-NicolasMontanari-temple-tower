@@ -2,15 +2,28 @@ package it.unibo.templetower.model;
 
 public class PlayerImpl implements Player {
 
+    private Weapon weapon;
+    private int life;
+
+    
+    public PlayerImpl(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
     @Override
-    public void attack(Enemy enemy) {
-        int lifeEnemy = enemy.getLifePoints();
+    public void attack(EnemyImpl enemy) {
+        if ( enemy != null) {
+            enemy.takeDamage(weapon.getDamage());
+        }
+    }
+
+    public void takeDamage(int damage){
+        this.life = this.life - damage;
     }
 
     @Override
     public void changeWeapon(Weapon weapon) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeWeapon'");
+        this.weapon = weapon;
     }
 
     @Override
@@ -42,4 +55,5 @@ public class PlayerImpl implements Player {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getExperience'");
     }
+
 }
