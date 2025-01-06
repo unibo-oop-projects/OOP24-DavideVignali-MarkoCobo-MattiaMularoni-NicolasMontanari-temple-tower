@@ -56,4 +56,13 @@ public class PlayerImpl implements Player {
         throw new UnsupportedOperationException("Unimplemented method 'getExperience'");
     }
 
+    public Weapon getWeapon() {
+        return this.weapon;
+    }
+
+    public int getLife() {
+        return this.life;
+    }
+
+    
 }

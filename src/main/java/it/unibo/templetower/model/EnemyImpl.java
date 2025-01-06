@@ -7,11 +7,7 @@ public class EnemyImpl implements RoomBehavior {
     public EnemyImpl(int lifePoints, int attackDamage) {
         this.lifePoints = lifePoints;
         this.attackDamage = attackDamage;
-    }
-
-    public int getLifePoints(){
-        return this.lifePoints;
-    }
+    }  
     
     public void takeDamage(int damage){
         this.lifePoints = this.lifePoints - damage;
@@ -28,10 +24,12 @@ public class EnemyImpl implements RoomBehavior {
         player.takeDamage(attackDamage);
     }
 
-    @Override
-    public EnemyImpl getEnemy() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEnemy'");
+    public int getAttackDamage() {
+        return this.attackDamage;
+    }
+
+    public int getLifePoints(){
+        return this.lifePoints;
     }
     
 }

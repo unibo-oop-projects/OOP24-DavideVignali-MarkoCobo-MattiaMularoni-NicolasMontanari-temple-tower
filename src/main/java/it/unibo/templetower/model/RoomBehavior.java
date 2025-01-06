@@ -11,8 +11,4 @@ public interface RoomBehavior {
      */
     void interact(Player player);
 
-    /**
-     * @return
-     */
-    EnemyImpl getEnemy();
 }
