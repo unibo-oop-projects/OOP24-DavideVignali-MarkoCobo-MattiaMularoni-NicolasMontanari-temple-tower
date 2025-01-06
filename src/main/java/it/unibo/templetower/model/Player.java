@@ -4,7 +4,7 @@ public interface Player {
     /**
      * @param enemy
      */
-    void attack(EnemyImpl enemy);
+    void attack(EnemyRoom enemy);
 
     /**
      * @param weapon
