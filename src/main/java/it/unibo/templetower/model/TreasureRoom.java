@@ -10,5 +10,11 @@ public class TreasureRoom implements RoomBehavior{
     public void interact(Player player) {
         player.increaseExperience(this.xps);
     }
+
+    @Override
+    public void generateContent() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
+    }
     
 }
