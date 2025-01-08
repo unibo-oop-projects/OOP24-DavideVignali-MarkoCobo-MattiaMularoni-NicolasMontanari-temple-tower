@@ -3,6 +3,8 @@ package it.unibo.templetower.view;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import it.unibo.templetower.controller.GameController;
+import it.unibo.templetower.controller.GameControllerImpl;
 import it.unibo.templetower.model.RoomBehavior;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -47,6 +49,13 @@ public class GameViewImpl extends Application implements GameView {
 
     @Override
     public void start(final Stage primaryStage) throws FileNotFoundException {
+
+        /* Test player e cambio stanza*/
+        GameController gc = new GameControllerImpl();
+        gc.changeRoom(1);
+        gc.changeRoom(1);
+
+        System.out.println("Actual player room: " + gc.getPlayerActualRoom());
 
         // Wrappare ImageView in un contenitore StackPane
         HBox hbox = new HBox();
