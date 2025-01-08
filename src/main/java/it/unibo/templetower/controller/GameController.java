@@ -6,4 +6,5 @@ public interface GameController {
     void handleAction(String action);
     void goToNextFloor();
     void changeRoom(Integer direction);
+    int getPlayerActualRoom();
 }

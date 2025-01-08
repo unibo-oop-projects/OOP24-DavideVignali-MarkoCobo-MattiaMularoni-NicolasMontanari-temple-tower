@@ -24,12 +24,7 @@ public interface Player {
     /**
      * 
      */
-    void moveForward();
-
-    /**
-     * 
-     */
-    void moveBackward();
+    void changeRoom(Room room);
 
     /**
      * @return
@@ -40,5 +35,14 @@ public interface Player {
      * @return
      */
     int getExperience();
+
+    /**
+     * 
+     */
     void increaseExperience(int xp);
+
+    /**
+     * 
+     */
+    int getActualRoom();
 }
