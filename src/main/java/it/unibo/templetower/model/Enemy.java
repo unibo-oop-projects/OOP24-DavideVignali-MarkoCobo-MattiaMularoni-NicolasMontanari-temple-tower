@@ -1,0 +1,5 @@
+package it.unibo.templetower.model;
+
+import java.util.List;
+
+public record Enemy(List<Pair<Attack,Double>> attacks, String spritePath) {}

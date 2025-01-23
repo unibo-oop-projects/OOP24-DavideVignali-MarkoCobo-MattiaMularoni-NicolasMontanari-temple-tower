@@ -16,7 +16,7 @@ public class PlayerImpl implements Player {
     @Override
     public void attack(EnemyRoom enemy) {
         if ( enemy != null) {
-            enemy.takeDamage(weapon.getDamage());
+            enemy.takeDamage(weapon.attack().damage());
         }
     }
 

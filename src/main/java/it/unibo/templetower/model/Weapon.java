@@ -1,5 +1,3 @@
 package it.unibo.templetower.model;
 
-public interface Weapon {
-    int getDamage();
-}
+public record Weapon(Attack attack, String spritePath) {}
