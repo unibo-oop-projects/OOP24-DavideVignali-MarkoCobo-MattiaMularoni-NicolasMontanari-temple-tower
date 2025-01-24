@@ -1,0 +1,10 @@
+{
+    "floors": [
+        {
+            "floorName": "Generic Level",
+            "spritePath": "Ground floor with the main entrance.",
+            "enemyPath": "test",
+            "weaponsPath": "test"
+        }   
+    ]
+}

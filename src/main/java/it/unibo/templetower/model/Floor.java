@@ -2,4 +2,4 @@ package it.unibo.templetower.model;
 
 import java.util.List;
 
-public record Floor(String name, String spritePath, List<Enemy> enemies, List<Weapon> weapons) {}
+public record Floor(String floorName, String spritePath, List<Enemy> enemies, List<Weapon> weapons) {}

@@ -43,6 +43,9 @@ dependencies {
     val jUnitVersion = "5.11.4"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
+
+    // Gson library
+    implementation("com.google.code.gson:gson:2.8.9")
 }
 
 tasks.withType<Test> {

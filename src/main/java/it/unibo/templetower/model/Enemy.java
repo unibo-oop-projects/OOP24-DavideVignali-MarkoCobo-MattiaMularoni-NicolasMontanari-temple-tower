@@ -2,4 +2,4 @@ package it.unibo.templetower.model;
 
 import java.util.List;
 
-public record Enemy(List<Pair<Attack,Double>> attacks, String spritePath) {}
+public record Enemy(List<Attack> attacks, String spritePath) {}

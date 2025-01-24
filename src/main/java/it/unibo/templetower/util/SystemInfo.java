@@ -1,4 +1,4 @@
-package it.unibo.templetower.model;
+package it.unibo.templetower.util;
 
 public class SystemInfo {
     private final String lineSeparator;
