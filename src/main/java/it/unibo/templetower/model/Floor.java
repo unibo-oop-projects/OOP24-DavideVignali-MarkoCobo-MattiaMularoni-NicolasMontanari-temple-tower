@@ -1,5 +1,5 @@
 package it.unibo.templetower.model;
 
-public interface Floor {
-    void generateRooms();
-}
+import java.util.List;
+
+public record Floor(String floorName, String spritePath, List<Enemy> enemies, List<Weapon> weapons) {}

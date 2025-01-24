@@ -1,15 +1,15 @@
 package it.unibo.templetower.model;
 
 public class EnemyRoom implements RoomBehavior {
-    private int lifePoints;
+    private Double lifePoints;
     private final int attackDamage;
 
-    public EnemyRoom(int lifePoints, int attackDamage) {
+    public EnemyRoom(Double lifePoints, int attackDamage) {
         this.lifePoints = lifePoints;
         this.attackDamage = attackDamage;
     }  
     
-    public void takeDamage(int damage){
+    public void takeDamage(Double damage){
         this.lifePoints = this.lifePoints - damage;
     }
     @Override
@@ -27,7 +27,7 @@ public class EnemyRoom implements RoomBehavior {
         return this.attackDamage;
     }
 
-    public int getLifePoints(){
+    public Double getLifePoints(){
         return this.lifePoints;
     }
     
