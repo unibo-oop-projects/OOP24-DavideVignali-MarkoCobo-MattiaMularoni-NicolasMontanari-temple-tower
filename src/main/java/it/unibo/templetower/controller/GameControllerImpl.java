@@ -10,10 +10,9 @@ import it.unibo.templetower.model.PlayerImpl;
 import it.unibo.templetower.model.Room;
 import it.unibo.templetower.model.Trap;
 import it.unibo.templetower.model.Weapon;
-import it.unibo.templetower.model.WeaponImpl;
 
 public class GameControllerImpl implements GameController{
-    Weapon weapon = new WeaponImpl();
+    Weapon weapon;;
     List<Room> rooms;
     Iterator<Room> roomsIt;
     Player player;
@@ -21,7 +20,7 @@ public class GameControllerImpl implements GameController{
     public GameControllerImpl(){
         rooms = new ArrayList<>();
         rooms.add(new Room(new Trap(2), 1));
-        rooms.add(new Room(new EnemyRoom(10, 3), 2));
+        rooms.add(new Room(new EnemyRoom(10.0, 3), 2));
 
         roomsIt = rooms.iterator();
         player = new PlayerImpl(weapon, rooms.getFirst());

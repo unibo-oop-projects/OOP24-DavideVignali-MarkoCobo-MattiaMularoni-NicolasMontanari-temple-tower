@@ -3,11 +3,24 @@
  */
 package it.unibo.templetower;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
+import it.unibo.templetower.model.*;
 
 class AppTest {
-    @Test void testAppHasAGreeting() throws ClassNotFoundException {
+
+    @Test 
+    void testAppHasAGreeting() throws ClassNotFoundException {
         assertNotNull(Class.forName("javafx.scene.Scene"));
     }
+
+    @Test
+    void testGameDataManager(){
+        assertEquals(5, 5);
+    }
+
+
 }
