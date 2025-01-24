@@ -44,10 +44,5 @@ public interface Player {
     /**
      * 
      */
-    void changeFloor();
-
-    /**
-     * 
-     */
     int getActualRoom();
 }
