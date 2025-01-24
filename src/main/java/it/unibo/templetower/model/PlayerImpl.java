@@ -1,16 +1,22 @@
 package it.unibo.templetower.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerImpl implements Player {
 
     private Weapon weapon;
     private int life;
     private Room actualRoom;
+    private List<FloorImpl> floor;
+    private int index;
 
     
     public PlayerImpl(final Weapon weapon, final Room actualRoom) {
         this.weapon = weapon;
         this.actualRoom = actualRoom;
         this.life = 12;
+        this.floor = new ArrayList<>();
     }
 
     @Override
@@ -71,4 +77,12 @@ public class PlayerImpl implements Player {
     public int getActualRoom() {
         return actualRoom.id;
     }
+
+	@Override
+	public void changeFloor() {
+        if (index < floor.size() - 1){
+            index++;
+            floor.get(index);
+        }
+	}
 }
