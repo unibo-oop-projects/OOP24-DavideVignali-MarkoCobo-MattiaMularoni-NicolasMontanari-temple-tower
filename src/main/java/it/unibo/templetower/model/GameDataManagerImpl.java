@@ -3,9 +3,9 @@ package it.unibo.templetower.model;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import it.unibo.templetower.util.SystemInfo;
