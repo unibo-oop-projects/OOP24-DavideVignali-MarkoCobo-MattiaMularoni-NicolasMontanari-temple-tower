@@ -1,0 +1,32 @@
+/* Background color for root */
+.root {
+    -fx-background-color: #2d2d2d;
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px; /* Standard property */
+    -fx-padding: 10px 20px;
+}
+
+/* Label styling */
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px; /* Standard property */
+}
+
+/* Progress bar styling */
+.progress-bar {
+    -fx-accent: #76c7c0;
+}
+
+/* Health bars styling */
+.health-bar-player {
+    -fx-accent: green;
+}
+
+.health-bar-enemy {
+    -fx-accent: red;
+}

@@ -8,7 +8,7 @@ public class MainFloorView {
         VBox root = new VBox(10);
 
         Button settingsButton = new Button("Go to Settings");
-        settingsButton.setOnAction(e -> manager.switchTo("settings"));
+        settingsButton.setOnAction(e -> manager.switchTo("combat_view"));
 
         root.getChildren().addAll(settingsButton);
         root.getStyleClass().add("dashboard-view");
