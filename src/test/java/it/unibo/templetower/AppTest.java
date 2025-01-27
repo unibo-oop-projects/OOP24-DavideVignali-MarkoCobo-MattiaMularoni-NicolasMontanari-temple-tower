@@ -3,12 +3,9 @@
  */
 package it.unibo.templetower;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Map;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
-import it.unibo.templetower.model.*;
 
 class AppTest {
 
@@ -21,6 +18,4 @@ class AppTest {
     void testGameDataManager(){
         assertEquals(5, 5);
     }
-
-
 }

@@ -27,7 +27,9 @@ public class SceneManager {
 
     public void switchTo(String sceneName) {
         Scene scene = scenes.get(sceneName);
+        String css = this.getClass().getResource("/css/SimpleGui.css").toExternalForm(); 
         if (scene != null) {
+            scene.getStylesheets().add(css);
             stage.setScene(scene);
             stage.show();
         } else {
