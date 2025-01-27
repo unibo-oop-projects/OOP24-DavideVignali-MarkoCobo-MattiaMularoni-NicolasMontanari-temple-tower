@@ -1,10 +1,12 @@
-{
-    "floors": [
-        {
-            "floorName": "Generic Level",
-            "spritePath": "Ground floor with the main entrance.",
-            "enemyPath": "test",
-            "weaponsPath": "test"
-        }   
-    ]
-}
+[
+    {
+        "floorName": "generic-lvl",
+        "spritePath": "tower/sprites/generic-lvl.png",
+        "enemyPath": "tower/floors/generic-lvl/enemy-data.json",
+        "weaponsPath": "tower/floors/generic-lvl/weapon-data.json",
+        "spawningRange": {
+            "minLevel": 1,
+            "maxLevel": 5
+        }
+    }   
+]
