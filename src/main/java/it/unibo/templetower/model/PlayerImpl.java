@@ -4,16 +4,19 @@ public class PlayerImpl implements Player {
 
     private Weapon weapon;
     private int life;
+    private Room actualRoom;
 
     
-    public PlayerImpl(Weapon weapon) {
+    public PlayerImpl(final Weapon weapon, final Room actualRoom) {
         this.weapon = weapon;
+        this.actualRoom = actualRoom;
+        this.life = 12;
     }
 
     @Override
     public void attack(EnemyRoom enemy) {
         if ( enemy != null) {
-            enemy.takeDamage(weapon.getDamage());
+            enemy.takeDamage(weapon.attack().damage());
         }
     }
 
@@ -34,15 +37,8 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public void moveForward() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveForward'");
-    }
-
-    @Override
-    public void moveBackward() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveBackward'");
+    public void changeRoom(Room room) {
+        this.actualRoom = room;
     }
 
     @Override
@@ -69,5 +65,10 @@ public class PlayerImpl implements Player {
     public void increaseExperience(int xp) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'increaseExperience'");
+    }
+
+    @Override
+    public int getActualRoom() {
+        return actualRoom.id;
     }
 }
