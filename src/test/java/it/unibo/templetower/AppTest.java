@@ -7,13 +7,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import it.unibo.templetower.model.*;
-import it.unibo.templetower.util.SystemInfo;
 import java.util.List;
 import java.util.Optional;
 
 class AppTest {
 
-    SystemInfo os = new SystemInfo();
     @Test 
     void testAppHasAGreeting() throws ClassNotFoundException {
         assertNotNull(Class.forName("javafx.scene.Scene"));
@@ -65,6 +63,7 @@ class AppTest {
             System.out.println("\nFloor #" + (i + 1));
             System.out.println("Name: " + floor.floorName());
             System.out.println("Sprite Path: " + floor.spritePath());
+            System.out.println("Spawn Weight: " + floor.spawnWeight());
             System.out.println("Number of Enemies: " + 
                 floor.enemies().map(List::size).orElse(0));
             System.out.println("Number of Weapons: " + 
@@ -81,6 +80,9 @@ class AppTest {
                     System.out.println("  Sprite: " + enemy.spritePath());
                     enemy.attacks().forEach(attack -> 
                         System.out.println("  Attack: " + attack.getX() + " - Damage: " + attack.getY()));
+                    System.out.println("  Damage Multipliers:");
+                    enemy.damageMultipliers().forEach(multiplier ->
+                        System.out.println("    " + multiplier.getX() + ": x" + multiplier.getY()));
                 }));
             
             // Print weapon details with attack type, damage, level and sprite path

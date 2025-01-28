@@ -15,8 +15,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import it.unibo.templetower.util.SystemInfo;
-
 /**
  * Implementation of the Game Data Manager that handles loading and verification of game data from JSON files.
  * This class is responsible for loading and managing floor configurations, including their associated
@@ -25,7 +23,6 @@ import it.unibo.templetower.util.SystemInfo;
 public class GameDataManagerImpl {
     private List<FloorData> floors;
     private String floorsPath;
-    private SystemInfo os = new SystemInfo();
     private final Gson gson;
 
     /**
@@ -52,11 +49,22 @@ public class GameDataManagerImpl {
                 Double damage = attackObj.get("damage").getAsDouble();
                 attacks.add(new Pair<>(attackId, damage));
             }
+
+            List<Pair<String, Double>> multipliers = new ArrayList<>();
+            JsonArray multipliersArray = jsonObject.getAsJsonArray("damageMultipliers");
+            if (multipliersArray != null) {
+                for (JsonElement multiplierElement : multipliersArray) {
+                    JsonObject multiplierObj = multiplierElement.getAsJsonObject();
+                    String attackId = multiplierObj.get("attackId").getAsString();
+                    Double multiplier = multiplierObj.get("multiplier").getAsDouble();
+                    multipliers.add(new Pair<>(attackId, multiplier));
+                }
+            }
             
-            return new Enemy(name, health, level, attacks, spritePath);
+            return new Enemy(name, health, level, attacks, multipliers, spritePath);
         };
 
-        // Create custom deserializer for Weapon class
+        // Custom deserializer for Weapon class
         JsonDeserializer<Weapon> weaponDeserializer = (json, typeOfT, context) -> {
             JsonObject jsonObject = json.getAsJsonObject();
             String name = jsonObject.get("name").getAsString();
@@ -102,6 +110,7 @@ public class GameDataManagerImpl {
                 String weaponsPath = floorObj.get("weaponsPath").getAsString();
                 String floorName = floorObj.get("floorName").getAsString();
                 String spritePath = floorObj.get("spritePath").getAsString();
+                int spawnWeight = floorObj.get("spawnWeight").getAsInt();
                 JsonObject spawnRange = floorObj.get("spawningRange").getAsJsonObject();
                 int minLevel = spawnRange.get("minLevel").getAsInt();
                 int maxLevel = spawnRange.get("maxLevel").getAsInt();
@@ -114,7 +123,8 @@ public class GameDataManagerImpl {
                     spritePath,
                     enemies,
                     weapons,
-                    new Pair<>(minLevel, maxLevel)
+                    new Pair<>(minLevel, maxLevel),
+                    spawnWeight
                 ));
             }
         } catch (IOException e) {

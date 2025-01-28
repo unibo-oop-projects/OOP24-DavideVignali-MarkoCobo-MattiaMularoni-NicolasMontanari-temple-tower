@@ -9,7 +9,82 @@
           "damage": 50.0
         }
       ],
+      "damageMultipliers": [
+        {
+          "attackId": "magical",
+          "multiplier": 1.2
+        },
+        {
+          "attackId": "phisical",
+          "multiplier": 0.8
+        }
+      ],
       "spritePath": "tower/sprites/Goblin.jpg"
+    },
+    {
+      "name": "wizard",
+      "health": 80.0,
+      "level": 2,
+      "attacks": [
+        {
+          "attackId": "magical",
+          "damage": 70.0
+        },
+        {
+          "attackId": "fire",
+          "damage": 60.0
+        }
+      ],
+      "damageMultipliers": [
+        {
+          "attackId": "phisical",
+          "multiplier": 1.5
+        },
+        {
+          "attackId": "magical",
+          "multiplier": 0.5
+        }
+      ],
+      "spritePath": "tower/sprites/Wizard.jpg"
+    },
+    {
+      "name": "orc",
+      "health": 150.0,
+      "level": 2,
+      "attacks": [
+        {
+          "attackId": "phisical",
+          "damage": 80.0
+        },
+        {
+          "attackId": "poison",
+          "damage": 40.0
+        }
+      ],
+      "damageMultipliers": [],
+      "spritePath": "tower/sprites/Orc.jpg"
+    },
+    {
+      "name": "skeleton",
+      "health": 120.0,
+      "level": 1,
+      "attacks": [
+        {
+          "attackId": "phisical",
+          "damage": 60.0
+        },
+        {
+          "attackId": "poison",
+          "damage": 30.0
+        }
+      ],
+      "damageMultipliers": [
+        {
+          "attackId": "magical",
+          "multiplier": 1.1
+        }
+      ],
+      "spritePath": "tower/sprites/Skeleton.jpg"
     }
 ]
 
