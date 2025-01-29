@@ -27,3 +27,9 @@
 .sector{
     -fx-fill: transparent;
 }
+.root {
+    -fx-background-size: cover; /* L'immagine si adatta alle dimensioni della finestra */
+    -fx-background-position: center; /* Posiziona l'immagine al centro */
+    -fx-background-repeat: no-repeat; /* Evita ripetizioni dell'immagine */
+}
+
