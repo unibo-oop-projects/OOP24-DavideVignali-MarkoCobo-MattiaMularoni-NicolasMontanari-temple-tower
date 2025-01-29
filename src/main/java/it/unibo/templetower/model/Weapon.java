@@ -1,3 +1,3 @@
 package it.unibo.templetower.model;
 
-public record Weapon(Attack attack, String spritePath) {}
+public record Weapon(String name, Integer level, Pair<String,Double> attack, String spritePath) {}
