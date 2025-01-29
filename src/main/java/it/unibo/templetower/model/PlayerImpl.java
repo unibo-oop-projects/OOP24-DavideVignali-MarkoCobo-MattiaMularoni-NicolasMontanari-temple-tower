@@ -1,10 +1,14 @@
 package it.unibo.templetower.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerImpl implements Player {
 
     private Weapon weapon;
     private int life;
     private Room actualRoom;
+    private int index;
 
     
     public PlayerImpl(final Weapon weapon, final Room actualRoom) {
@@ -71,4 +75,5 @@ public class PlayerImpl implements Player {
     public int getActualRoom() {
         return actualRoom.id;
     }
+
 }
