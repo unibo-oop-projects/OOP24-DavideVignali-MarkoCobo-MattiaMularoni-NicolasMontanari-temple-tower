@@ -12,7 +12,7 @@ import it.unibo.templetower.model.Trap;
 import it.unibo.templetower.model.Weapon;
 
 public class GameControllerImpl implements GameController{
-    Weapon weapon;;
+    Weapon weapon;
     List<Room> rooms;
     Iterator<Room> roomsIt;
     Player player;
