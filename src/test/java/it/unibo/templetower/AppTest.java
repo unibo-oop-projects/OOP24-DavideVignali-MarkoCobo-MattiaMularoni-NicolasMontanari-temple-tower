@@ -3,12 +3,16 @@
  */
 package it.unibo.templetower;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Test;
-import it.unibo.templetower.model.*;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+
+import it.unibo.templetower.controller.GameDataManagerImpl;
+import it.unibo.templetower.model.FloorData;
 
 class AppTest {
 

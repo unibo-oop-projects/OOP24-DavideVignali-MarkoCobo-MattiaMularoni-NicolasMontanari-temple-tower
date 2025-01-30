@@ -1,12 +1,9 @@
 package it.unibo.templetower.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PlayerImpl implements Player {
 
     private Weapon weapon;
-    private int life;
+    private double life;
     private Room actualRoom;
     private int index;
 
@@ -25,7 +22,7 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public void takeDamage(int damage){
+    public void takeDamage(double damage){
         this.life = this.life - damage;
     }
 
@@ -61,7 +58,7 @@ public class PlayerImpl implements Player {
         return this.weapon;
     }
 
-    public int getLife() {
+    public double getLife() {
         return this.life;
     }
 

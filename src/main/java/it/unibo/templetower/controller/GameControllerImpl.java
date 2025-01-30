@@ -16,11 +16,14 @@ public class GameControllerImpl implements GameController{
     List<Room> rooms;
     Iterator<Room> roomsIt;
     Player player;
+    GameDataManagerImpl gameDataManager;
 
     public GameControllerImpl(){
+        gameDataManager = new GameDataManagerImpl();
+        gameDataManager.loadGameData("tower/floors/floors-data.json");
         rooms = new ArrayList<>();
         rooms.add(new Room(new Trap(2), 1));
-        rooms.add(new Room(new EnemyRoom(10.0, 3), 2));
+        rooms.add(new Room(new EnemyRoom(gameDataManager, 0), 2));
 
         roomsIt = rooms.iterator();
         player = new PlayerImpl(weapon, rooms.getFirst());
