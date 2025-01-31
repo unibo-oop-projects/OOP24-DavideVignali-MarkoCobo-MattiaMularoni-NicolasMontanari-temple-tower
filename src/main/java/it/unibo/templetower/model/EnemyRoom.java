@@ -1,9 +1,12 @@
 package it.unibo.templetower.model;
-
 import java.util.List;
 
 import it.unibo.templetower.controller.GameDataManagerImpl;
 
+/**
+ * Represents a room in the game that contains an enemy.
+ * The enemy room contains an enemy that the player must defeat to progress.
+ */
 public class EnemyRoom implements RoomBehavior {
     private Enemy enemy;
     private FloorData floor;
@@ -23,11 +26,12 @@ public class EnemyRoom implements RoomBehavior {
         this.enemy = floor.enemies().get().stream()
             .filter(en -> (en.level() >= minLevel && en.level() <= maxLevel)).findFirst().orElseThrow();
             
-    }  
+    }
     
     public void takeDamage(Double damage){
         this.lifePoints = this.lifePoints - damage;
     }
+    
     @Override
     public void generateContent() {
         throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
