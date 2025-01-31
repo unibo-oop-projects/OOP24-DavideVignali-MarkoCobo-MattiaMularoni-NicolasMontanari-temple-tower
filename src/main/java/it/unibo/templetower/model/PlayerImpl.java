@@ -6,9 +6,7 @@ public class PlayerImpl implements Player {
     private double life;
     private Room actualRoom;
     private int experience;
-    private int index;
 
-    
     public PlayerImpl(final Weapon weapon, final Room actualRoom) {
         this.weapon = weapon;
         this.actualRoom = actualRoom;
@@ -54,8 +52,7 @@ public class PlayerImpl implements Player {
 
     @Override
     public int getExperience() {
-         // TODO Auto-generated method stub
-         throw new UnsupportedOperationException("Unimplemented method 'getExperience'");
+        return this.experience;
     }
 
     public Weapon getWeapon() {
@@ -76,5 +73,4 @@ public class PlayerImpl implements Player {
     public int getActualRoom() {
         return actualRoom.id;
     }
-
 }
