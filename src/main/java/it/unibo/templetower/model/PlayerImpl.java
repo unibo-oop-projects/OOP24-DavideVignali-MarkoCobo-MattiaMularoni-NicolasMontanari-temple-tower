@@ -1,20 +1,17 @@
 package it.unibo.templetower.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PlayerImpl implements Player {
 
     private Weapon weapon;
-    private int life;
+    private double life;
     private Room actualRoom;
-    private int index;
+    private int experience;
 
-    
     public PlayerImpl(final Weapon weapon, final Room actualRoom) {
         this.weapon = weapon;
         this.actualRoom = actualRoom;
-        this.life = 12;
+        this.life = 100;
+        this.experience = 0;
     }
 
     @Override
@@ -25,12 +22,14 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public void takeDamage(int damage){
+    public void takeDamage(double damage){
+        System.out.println("Player got damaged");
         this.life = this.life - damage;
     }
 
     @Override
     public void changeWeapon(Weapon weapon) {
+        System.out.println("Player changed weapon");
         this.weapon = weapon;
     }
 
@@ -53,27 +52,25 @@ public class PlayerImpl implements Player {
 
     @Override
     public int getExperience() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExperience'");
+        return this.experience;
     }
 
     public Weapon getWeapon() {
         return this.weapon;
     }
 
-    public int getLife() {
+    public double getLife() {
         return this.life;
     }
 
     @Override
     public void increaseExperience(int xp) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'increaseExperience'");
+        System.out.println("Player increased experience");
+        this.experience += xp;
     }
 
     @Override
     public int getActualRoom() {
         return actualRoom.id;
     }
-
 }

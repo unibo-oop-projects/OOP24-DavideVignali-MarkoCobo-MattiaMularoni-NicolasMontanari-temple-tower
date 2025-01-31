@@ -1,4 +1,4 @@
-package it.unibo.templetower.model;
+package it.unibo.templetower.controller;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,6 +15,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+
+import it.unibo.templetower.model.Enemy;
+import it.unibo.templetower.model.FloorData;
+import it.unibo.templetower.model.Pair;
+import it.unibo.templetower.model.Weapon;
 
 /**
  * Implementation of the Game Data Manager that handles loading and verification of game data from JSON files.

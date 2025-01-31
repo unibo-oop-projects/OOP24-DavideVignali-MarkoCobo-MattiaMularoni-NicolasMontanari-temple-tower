@@ -1,10 +1,6 @@
 package it.unibo.templetower.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TowerImpl implements Tower{
-    private List<Floor> floors = new ArrayList<>();
     private int currentFloorIndex = 0;
     private PlayerImpl player;
 
@@ -39,12 +35,11 @@ public class TowerImpl implements Tower{
      */
     @Override
     public void movePlayer(int floorIndex) {
-        if (floorIndex >= 0 && floorIndex < floors.size()) {
+        /* if (floorIndex >= 0 && floorIndex < floors.size()) {
             currentFloorIndex = floorIndex;
-            Floor currentFloor = floors.get(currentFloorIndex);
         } else {
             throw new IllegalArgumentException("Invalid floor index");
-        }
+        } */
     }
     
 }
