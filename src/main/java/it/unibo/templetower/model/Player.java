@@ -14,7 +14,7 @@ public interface Player {
     /**
      * @param damage
      */
-    void takeDamage(int damage);
+    void takeDamage(double damage);
 
     /**
      * 
