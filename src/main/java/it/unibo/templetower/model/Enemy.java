@@ -2,6 +2,8 @@ package it.unibo.templetower.model;
 
 import java.util.List;
 
+import it.unibo.templetower.utils.Pair;
+
 /**
  * Record representing an enemy in the game.
  * This record stores the basic information about an enemy including its name,
