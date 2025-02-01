@@ -3,6 +3,8 @@ package it.unibo.templetower.model;
 import java.util.List;
 import java.util.Optional;
 
+import it.unibo.templetower.utils.Pair;
+
 /**
  * Record representing a floor's data in the game.
  * Contains information about the floor's name, sprite, enemies, weapons, spawn range and spawn weight.

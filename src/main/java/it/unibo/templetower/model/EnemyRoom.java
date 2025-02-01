@@ -2,6 +2,7 @@ package it.unibo.templetower.model;
 import java.util.List;
 
 import it.unibo.templetower.controller.GameDataManagerImpl;
+import it.unibo.templetower.utils.Pair;
 
 /**
  * Represents a room in the game that contains an enemy.
