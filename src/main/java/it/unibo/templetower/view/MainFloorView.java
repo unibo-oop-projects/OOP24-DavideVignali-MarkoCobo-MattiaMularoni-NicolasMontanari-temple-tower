@@ -1,5 +1,9 @@
 package it.unibo.templetower.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
@@ -11,7 +15,6 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 public class MainFloorView {
@@ -19,77 +22,100 @@ public class MainFloorView {
     private Circle outer;
     private Circle inner;
 
+    ToggleButton left;
+    ToggleButton right;
+    ToggleButton pause;
+    HBox buttons;
+
     private static final double HEIGHT = 1280;
     private static final double WIDTH = 720;
 
-    private static final int nRooms = 8;
+    private static final double OUTER_RADIUS = 280;
+    private static final double INNER_RADIUS = OUTER_RADIUS*0.5;
+    
+    private int nRooms;
 
-    public Scene createScene(SceneManager manager) {
+    private final Map<Integer, Arc> sectorMap = new HashMap<>();
+
+    public Scene createScene(SceneManager manager, GameController controller) {
         BorderPane root = new BorderPane();
-        root.setId("circle-room-back");
-
         dPane = new Pane();
         root.setCenter(dPane);
-
-        outer = createCircle("outer-circle-rooms", HEIGHT - 300, WIDTH - 320, 280);
-        inner = createCircle("inner-circle-rooms", HEIGHT - 300, WIDTH - 320, 180);
-
-        Scene scene = new Scene(root, HEIGHT, WIDTH);
-
-        // Listener per adattare la scena al ridimensionamento
-        scene.widthProperty().addListener((observer, oldWidth, newWidth) -> adaptScene(scene));
-        scene.heightProperty().addListener((observer, oldHeight, newHeight) -> adaptScene(scene));
-
+        root.setId("circle-room-back");
+        
+        this.nRooms = controller.getRooms().size();
+        outer = createCircle("outer-circle-rooms", OUTER_RADIUS);
+        inner = createCircle("inner-circle-rooms", INNER_RADIUS);
+        
         dPane.getChildren().addAll(outer, inner);
+        Scene scene = new Scene(root, HEIGHT, WIDTH);
+        
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
+        scene.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
+        
+        createButtons(controller);
+        adaptScene(scene, controller);
         return scene;
     }
 
-    private void createButtons(double sceneWidth, double sceneHeight) {
-        ToggleButton left = new ToggleButton("<");
-        ToggleButton right = new ToggleButton(">");
-        ToggleButton pause = new ToggleButton("||");
-
+    private void createButtons(GameController controller) {
+        left = new ToggleButton("<");
+        right = new ToggleButton(">");
+        pause = new ToggleButton("ENTRA");
         
-        
-        HBox buttons = new HBox(left, pause, right);
+        buttons = new HBox(left, pause, right);
+        buttons.getStyleClass().add("buttons");
+        buttons.setAlignment(Pos.BOTTOM_CENTER);
         buttons.setPrefWidth(50);
+        buttons.setPrefWidth(50);
+
         left.setMinWidth(buttons.getPrefWidth());
         right.setMinWidth(buttons.getPrefWidth());
         pause.setMinWidth(buttons.getPrefWidth());
-
-        buttons.getStyleClass().add("buttons");
-        buttons.setAlignment(Pos.BOTTOM_CENTER);
-        buttons.setLayoutX(sceneWidth/2-((buttons.getPrefWidth()*3)/2));
-        buttons.setLayoutY(sceneHeight/1.1);
-
+        
+        left.setOnMouseClicked(e -> handleRoomChange(controller, -1));
+        right.setOnMouseClicked(e -> handleRoomChange(controller, 1));
+        pause.setOnMouseClicked(e -> handleFloorEnter(controller));
+        
         dPane.getChildren().add(buttons);
     }
 
-    private Circle createCircle(String id, double centerX, double centerY, double radius) {
-        Circle circle = new Circle(centerX, centerY, radius);
+    private void handleRoomChange(GameController controller, int direction) {
+        controller.changeRoom(direction);
+        highlightSector(controller.getPlayerActualRoom());
+    }
+
+    private void handleFloorEnter(GameController controller) {
+        controller.enterFirstRoom();
+        highlightSector(controller.getPlayerActualRoom());
+    }
+
+    private Circle createCircle(String id, double radius) {
+        Circle circle = new Circle(radius);
         circle.setId(id);
         return circle;
     }
 
-    private void adaptScene(Scene scene) {
-        double sceneWidth = scene.getWidth();
-        double sceneHeight = scene.getHeight();
+    private void adaptScene(Scene scene, GameController controller) {
+        double centerX = scene.getWidth() / 2;
+        double centerY = scene.getHeight() / 2.5;
 
-        double centerX = sceneWidth / 2;
-        double centerY = sceneHeight / 2.5;
-
-        updateCirclePositionAndRadius(outer, centerX, centerY, Math.min(sceneWidth, sceneHeight) / 3);
-        updateCirclePositionAndRadius(inner, centerX, centerY, outer.getRadius() * 0.50);
+        updateCirclePositionAndRadius(outer, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / 3);
+        updateCirclePositionAndRadius(inner, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / 5);
 
         double roomRadius = (outer.getRadius() + inner.getRadius()) / 2;
+        dPane.getChildren().removeIf(node -> node instanceof Arc || node instanceof Text || node instanceof Line || node instanceof HBox);
 
-        // Rimuove elementi esistenti (stanze, etichette, settori e linee)
-        dPane.getChildren().removeIf(node -> node instanceof Rectangle || node instanceof Text || node instanceof Arc || node instanceof Line || node instanceof HBox);
-        createButtons(sceneWidth, sceneHeight);
-        // Crea nuovamente stanze, settori e linee
-        for (int i = 0; i < nRooms; i++) {
-            createRoomAndSector(i, centerX, centerY, roomRadius);
-        }
+        buttons.setLayoutX(centerX - ((buttons.getPrefWidth() * 3) / 2));
+        buttons.setLayoutY(scene.getHeight() / 1.1);
+        
+
+        dPane.getChildren().add(buttons);
+        sectorMap.clear();
+        controller.getRooms().forEach(room -> {
+            createRoomAndSector(nRooms - room.getId() - 1, centerX, centerY, roomRadius);
+        });
+        inner.toFront();
     }
 
     private void updateCirclePositionAndRadius(Circle circle, double centerX, double centerY, double radius) {
@@ -100,43 +126,43 @@ public class MainFloorView {
 
     private void createRoomAndSector(int roomIndex, double centerX, double centerY, double roomRadius) {
         double angle = 2 * Math.PI / nRooms * roomIndex;
-        double x = centerX + roomRadius * Math.cos(angle) - 30; // Compensa per il centro della stanza
-        double y = centerY + roomRadius * Math.sin(angle) - 30;
-
-        // Aggiungi stanza
-        Rectangle room = createRoom(x, y, roomIndex);
-        dPane.getChildren().add(room);
+        double x = centerX + roomRadius * Math.cos(angle) - 35; // Compensa per il centro della stanza
+        double y = centerY + roomRadius * Math.sin(angle) - 35;
 
         // Aggiungi etichetta
-        Text roomLabel = createRoomLabel(x, y, roomIndex);
-        dPane.getChildren().add(roomLabel);
+        dPane.getChildren().add(createRoomLabel(x, y, roomIndex));
 
         // Aggiungi settore
         Arc sector = createSector(centerX, centerY, outer.getRadius(), roomIndex);
+        sectorMap.put(roomIndex, sector);
         dPane.getChildren().add(sector);
 
         // Aggiungi linea divisoria
-        Line line = createDivisionLine(centerX, centerY, angle);
-        dPane.getChildren().add(line);
+        dPane.getChildren().add(createDivisionLine(centerX, centerY, angle));
     }
 
-    private Rectangle createRoom(double x, double y, int roomIndex) {
-        Rectangle room = new Rectangle(x, y, 50, 50);
-        room.getStyleClass().add("room");
-        room.setFill(Color.LIGHTBLUE);
-        room.setStroke(Color.BLACK);
-        room.setOnMouseClicked(e -> System.out.println("Hai cliccato sulla stanza R" + (roomIndex + 1)));
-        return room;
+    private void highlightSector(int roomIndex) {
+        // Reset colori per tutti i settori
+        sectorMap.values().forEach(sector -> sector.setFill(null));
+        
+        System.err.println("Highlighting room: " + roomIndex);
+        // Cambia il colore solo del settore selezionato
+        
+        Arc selectedSector = sectorMap.get(roomIndex);
+        if (selectedSector != null) {
+            selectedSector.setFill(Color.YELLOW);
+        }
     }
 
     private Text createRoomLabel(double x, double y, int roomIndex) {
-        Text label = new Text(x + 10, y + 25, "R" + (roomIndex + 1));
-        label.setFill(Color.BLACK);
+        Text label = new Text(x + 10, y + 25, "R" + (roomIndex +1));
+        label.setFill(Color.WHITE);
         return label;
     }
 
     private Arc createSector(double centerX, double centerY, double outerRadius, int roomIndex) {
-        double startAngle = roomIndex * (360.0 / nRooms) + 200;
+        double startAngle = roomIndex * (360.0 / nRooms);
+        startAngle = startAngle + 26.5; // Compensa per il centro della stanza
         double sectorLength = 360.0 / nRooms;
 
         Arc sector = new Arc(centerX, centerY, outerRadius, outerRadius, startAngle, sectorLength);

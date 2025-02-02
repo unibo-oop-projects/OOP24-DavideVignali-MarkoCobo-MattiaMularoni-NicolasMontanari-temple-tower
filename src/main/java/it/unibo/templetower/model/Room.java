@@ -17,4 +17,8 @@ public class Room {
             System.out.println("The room is empty.");
         }
     }
+
+    public int getId() {
+        return id;
+    }
 }

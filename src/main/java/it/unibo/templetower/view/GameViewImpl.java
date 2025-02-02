@@ -39,9 +39,6 @@ public class GameViewImpl extends Application implements GameView {
 
         /* Test player e cambio stanza*/
         GameController gc = new GameControllerImpl();
-        gc.changeRoom(1);
-        gc.changeRoom(1);
-        gc.changeRoom(1);
 
         System.out.println("Actual player room: " + gc.getPlayerActualRoom());
         
