@@ -1,5 +1,9 @@
 package it.unibo.templetower.model;
 
+/** 
+ * Useful class for implement the strategy pattern, 
+ * it represents a generic room that can interact with the player.
+ */
 public class Room {
     private final RoomBehavior behavior;
     protected final int id;

@@ -16,7 +16,11 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 
+/** 
+ * This scene represents a floor of the game, where the player can move between rooms.
+ */
 public class MainFloorView {
     private Pane dPane;
     private Circle outer;
@@ -24,61 +28,71 @@ public class MainFloorView {
 
     ToggleButton left;
     ToggleButton right;
-    ToggleButton pause;
+    ToggleButton enter;
     HBox buttons;
 
-    private static final double HEIGHT = 1280;
-    private static final double WIDTH = 720;
+    private static final double HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
+    private static final double WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
 
-    private static final double OUTER_RADIUS = 280;
+    private static final double OUTER_RADIUS = HEIGHT / 3;
     private static final double INNER_RADIUS = OUTER_RADIUS*0.5;
-    
+
     private int nRooms;
 
     private final Map<Integer, Arc> sectorMap = new HashMap<>();
 
     public Scene createScene(SceneManager manager, GameController controller) {
+        //Background
         BorderPane root = new BorderPane();
         dPane = new Pane();
         root.setCenter(dPane);
         root.setId("circle-room-back");
+
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
         
+        //Inner and outer circles for create the rooms container
         this.nRooms = controller.getRooms().size();
         outer = createCircle("outer-circle-rooms", OUTER_RADIUS);
         inner = createCircle("inner-circle-rooms", INNER_RADIUS);
-        
         dPane.getChildren().addAll(outer, inner);
-        Scene scene = new Scene(root, HEIGHT, WIDTH);
         
+        //Listener for keeping the scene responsive to screen size changes
         scene.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
         scene.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
         
+        //Control buttons
         createButtons(controller);
-        adaptScene(scene, controller);
+
         return scene;
     }
 
     private void createButtons(GameController controller) {
         left = new ToggleButton("<");
         right = new ToggleButton(">");
-        pause = new ToggleButton("ENTRA");
+        enter = new ToggleButton("ENTRA");
         
-        buttons = new HBox(left, pause, right);
+        buttons = new HBox(left, enter, right);
         buttons.getStyleClass().add("buttons");
         buttons.setAlignment(Pos.BOTTOM_CENTER);
         buttons.setPrefWidth(100);
 
         left.setMinWidth(buttons.getPrefWidth());
         right.setMinWidth(buttons.getPrefWidth());
-        pause.setMinWidth(buttons.getPrefWidth());
+        enter.setMinWidth(buttons.getPrefWidth());
         
+        //When the left button is clicked, the player moves to the previous room
         left.setOnMouseClicked(e -> handleRoomChange(controller, -1));
+
+        //When the right button is clicked, the player moves to the next room
         right.setOnMouseClicked(e -> handleRoomChange(controller, 1));
-        pause.setOnMouseClicked(e -> handleFloorEnter(controller));
+
+        //When the enter button is clicked, the player moves to the first room
+        enter.setOnMouseClicked(e -> handleFloorEnter(controller));
         
         dPane.getChildren().add(buttons);
     }
 
+    //when the room changes, the sector is highlighted
     private void handleRoomChange(GameController controller, int direction) {
         controller.changeRoom(direction);
         highlightSector(controller.getPlayerActualRoom());
@@ -95,6 +109,7 @@ public class MainFloorView {
         return circle;
     }
 
+    //Adapts the scene to the screen size
     private void adaptScene(Scene scene, GameController controller) {
         double centerX = scene.getWidth() / 2;
         double centerY = scene.getHeight() / 2.5;
@@ -108,7 +123,6 @@ public class MainFloorView {
         buttons.setLayoutX(centerX - ((buttons.getPrefWidth() * 3) / 2));
         buttons.setLayoutY(scene.getHeight() / 1.1);
         
-
         dPane.getChildren().add(buttons);
         sectorMap.clear();
         controller.getRooms().forEach(room -> {
@@ -124,29 +138,28 @@ public class MainFloorView {
     }
 
     private void createRoomAndSector(int roomIndex, double centerX, double centerY, double roomRadius) {
+        int ANGLE_COMPENSATION = 35;
         double angle = 2 * Math.PI / nRooms * roomIndex;
-        double x = centerX + roomRadius * Math.cos(angle) - 35; // Compensa per il centro della stanza
-        double y = centerY + roomRadius * Math.sin(angle) - 35;
+        double x = centerX + roomRadius * Math.cos(angle) - ANGLE_COMPENSATION;
+        double y = centerY + roomRadius * Math.sin(angle) - ANGLE_COMPENSATION;
 
-        // Aggiungi etichetta
+        // Room label
         dPane.getChildren().add(createRoomLabel(x, y, roomIndex));
 
-        // Aggiungi settore
         Arc sector = createSector(centerX, centerY, outer.getRadius(), roomIndex);
+
+        //add the sector to the map for highlighting
         sectorMap.put(roomIndex, sector);
         dPane.getChildren().add(sector);
 
-        // Aggiungi linea divisoria
         dPane.getChildren().add(createDivisionLine(centerX, centerY, angle));
     }
 
     private void highlightSector(int roomIndex) {
-        // Reset colori per tutti i settori
+        // Reset all previous highlights
         sectorMap.values().forEach(sector -> sector.setFill(null));
         
-        System.err.println("Highlighting room: " + roomIndex);
-        // Cambia il colore solo del settore selezionato
-        
+        // Highlight the selected sector
         Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
             selectedSector.setFill(Color.YELLOW);
@@ -160,8 +173,9 @@ public class MainFloorView {
     }
 
     private Arc createSector(double centerX, double centerY, double outerRadius, int roomIndex) {
+        double ANGLE_COMPENSATION = 26.5;
         double startAngle = (nRooms - roomIndex - 1) * (360.0 / nRooms);
-        startAngle = startAngle + 26.5; // Compensa per il centro della stanza
+        startAngle = startAngle + ANGLE_COMPENSATION;
         double sectorLength = 360.0 / nRooms;
 
         Arc sector = new Arc(centerX, centerY, outerRadius, outerRadius, startAngle, sectorLength);
@@ -171,7 +185,7 @@ public class MainFloorView {
     }
 
     private Line createDivisionLine(double centerX, double centerY, double angle) {
-        angle = angle-90; // Compensa per il centro della stanza
+        angle = angle-90;
         double startX = centerX + inner.getRadius() * Math.cos(angle + Math.PI / 2); // Cerchio interno
         double startY = centerY + inner.getRadius() * Math.sin(angle + Math.PI / 2);
         double endX = centerX + outer.getRadius() * Math.cos(angle + Math.PI / 2);   // Cerchio esterno
@@ -181,5 +195,4 @@ public class MainFloorView {
         line.setStroke(Color.WHITE);
         return line;
     }
-
 }
