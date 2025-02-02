@@ -66,8 +66,7 @@ public class MainFloorView {
         buttons = new HBox(left, pause, right);
         buttons.getStyleClass().add("buttons");
         buttons.setAlignment(Pos.BOTTOM_CENTER);
-        buttons.setPrefWidth(50);
-        buttons.setPrefWidth(50);
+        buttons.setPrefWidth(100);
 
         left.setMinWidth(buttons.getPrefWidth());
         right.setMinWidth(buttons.getPrefWidth());
@@ -113,7 +112,7 @@ public class MainFloorView {
         dPane.getChildren().add(buttons);
         sectorMap.clear();
         controller.getRooms().forEach(room -> {
-            createRoomAndSector(nRooms - room.getId() - 1, centerX, centerY, roomRadius);
+            createRoomAndSector(room.getId(), centerX, centerY, roomRadius);
         });
         inner.toFront();
     }
@@ -161,7 +160,7 @@ public class MainFloorView {
     }
 
     private Arc createSector(double centerX, double centerY, double outerRadius, int roomIndex) {
-        double startAngle = roomIndex * (360.0 / nRooms);
+        double startAngle = (nRooms - roomIndex - 1) * (360.0 / nRooms);
         startAngle = startAngle + 26.5; // Compensa per il centro della stanza
         double sectorLength = 360.0 / nRooms;
 
