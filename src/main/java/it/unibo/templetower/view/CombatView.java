@@ -3,6 +3,7 @@ package it.unibo.templetower.view;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,90 +15,112 @@ import javafx.scene.layout.*;
 import javafx.util.Duration;
 
 public class CombatView {
+    private ProgressBar playerHealthBar;
+    private ProgressBar enemyHealthBar;
+    private Button attackButton;
+    private Button exitButton;
+
     public Scene createScene(SceneManager manager) {
-        // Creazione del layout principale
         StackPane root = new StackPane();
-        root.getStyleClass().add("root"); // Apply root style
+        root.getStyleClass().add("root");
 
-        // Dichiarazione dello sfondo
         ImageView backgroundView = new ImageView();
-
-        // Aggiunta dello sfondo
         try {
             Image backgroundImage = new Image(getClass().getResource("/Images/combat_room.jpg").toExternalForm());
             backgroundView.setImage(backgroundImage);
-            backgroundView.setFitWidth(800);
-            backgroundView.setFitHeight(600);
-            backgroundView.setPreserveRatio(false); // Forza l'immagine a coprire tutta l'area
-            root.getChildren().add(backgroundView);
+            backgroundView.setPreserveRatio(false);  // Impedisce la preservazione del rapporto di aspetto
+            backgroundView.setFitWidth(Region.USE_COMPUTED_SIZE);  // Adatta alla larghezza della finestra
+            backgroundView.setFitHeight(Region.USE_COMPUTED_SIZE); // Adatta all'altezza della finestra
+
+            // Impostare l'immagine di sfondo per coprire l'intera finestra
+            root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+                backgroundView.setFitWidth(newWidth.doubleValue());
+            });
+            root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
+                backgroundView.setFitHeight(newHeight.doubleValue());
+            });
+
+            root.getChildren().add(backgroundView);  // Aggiungi l'immagine come sfondo
         } catch (Exception e) {
             Label errorLabel = new Label("Background image not found.");
-            errorLabel.getStyleClass().add("label"); // Apply label style
+            errorLabel.getStyleClass().add("label");
             root.getChildren().add(errorLabel);
             Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm()); // Load CSS
-            return scene; // Mostra solo l'errore se l'immagine non viene caricata
+            scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
+            return scene;
         }
 
-        // Layout dei contenuti
         VBox contentBox = new VBox(20);
-        contentBox.setAlignment(Pos.CENTER);
+        contentBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        // Immagini degli omini
         HBox charactersBox = new HBox(100);
-        charactersBox.setAlignment(Pos.CENTER);
+        charactersBox.setAlignment(Pos.BOTTOM_CENTER);
 
         ImageView playerImage = new ImageView(new Image(getClass().getResource("/Images/player.png").toExternalForm()));
         ImageView enemyImage = new ImageView(new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
 
-        // Aumentare la dimensione delle immagini
-        playerImage.setFitWidth(150);
-        playerImage.setFitHeight(150);
-        enemyImage.setFitWidth(150);
-        enemyImage.setFitHeight(150);
+        // Impostazione iniziale delle dimensioni delle immagini
+        double initialSize = 150; // Dimensione iniziale delle immagini
+        playerImage.setFitWidth(initialSize);
+        playerImage.setFitHeight(initialSize);
+        enemyImage.setFitWidth(initialSize);
+        enemyImage.setFitHeight(initialSize);
+
+        // Aggiungere un listener per ridimensionare le immagini in base alla finestra
+        root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            double scaleFactor = newWidth.doubleValue() / 800; // Usa una scala proporzionale rispetto alla larghezza iniziale (800px)
+            double newSize = initialSize * scaleFactor; // Calcola la nuova dimensione
+            playerImage.setFitWidth(newSize);
+            playerImage.setFitHeight(newSize);
+            enemyImage.setFitWidth(newSize);
+            enemyImage.setFitHeight(newSize);
+
+            // Ridimensionamento progressivo dei bottoni e delle ProgressBar
+            double newButtonWidth = 150 * scaleFactor; // Impostiamo la larghezza dei bottoni
+            double newProgressBarWidth = 200 * scaleFactor; // Impostiamo la larghezza delle barre di progresso
+
+            attackButton.setPrefWidth(newButtonWidth);
+            exitButton.setPrefWidth(newButtonWidth);
+
+            playerHealthBar.setPrefWidth(newProgressBarWidth);
+            enemyHealthBar.setPrefWidth(newProgressBarWidth);
+        });
 
         charactersBox.getChildren().addAll(playerImage, enemyImage);
 
-        // Layout dei contenuti modificato per posizionare le barre della vita in basso
-        VBox rootBox = new VBox(20);
-        rootBox.setAlignment(Pos.CENTER);
-        rootBox.getChildren().addAll(charactersBox, contentBox);
+        VBox rootBox = new VBox();
+        rootBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        // Barre della vita
-        HBox healthBarsBox = new HBox(50);
-        healthBarsBox.setAlignment(Pos.BOTTOM_CENTER);
+        BorderPane healthBarsPane = new BorderPane();
+        healthBarsPane.setPadding(new Insets(10));
 
-        VBox playerHealthBox = new VBox(5);
-        Label playerHpLabel = new Label("100 HP");
-        playerHpLabel.getStyleClass().add("label"); // Apply label style
-        ProgressBar playerHealthBar = new ProgressBar(1.0);
-        playerHealthBar.getStyleClass().add("health-bar-player"); // Apply player health bar style
+        playerHealthBar = new ProgressBar(1.0);
+        playerHealthBar.getStyleClass().add("health-bar-player");
         playerHealthBar.setPrefWidth(200);
-        playerHealthBox.getChildren().addAll(playerHpLabel, playerHealthBar);
+        Label playerHpLabel = new Label("100 HP");
+        playerHpLabel.getStyleClass().add("label");
+        VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
+        playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
+        healthBarsPane.setLeft(playerHealthBox);
 
-        VBox enemyHealthBox = new VBox(5);
-        Label enemyHpLabel = new Label("100 HP");
-        enemyHpLabel.getStyleClass().add("label"); // Apply label style
-        ProgressBar enemyHealthBar = new ProgressBar(1.0);
-        enemyHealthBar.getStyleClass().add("health-bar-enemy"); // Apply enemy health bar style
+        enemyHealthBar = new ProgressBar(1.0);
+        enemyHealthBar.getStyleClass().add("health-bar-enemy");
         enemyHealthBar.setPrefWidth(200);
-        enemyHealthBox.getChildren().addAll(enemyHpLabel, enemyHealthBar);
+        Label enemyHpLabel = new Label("100 HP");
+        enemyHpLabel.getStyleClass().add("label");
+        VBox enemyHealthBox = new VBox(5, enemyHpLabel, enemyHealthBar);
+        enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
+        healthBarsPane.setRight(enemyHealthBox);
 
-        healthBarsBox.getChildren().addAll(playerHealthBox, enemyHealthBox);
-        rootBox.getChildren().add(healthBarsBox);
-
-        // Pulsante di attacco
-        Button attackButton = new Button("Attack!");
-        attackButton.getStyleClass().add("button"); // Apply button style
+        attackButton = new Button("Attack!");
+        attackButton.getStyleClass().add("button");
         attackButton.setOnAction(event -> {
-            // Animazione di attacco
             Timeline timeline = new Timeline();
-            double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - 30; // Move closer to enemy
+            double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - 30;
             KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
             KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
             timeline.getKeyFrames().add(kf);
             timeline.setOnFinished(e -> {
-                // Simula la riduzione dei punti vita
                 double playerHealth = playerHealthBar.getProgress() - 0.1;
                 double enemyHealth = enemyHealthBar.getProgress() - 0.15;
 
@@ -112,38 +135,31 @@ public class CombatView {
 
                 if (playerHealth <= 0) {
                     attackButton.setDisable(true);
-                    //manager.showMessage("Player defeated!");
                 } else if (enemyHealth <= 0) {
                     attackButton.setDisable(true);
-                    //manager.showMessage("Enemy defeated!");
                 }
 
-                // Reset posizione player
                 playerImage.setTranslateX(0);
             });
             timeline.play();
         });
 
-        // Costruisci il layout principale
-        contentBox.getChildren().addAll(charactersBox, healthBarsBox, attackButton);
+        exitButton = new Button("Exit");
+        exitButton.getStyleClass().add("button");
 
-        // Posiziona i contenuti sopra lo sfondo
+        HBox buttonBox = new HBox(20, attackButton, exitButton);
+        buttonBox.setAlignment(Pos.BOTTOM_CENTER);
+        healthBarsPane.setBottom(buttonBox);
+
+        rootBox.getChildren().addAll(charactersBox, healthBarsPane);
         root.getChildren().add(rootBox);
 
-        // Rendi tutto responsivo
         Scene scene = new Scene(root, 800, 600);
-        scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm()); // Load CSS
-
-        root.widthProperty().addListener((obs, oldVal, newVal) -> {
-            double newWidth = newVal.doubleValue();
-            backgroundView.setFitWidth(newWidth);
-        });
-
-        root.heightProperty().addListener((obs, oldVal, newVal) -> {
-            double newHeight = newVal.doubleValue();
-            backgroundView.setFitHeight(newHeight);
-        });
+        scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
 
         return scene;
     }
 }
+
+
+

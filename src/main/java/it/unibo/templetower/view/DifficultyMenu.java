@@ -42,7 +42,7 @@ public class DifficultyMenu {
         Button hardButton = new Button("DIFFICILE");
 
         // Set button actions
-        easyButton.setOnAction(e -> manager.switchTo("main_floor_view"));
+        easyButton.setOnAction(e -> manager.switchTo("combat_view"));
         mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
         hardButton.setOnAction(e -> manager.switchTo("main_floor_view"));
 

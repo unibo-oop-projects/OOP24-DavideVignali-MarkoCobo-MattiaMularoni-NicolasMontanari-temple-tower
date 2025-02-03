@@ -30,3 +30,25 @@
 .health-bar-enemy {
     -fx-accent: red;
 }
+
+/* Align health bars and buttons */
+.hbox {
+    -fx-alignment: bottom-center;
+    -fx-padding: 10px;
+    -fx-spacing: 20px;
+}
+/* Positioning for player health bar */
+.player-health-bar {
+    -fx-alignment: bottom-left;
+}
+
+/* Positioning for enemy health bar */
+.enemy-health-bar {
+    -fx-alignment: bottom-right;
+}
+
+/* Positioning for buttons */
+.button-container {
+    -fx-alignment: bottom-center;
+    -fx-spacing: 10px; /* Space between buttons */
+}
