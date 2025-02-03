@@ -1,15 +1,20 @@
 package it.unibo.templetower.model;
+import java.util.Optional;
 
 public class PlayerImpl implements Player {
 
     private Weapon weapon;
     private double life;
-    private Room actualRoom;
+    private Optional<Room> actualRoom;
     private int experience;
 
-    public PlayerImpl(final Weapon weapon, final Room actualRoom) {
+    public PlayerImpl(final Weapon weapon, final Optional<Room> actualRoom) {
         this.weapon = weapon;
-        this.actualRoom = actualRoom;
+        if (actualRoom.isEmpty()) {
+            this.actualRoom = Optional.empty();
+        }else{
+            this.actualRoom = Optional.of(actualRoom.get());
+        }
         this.life = 100;
         this.experience = 0;
     }
@@ -41,7 +46,8 @@ public class PlayerImpl implements Player {
 
     @Override
     public void changeRoom(Room room) {
-        this.actualRoom = room;
+        System.out.println("Player changed room: "+room.id);
+        this.actualRoom = Optional.of(room);
     }
 
     @Override
@@ -71,6 +77,10 @@ public class PlayerImpl implements Player {
 
     @Override
     public int getActualRoom() {
-        return actualRoom.id;
+        if (actualRoom.isEmpty()) {
+            return -1;
+        }else{
+            return actualRoom.get().id;
+        }
     }
 }
