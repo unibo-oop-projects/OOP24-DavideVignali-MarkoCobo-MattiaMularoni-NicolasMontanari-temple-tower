@@ -17,7 +17,7 @@
     -fx-stroke-width: 2px;
 }
 #inner-circle-rooms {
-    -fx-fill: transparent;
+    -fx-fill: rgb(0, 0, 44);
     -fx-stroke: white;
     -fx-stroke-width: 2px;
 }

@@ -1,5 +1,6 @@
 package it.unibo.templetower.view;
 
+import it.unibo.templetower.controller.GameController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -11,16 +12,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class CombatView {
     private ProgressBar playerHealthBar;
     private ProgressBar enemyHealthBar;
+
+    public Scene createScene(SceneManager manager, GameController controller) {
+        // Creazione del layout principale
     private Button attackButton;
     private Button exitButton;
-
-    public Scene createScene(SceneManager manager) {
         StackPane root = new StackPane();
         root.getStyleClass().add("root");
 

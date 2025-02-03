@@ -4,22 +4,26 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.unibo.templetower.controller.GameController;
+import it.unibo.templetower.controller.GameControllerImpl;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class SceneManager {
     private final Stage stage;
     private final Map<String, Scene> scenes = new HashMap<>();
+    private final GameController controller;
 
     public SceneManager(Stage stage) {
         this.stage = stage;
+        this.controller = new GameControllerImpl();
         initializeScenes();
     }
 
     private void initializeScenes() {
-        scenes.put("difficulty_menu", new DifficultyMenu().createScene(this));
-        scenes.put("main_floor_view", new MainFloorView().createScene(this));
-        scenes.put("combat_view", new CombatView().createScene(this));
+        scenes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
+        scenes.put("main_floor_view", new MainFloorView().createScene(this, controller));
+        scenes.put("combat_view", new CombatView().createScene(this, controller));
         try{
             scenes.put("home", new Home().createScene(this));
         } catch (FileNotFoundException e) {

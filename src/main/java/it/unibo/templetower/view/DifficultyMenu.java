@@ -2,6 +2,7 @@ package it.unibo.templetower.view;
 
 import java.io.InputStream;
 
+import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,7 +13,7 @@ import javafx.scene.layout.VBox;
 
 public class DifficultyMenu {
 
-    public Scene createScene(SceneManager manager) {
+    public Scene createScene(SceneManager manager, GameController controller) {
         // Create root container
         StackPane root = new StackPane();
 
