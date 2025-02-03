@@ -1,4 +1,5 @@
 package it.unibo.templetower.view;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -6,56 +7,48 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.HBox;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 public class Home {
+
     public Scene createScene(SceneManager manager) throws FileNotFoundException {
-         // Wrappare ImageView in un contenitore StackPane
-        HBox hbox = new HBox();
+        // Create root container
+        StackPane root = new StackPane();
 
-        // set spacing 
-        hbox.setSpacing(10);
-
-        // set alignment for the HBox 
-        hbox.setAlignment(Pos.CENTER);
-
-        // create a scene
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("images/INITemp.png");
-        if (inputStream == null) {
-            throw new FileNotFoundException("File not found: images/INITemp.png");
+        // Set up background image
+        InputStream backgroundStream = getClass().getClassLoader()
+                .getResourceAsStream("images/Schermatainiziale.png");
+        if (backgroundStream == null) {
+            throw new FileNotFoundException("Could not find background image: images/Schermatainiziale.png");
         }
 
-        // create a image 
-        Image image = new Image(inputStream);
+        // Create and configure background
+        ImageView background = new ImageView(new Image(backgroundStream));
+        background.setPreserveRatio(false);
+        background.setFitWidth(400);
+        background.setFitHeight(300);
 
-        // create a background image 
-        BackgroundImage backgroundimage = new BackgroundImage(image,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
+        // Make background responsive to window resizing
+        root.widthProperty().addListener((obs, old, newVal)
+                -> background.setFitWidth(newVal.doubleValue()));
+        root.heightProperty().addListener((obs, old, newVal)
+                -> background.setFitHeight(newVal.doubleValue()));
 
-        // create Background 
-        Background background = new Background(backgroundimage);
+        // Create content layout
+        VBox content = new VBox(10);
+        content.setAlignment(Pos.CENTER);
 
-        hbox.setOnKeyPressed(event -> {
-            System.out.println("Key pressed");
-            manager.switchTo("main_floor_view");
-        });
+        // Add difficulty menu button
+        Button difficultyButton = new Button("Go to Difficulty Menu");
+        difficultyButton.setOnAction(e -> manager.switchTo("difficulty_menu"));
+        content.getChildren().add(difficultyButton);
 
-        Button settingsButton = new Button("Go main floor");
-        settingsButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-        
+        // Combine background and content
+        root.getChildren().addAll(background, content);
 
-        // set background 
-        hbox.setBackground(background);
-        hbox.getChildren().addAll(settingsButton);
-
-        return new Scene(hbox, 400, 300);
+        // Create and return the scene
+        return new Scene(root, 400, 300);
     }
 }
