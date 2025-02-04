@@ -14,49 +14,50 @@ import javafx.scene.layout.VBox;
 public class DifficultyMenu {
 
     public Scene createScene(SceneManager manager, GameController controller) {
-        // Creazione dello StackPane per gestire sfondo e contenuti
+        // Create root container
         StackPane root = new StackPane();
 
-        // Carica l'immagine di sfondo
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("images/menu.png");
-       
+        // Set up background image
+        InputStream backgroundStream = getClass().getClassLoader()
+                .getResourceAsStream("images/menu.png");
+        ImageView background = new ImageView(new Image(backgroundStream));
 
-        // Creazione dell'immagine di sfondo
-        Image backgroundImage = new Image(inputStream);
+        // Configure background properties
+        background.setPreserveRatio(false);
+        background.setFitWidth(800);
+        background.setFitHeight(600);
 
-        // Configura l'ImageView per lo sfondo
-        ImageView backgroundView = new ImageView(backgroundImage);
-        backgroundView.setPreserveRatio(false); // Riempire lo spazio disponibile
-        backgroundView.setFitWidth(800); // Dimensioni iniziali
-        backgroundView.setFitHeight(600);
+        // Make background responsive to window resizing
+        root.widthProperty().addListener((obs, old, newVal)
+                -> background.setFitWidth(newVal.doubleValue()));
+        root.heightProperty().addListener((obs, old, newVal)
+                -> background.setFitHeight(newVal.doubleValue()));
 
-        // Adatta l'immagine al ridimensionamento della finestra
-        root.widthProperty().addListener((obs, oldVal, newVal) -> backgroundView.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, oldVal, newVal) -> backgroundView.setFitHeight(newVal.doubleValue()));
+        // Create difficulty buttons layout
+        VBox buttonContainer = new VBox(10);
+        buttonContainer.setAlignment(Pos.CENTER);
 
-        // Crea un layout verticale per i pulsanti
-        VBox buttonLayout = new VBox(10);
-        buttonLayout.setAlignment(Pos.CENTER);
-
-        // Pulsante FACILE
+        // Create difficulty buttons
         Button easyButton = new Button("FACILE");
-        easyButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-
-        // Pulsante INTERMEDIO
         Button mediumButton = new Button("INTERMEDIO");
-        mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-
-        // Pulsante DIFFICILE
         Button hardButton = new Button("DIFFICILE");
+
+        // Set button actions
+        easyButton.setOnAction(e -> manager.switchTo("main_floor_view"));
+        mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
         hardButton.setOnAction(e -> manager.switchTo("main_floor_view"));
 
-        // Aggiungi i pulsanti al layout
-        buttonLayout.getChildren().addAll(easyButton, mediumButton, hardButton);
+        // Add buttons to container
+        buttonContainer.getChildren().addAll(
+                easyButton,
+                mediumButton,
+                hardButton
+        );
 
-        // Aggiungi lo sfondo e il layout pulsanti al root
-        root.getChildren().addAll(backgroundView, buttonLayout);
+        // Combine background and buttons
+        root.getChildren().addAll(background, buttonContainer);
 
-        // Crea e ritorna la scena
+        // Create and return the scene
         return new Scene(root, 800, 600);
     }
 }
