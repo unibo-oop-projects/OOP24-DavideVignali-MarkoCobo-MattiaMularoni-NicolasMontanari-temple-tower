@@ -4,7 +4,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.google.gson.Gson;
@@ -56,18 +58,18 @@ public class GameDataManagerImpl {
                 attacks.add(new Pair<>(attackId, damage));
             }
 
-            List<Pair<String, Double>> multipliers = new ArrayList<>();
+            Map<String, Double> multipliersMap = new HashMap<>();
             JsonArray multipliersArray = jsonObject.getAsJsonArray("damageMultipliers");
             if (multipliersArray != null) {
                 for (JsonElement multiplierElement : multipliersArray) {
                     JsonObject multiplierObj = multiplierElement.getAsJsonObject();
                     String attackId = multiplierObj.get("attackId").getAsString();
                     Double multiplier = multiplierObj.get("multiplier").getAsDouble();
-                    multipliers.add(new Pair<>(attackId, multiplier));
+                    multipliersMap.put(attackId, multiplier);
                 }
             }
             
-            return new Enemy(name, health, level, attacks, multipliers, spritePath);
+            return new Enemy(name, health, level, attacks, multipliersMap, spritePath);
         };
 
         // Custom deserializer for Weapon class
@@ -99,8 +101,15 @@ public class GameDataManagerImpl {
      * @param path the path to the main floor configuration file
      * @throws IllegalArgumentException if the path is invalid or contains invalid data
      */
+    public void loadGameData(String path, int towerHeight) {
+        if (!verifyPath(path, towerHeight)) {
+            throw new IllegalArgumentException("Invalid game data path");
+        }
+        this.floorsPath = path;
+        loadFloors();
+    }
     public void loadGameData(String path) {
-        if (!verifyPath(path)) {
+        if (!verifyPath(path, 20)) {
             throw new IllegalArgumentException("Invalid game data path");
         }
         this.floorsPath = path;
@@ -178,7 +187,10 @@ public class GameDataManagerImpl {
      * @param testPath the path to verify
      * @return true if all required files exist and are valid, false otherwise
      */
-    public boolean verifyPath(String testPath){
+    public boolean verifyPath(String testPath, int towerHeight){
+        if(towerHeight < 1){
+            return false;
+        }
         testPath = Paths.get(testPath).toString();
         try (FileReader reader = new FileReader(testPath)) {
             JsonArray floorsArray = JsonParser.parseReader(reader).getAsJsonArray();
@@ -192,6 +204,24 @@ public class GameDataManagerImpl {
 
             if (!verifyEnemyFile(enemyPath) || !verifyWeaponFile(weaponsPath)) {
                 return false;
+            }
+
+            // Ensure that for each level 1 to towerHeight there is at least one floor covering it
+            for (int level = 1; level <= towerHeight; level++){
+                boolean covered = false;
+                for (JsonElement floorElement : floorsArray) {
+                    JsonObject floorObj = floorElement.getAsJsonObject();
+                    JsonObject spawnRange = floorObj.get("spawningRange").getAsJsonObject();
+                    int minLevel = spawnRange.get("minLevel").getAsInt();
+                    int maxLevel = spawnRange.get("maxLevel").getAsInt();
+                    if (level >= minLevel && level <= maxLevel) {
+                        covered = true;
+                        break;
+                    }
+                }
+                if (!covered) {
+                    return false;
+                }
             }
 
             return true;

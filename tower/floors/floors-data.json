@@ -9,5 +9,16 @@
             "minLevel": 1,
             "maxLevel": 5
         }
+    },
+    {
+        "floorName": "test Floor",
+        "spritePath": "tower/sprites/generic-lvl.png",
+        "enemyPath": "tower/floors/generic-lvl/enemy-data.json",
+        "weaponsPath": "tower/floors/generic-lvl/weapon-data.json",
+        "spawnWeight": 1,
+        "spawningRange": {
+            "minLevel": 5,
+            "maxLevel": 20
+        }
     }   
 ]

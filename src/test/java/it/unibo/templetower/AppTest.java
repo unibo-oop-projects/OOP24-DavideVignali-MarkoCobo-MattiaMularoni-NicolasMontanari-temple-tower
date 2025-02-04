@@ -25,7 +25,7 @@ class AppTest {
     void testVerifyPath() {
         GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
         String testPath = "tower/floors/floors-data.json";
-        assertTrue(gameDataManager.verifyPath(testPath));
+        assertTrue(gameDataManager.verifyPath(testPath, 20));
     }
 
     /**
@@ -85,8 +85,8 @@ class AppTest {
                     enemy.attacks().forEach(attack -> 
                         System.out.println("  Attack: " + attack.getX() + " - Damage: " + attack.getY()));
                     System.out.println("  Damage Multipliers:");
-                    enemy.damageMultipliers().forEach(multiplier ->
-                        System.out.println("    " + multiplier.getX() + ": x" + multiplier.getY()));
+                    enemy.damageMultipliers().forEach((attackId, multiplier) ->
+                        System.out.println("    " + attackId + ": x" + multiplier));
                 }));
             
             // Print weapon details with attack type, damage, level and sprite path
