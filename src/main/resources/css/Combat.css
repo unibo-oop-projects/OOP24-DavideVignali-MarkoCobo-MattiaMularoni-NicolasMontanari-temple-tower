@@ -5,7 +5,7 @@
 
 /* Button styling */
 .button {
-    -fx-background-color: #4CAF50;
+    -fx-background-color: black;
     -fx-text-fill: white;
     -fx-font-size: 14px; /* Standard property */
     -fx-padding: 10px 20px;

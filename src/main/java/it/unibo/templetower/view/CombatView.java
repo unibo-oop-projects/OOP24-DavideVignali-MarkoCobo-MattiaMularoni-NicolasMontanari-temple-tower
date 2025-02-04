@@ -12,7 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -20,11 +22,10 @@ import javafx.util.Duration;
 public class CombatView {
     private ProgressBar playerHealthBar;
     private ProgressBar enemyHealthBar;
-
-    public Scene createScene(SceneManager manager, GameController controller) {
-        // Creazione del layout principale
     private Button attackButton;
     private Button exitButton;
+
+    public Scene createScene(SceneManager manager, GameController controller) {
         StackPane root = new StackPane();
         root.getStyleClass().add("root");
 
@@ -32,11 +33,10 @@ public class CombatView {
         try {
             Image backgroundImage = new Image(getClass().getResource("/Images/combat_room.jpg").toExternalForm());
             backgroundView.setImage(backgroundImage);
-            backgroundView.setPreserveRatio(false);  // Impedisce la preservazione del rapporto di aspetto
-            backgroundView.setFitWidth(Region.USE_COMPUTED_SIZE);  // Adatta alla larghezza della finestra
-            backgroundView.setFitHeight(Region.USE_COMPUTED_SIZE); // Adatta all'altezza della finestra
+            backgroundView.setPreserveRatio(false);
+            backgroundView.setFitWidth(Region.USE_COMPUTED_SIZE);
+            backgroundView.setFitHeight(Region.USE_COMPUTED_SIZE);
 
-            // Impostare l'immagine di sfondo per coprire l'intera finestra
             root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
                 backgroundView.setFitWidth(newWidth.doubleValue());
             });
@@ -44,7 +44,7 @@ public class CombatView {
                 backgroundView.setFitHeight(newHeight.doubleValue());
             });
 
-            root.getChildren().add(backgroundView);  // Aggiungi l'immagine come sfondo
+            root.getChildren().add(backgroundView);
         } catch (Exception e) {
             Label errorLabel = new Label("Background image not found.");
             errorLabel.getStyleClass().add("label");
@@ -63,25 +63,38 @@ public class CombatView {
         ImageView playerImage = new ImageView(new Image(getClass().getResource("/Images/player.png").toExternalForm()));
         ImageView enemyImage = new ImageView(new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
 
-        // Impostazione iniziale delle dimensioni delle immagini
-        double initialSize = 150; // Dimensione iniziale delle immagini
+        double initialSize = 150;
         playerImage.setFitWidth(initialSize);
         playerImage.setFitHeight(initialSize);
         enemyImage.setFitWidth(initialSize);
         enemyImage.setFitHeight(initialSize);
 
-        // Aggiungere un listener per ridimensionare le immagini in base alla finestra
+        // **Inizializziamo i pulsanti PRIMA del listener**
+        attackButton = new Button("Attack!");
+        attackButton.getStyleClass().add("button");
+
+        exitButton = new Button("Exit");
+        exitButton.getStyleClass().add("button");
+
+        playerHealthBar = new ProgressBar(1.0);
+        playerHealthBar.getStyleClass().add("health-bar-player");
+
+        enemyHealthBar = new ProgressBar(1.0);
+        enemyHealthBar.getStyleClass().add("health-bar-enemy");
+
+        // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
         root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            double scaleFactor = newWidth.doubleValue() / 800; // Usa una scala proporzionale rispetto alla larghezza iniziale (800px)
-            double newSize = initialSize * scaleFactor; // Calcola la nuova dimensione
+            double scaleFactor = newWidth.doubleValue() / 800;
+            double newSize = initialSize * scaleFactor;
+
             playerImage.setFitWidth(newSize);
             playerImage.setFitHeight(newSize);
             enemyImage.setFitWidth(newSize);
             enemyImage.setFitHeight(newSize);
 
-            // Ridimensionamento progressivo dei bottoni e delle ProgressBar
-            double newButtonWidth = 150 * scaleFactor; // Impostiamo la larghezza dei bottoni
-            double newProgressBarWidth = 200 * scaleFactor; // Impostiamo la larghezza delle barre di progresso
+            // Ridimensiona i bottoni e le progress bar
+            double newButtonWidth = 150 * scaleFactor;
+            double newProgressBarWidth = 200 * scaleFactor;
 
             attackButton.setPrefWidth(newButtonWidth);
             exitButton.setPrefWidth(newButtonWidth);
@@ -98,26 +111,18 @@ public class CombatView {
         BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        playerHealthBar = new ProgressBar(1.0);
-        playerHealthBar.getStyleClass().add("health-bar-player");
-        playerHealthBar.setPrefWidth(200);
         Label playerHpLabel = new Label("100 HP");
         playerHpLabel.getStyleClass().add("label");
         VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
         healthBarsPane.setLeft(playerHealthBox);
 
-        enemyHealthBar = new ProgressBar(1.0);
-        enemyHealthBar.getStyleClass().add("health-bar-enemy");
-        enemyHealthBar.setPrefWidth(200);
         Label enemyHpLabel = new Label("100 HP");
         enemyHpLabel.getStyleClass().add("label");
         VBox enemyHealthBox = new VBox(5, enemyHpLabel, enemyHealthBar);
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
-        attackButton = new Button("Attack!");
-        attackButton.getStyleClass().add("button");
         attackButton.setOnAction(event -> {
             Timeline timeline = new Timeline();
             double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - 30;
@@ -137,9 +142,7 @@ public class CombatView {
                 playerHpLabel.setText((int) (playerHealth * 100) + " HP");
                 enemyHpLabel.setText((int) (enemyHealth * 100) + " HP");
 
-                if (playerHealth <= 0) {
-                    attackButton.setDisable(true);
-                } else if (enemyHealth <= 0) {
+                if (playerHealth <= 0 || enemyHealth <= 0) {
                     attackButton.setDisable(true);
                 }
 
@@ -147,9 +150,6 @@ public class CombatView {
             });
             timeline.play();
         });
-
-        exitButton = new Button("Exit");
-        exitButton.getStyleClass().add("button");
 
         HBox buttonBox = new HBox(20, attackButton, exitButton);
         buttonBox.setAlignment(Pos.BOTTOM_CENTER);
@@ -164,6 +164,7 @@ public class CombatView {
         return scene;
     }
 }
+
 
 
 
