@@ -1,13 +1,14 @@
 package it.unibo.templetower.model;
 
 import java.util.List;
+import java.util.Map;
 
 import it.unibo.templetower.utils.Pair;
 
 /**
  * Record representing an enemy in the game.
  * This record stores the basic information about an enemy including its name,
- * health points, level, list of possible attacks, damage multipliers for different attack types,
+ * health points, level, list of possible attacks, damage multipliers for different attack types as a map,
  * and sprite path.
  */
 public record Enemy(
@@ -15,7 +16,7 @@ public record Enemy(
     Double health, 
     int level, 
     List<Pair<String,Double>> attacks, 
-    List<Pair<String,Double>> damageMultipliers,
+    Map<String, Double> damageMultipliers,
     String spritePath) {
     /**
      * Compact constructor for validation.

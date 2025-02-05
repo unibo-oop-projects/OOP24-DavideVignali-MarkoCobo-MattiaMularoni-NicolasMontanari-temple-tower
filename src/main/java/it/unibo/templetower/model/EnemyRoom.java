@@ -35,6 +35,10 @@ public class EnemyRoom implements RoomBehavior {
         return this.strength;
     }
     
+    public EnemyRoom(Enemy enemy){
+        //to implement
+    }
+
     public void takeDamage(Double damage){
         this.lifePoints = this.lifePoints - damage;
     }
