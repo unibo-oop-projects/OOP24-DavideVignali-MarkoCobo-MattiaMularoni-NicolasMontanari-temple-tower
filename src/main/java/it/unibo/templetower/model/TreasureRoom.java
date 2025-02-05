@@ -16,7 +16,7 @@ import it.unibo.templetower.controller.GameDataManagerImpl;
  */
 public class TreasureRoom implements RoomBehavior{
 
-    private final Random random;
+    private final Random random = new Random();
 
     //possible outcomes of the treasure
     private Optional<Integer> xps;
@@ -26,7 +26,6 @@ public class TreasureRoom implements RoomBehavior{
     private FloorData floor;
 
     public TreasureRoom(GameDataManagerImpl gameDataManager, int floorIndex, double xpsProbability, double enemyProbability, double weaponProbability) {
-        this.random = new Random();
 
         List<FloorData> floors = gameDataManager.getFloors();
         if (floorIndex < 0 || floorIndex >= floors.size()) {
@@ -36,7 +35,9 @@ public class TreasureRoom implements RoomBehavior{
 
         this.probabilisticRunner(List.of(xpsProbability, enemyProbability, weaponProbability), List.of(() -> generateTreasureOutcome("xps"), () -> generateTreasureOutcome("enemy"), () -> generateTreasureOutcome("weapon")));
     }
-    
+    public TreasureRoom(Optional<Weapon> weapon){
+        //to implement
+    }
     /* 
      * Run one of probabilistic action on list based on the given probabilities.
      */
