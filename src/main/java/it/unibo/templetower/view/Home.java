@@ -48,7 +48,10 @@ public class Home {
         // Combine background and content
         root.getChildren().addAll(background, content);
 
+        Scene scene = new Scene(root, 400, 300);
+
         // Create and return the scene
-        return new Scene(root, 400, 300);
+        return scene;
     }
+
 }
