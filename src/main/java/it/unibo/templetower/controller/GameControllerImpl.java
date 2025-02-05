@@ -1,16 +1,15 @@
 package it.unibo.templetower.controller;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import it.unibo.templetower.model.EnemyRoom;
+import it.unibo.templetower.model.Floor;
+import it.unibo.templetower.model.FloorData;
 import it.unibo.templetower.model.Player;
 import it.unibo.templetower.model.PlayerImpl;
 import it.unibo.templetower.model.Room;
-import it.unibo.templetower.model.Trap;
-import it.unibo.templetower.model.TreasureRoom;
+import it.unibo.templetower.model.SpawnManagerImpl;
 import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.AssetManager;
 
@@ -23,22 +22,21 @@ public class GameControllerImpl implements GameController{
     private final AssetManager assetManager;
 
     public GameControllerImpl(){
+        // Load game data
         gameDataManager = new GameDataManagerImpl();
-        gameDataManager.loadGameData("tower/floors/floors-data.json");
+        String testPath = "tower/floors/floors-data.json";
+        gameDataManager.loadGameData(testPath);
+        List<FloorData> floors = gameDataManager.getFloors();
+
+        // Instantiate SpawnManagerImpl with loaded floor data
+        SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
+        Floor generatedFloor = spawnManager.spawnFloor(1);
 
         /* test asset manager */
         assetManager = new AssetManager();
         assetManager.addEnemyAsset(12, "images/enemy.png");
 
-
-        rooms = new ArrayList<>();
-        rooms.add(new Room(new Trap(2), 0));
-        rooms.add(new Room(new EnemyRoom(gameDataManager, 0, 10), 1));
-        rooms.add(new Room(new TreasureRoom(gameDataManager, 0, 0.5, 0.1, 0.4), 2));
-        rooms.add(new Room(new EnemyRoom(gameDataManager, 0, 30), 3));
-        rooms.add(new Room(new TreasureRoom(gameDataManager, 0, 0.5, 0.1, 0.4), 4));
-        rooms.add(new Room(new Trap(2), 5));
-
+        rooms = generatedFloor.rooms();
         player = new PlayerImpl(weapon, Optional.empty());
     }
 
