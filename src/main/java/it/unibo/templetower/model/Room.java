@@ -25,4 +25,8 @@ public class Room {
     public int getId() {
         return id;
     }
+
+    public RoomBehavior getBehavior(){
+        return behavior;
+    }
 }

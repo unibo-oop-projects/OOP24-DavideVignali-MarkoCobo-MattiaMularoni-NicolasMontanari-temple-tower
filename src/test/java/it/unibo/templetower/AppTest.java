@@ -12,7 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.templetower.controller.GameDataManagerImpl;
-import it.unibo.templetower.model.FloorData;
+import it.unibo.templetower.model.*;
+import it.unibo.templetower.util.FloorPrinterUtil;
+
 
 class AppTest {
 
@@ -25,7 +27,7 @@ class AppTest {
     void testVerifyPath() {
         GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
         String testPath = "tower/floors/floors-data.json";
-        assertTrue(gameDataManager.verifyPath(testPath));
+        assertTrue(gameDataManager.verifyPath(testPath, 20));
     }
 
     /**
@@ -50,58 +52,34 @@ class AppTest {
         assertFalse(floors.isEmpty(), "Floor list should not be empty");
         
         // Print floor data
-        printFloorDetails(floors);
+        FloorPrinterUtil.printFloorDetails(floors);
     }
 
-    /**
-     * Helper method to print the details of each floor in a formatted way.
-     * Prints floor name, sprite path, number of enemies, number of weapons,
-     * and the level range for each floor. Safely handles null values in weapon data.
-     *
-     * @param floors the list of FloorData objects to print
-     */
-    private void printFloorDetails(List<FloorData> floors) {
-        System.out.println("\n=== Floor Data Details ===");
-        for (int i = 0; i < floors.size(); i++) {
-            FloorData floor = floors.get(i);
-            System.out.println("\nFloor #" + (i + 1));
-            System.out.println("Name: " + floor.floorName());
-            System.out.println("Sprite Path: " + floor.spritePath());
-            System.out.println("Spawn Weight: " + floor.spawnWeight());
-            System.out.println("Number of Enemies: " + 
-                floor.enemies().map(List::size).orElse(0));
-            System.out.println("Number of Weapons: " + 
-                floor.weapons().map(List::size).orElse(0));
-            System.out.println("Level Range: " + floor.spawningRange().getX() + 
-                             " - " + floor.spawningRange().getY());
-            
-            // Print enemy details with attack IDs and sprite path
-            System.out.println("\nEnemies:");
-            floor.enemies().ifPresent(enemies -> 
-                enemies.forEach(enemy -> {
-                    System.out.println("- " + enemy.name() + " (Level " + enemy.level() + 
-                                     ", Health: " + enemy.health() + ")");
-                    System.out.println("  Sprite: " + enemy.spritePath());
-                    enemy.attacks().forEach(attack -> 
-                        System.out.println("  Attack: " + attack.getX() + " - Damage: " + attack.getY()));
-                    System.out.println("  Damage Multipliers:");
-                    enemy.damageMultipliers().forEach(multiplier ->
-                        System.out.println("    " + multiplier.getX() + ": x" + multiplier.getY()));
-                }));
-            
-            // Print weapon details with attack type, damage, level and sprite path
-            System.out.println("\nWeapons:");
-            floor.weapons().ifPresent(weapons -> 
-                weapons.forEach(weapon -> {
-                    String damage = Optional.ofNullable(weapon.attack())
-                        .map(attack -> "Type: " + attack.getX() + ", Damage: " + attack.getY())
-                        .orElse("N/A");
-                    System.out.println("- " + weapon.name() + " (Level " + weapon.level() + ")");
-                    System.out.println("  " + damage);
-                    System.out.println("  Sprite: " + weapon.spritePath());
-                }));
-        }
-        System.out.println("\n=== End of Floor Data ===\n");
+    @Test
+    void testSpawnManagerInteractive() {
+        int level = 1;
+        
+        // Load game data
+        GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        String testPath = "tower/floors/floors-data.json";
+        gameDataManager.loadGameData(testPath);
+        var floors = gameDataManager.getFloors();
+        
+        // Instantiate SpawnManagerImpl with loaded floor data
+        SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
+        var generatedFloor = spawnManager.spawnFloor(level);
+        
+        // Print generated floor details
+        System.out.println("\n=== Dettagli del Piano Generato ===");
+        System.out.println("Nome Piano: " + generatedFloor.floorName());
+        System.out.println("Sprite: " + generatedFloor.spritePath());
+        System.out.println("Visibilità: " + generatedFloor.visibility());
+        System.out.println("\nStanze:");
+        generatedFloor.rooms().forEach(room -> {
+            System.out.println("- Stanza " + room.getId() + ": " 
+                + (room.getBehavior() == null ? "Vuota" : room.getBehavior().getClass().getSimpleName()));
+        });
+        System.out.println("=== Fine Dettagli ===\n");
     }
 
 }
