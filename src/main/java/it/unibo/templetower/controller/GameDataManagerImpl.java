@@ -129,6 +129,7 @@ public class GameDataManagerImpl {
                 JsonObject spawnRange = floorObj.get("spawningRange").getAsJsonObject();
                 int minLevel = spawnRange.get("minLevel").getAsInt();
                 int maxLevel = spawnRange.get("maxLevel").getAsInt();
+                double visibility = floorObj.get("visibility").getAsDouble();
 
                 Optional<List<Enemy>> enemies = loadEnemies(enemyPath);
                 Optional<List<Weapon>> weapons = loadWeapons(weaponsPath);
@@ -139,7 +140,8 @@ public class GameDataManagerImpl {
                     enemies,
                     weapons,
                     new Pair<>(minLevel, maxLevel),
-                    spawnWeight
+                    spawnWeight,
+                    visibility
                 ));
             }
         } catch (IOException e) {

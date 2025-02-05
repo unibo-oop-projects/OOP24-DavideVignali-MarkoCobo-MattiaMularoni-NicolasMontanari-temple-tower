@@ -68,6 +68,7 @@ class AppTest {
             System.out.println("Name: " + floor.floorName());
             System.out.println("Sprite Path: " + floor.spritePath());
             System.out.println("Spawn Weight: " + floor.spawnWeight());
+            System.out.println("Visibility: " + floor.visibility());
             System.out.println("Number of Enemies: " + 
                 floor.enemies().map(List::size).orElse(0));
             System.out.println("Number of Weapons: " + 

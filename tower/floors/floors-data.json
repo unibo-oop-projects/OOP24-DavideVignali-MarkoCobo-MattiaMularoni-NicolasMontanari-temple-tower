@@ -8,7 +8,8 @@
         "spawningRange": {
             "minLevel": 1,
             "maxLevel": 5
-        }
+        },
+        "visibility": 0.75
     },
     {
         "floorName": "test Floor",
@@ -19,6 +20,7 @@
         "spawningRange": {
             "minLevel": 5,
             "maxLevel": 20
-        }
+        },
+        "visibility": 0.50
     }   
 ]
