@@ -12,6 +12,7 @@ import it.unibo.templetower.model.Room;
 import it.unibo.templetower.model.Trap;
 import it.unibo.templetower.model.TreasureRoom;
 import it.unibo.templetower.model.Weapon;
+import it.unibo.templetower.utils.AssetManager;
 
 public class GameControllerImpl implements GameController{
     private Weapon weapon;
@@ -19,16 +20,22 @@ public class GameControllerImpl implements GameController{
     private int currentRoomIndex = 0; // Traccia la stanza attuale
     private final Player player;
     private final GameDataManagerImpl gameDataManager;
+    private final AssetManager assetManager;
 
     public GameControllerImpl(){
         gameDataManager = new GameDataManagerImpl();
         gameDataManager.loadGameData("tower/floors/floors-data.json");
 
+        /* test asset manager */
+        assetManager = new AssetManager();
+        assetManager.addEnemyAsset(12, "images/enemy.png");
+
+
         rooms = new ArrayList<>();
         rooms.add(new Room(new Trap(2), 0));
-        rooms.add(new Room(new EnemyRoom(gameDataManager, 0), 1));
+        rooms.add(new Room(new EnemyRoom(gameDataManager, 0, 10), 1));
         rooms.add(new Room(new TreasureRoom(gameDataManager, 0, 0.5, 0.1, 0.4), 2));
-        rooms.add(new Room(new EnemyRoom(gameDataManager, 0), 3));
+        rooms.add(new Room(new EnemyRoom(gameDataManager, 0, 30), 3));
         rooms.add(new Room(new TreasureRoom(gameDataManager, 0, 0.5, 0.1, 0.4), 4));
         rooms.add(new Room(new Trap(2), 5));
 
@@ -85,5 +92,15 @@ public class GameControllerImpl implements GameController{
     @Override
     public List<Room> getRooms() {
         return Collections.unmodifiableList(rooms);
+    }
+
+    @Override
+    public String getEnemySpritePath(int level){
+        return assetManager.getEnemyAsset(level);
+    }
+
+    @Override
+    public String getEntiSpritePath(String type) {
+        return assetManager.getGenericEntityAsset(type);
     }
 }
