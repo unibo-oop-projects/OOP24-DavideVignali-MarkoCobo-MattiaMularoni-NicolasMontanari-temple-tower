@@ -42,3 +42,7 @@ report/*
 
 # Do not exclude files in the report/img directory
 !report/img/
+.idea
+
+bin
+bin*
