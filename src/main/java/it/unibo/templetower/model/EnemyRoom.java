@@ -12,8 +12,11 @@ public class EnemyRoom implements RoomBehavior {
     private Enemy enemy;
     private FloorData floor;
     private Double lifePoints = 100.0;
+    private final int strength;
 
-    public EnemyRoom(GameDataManagerImpl gameDataManager, int floorIndex) {
+    public EnemyRoom(GameDataManagerImpl gameDataManager, int floorIndex, int strength) {
+        this.strength = strength;
+        
         List<FloorData> floors = gameDataManager.getFloors();
         if (floorIndex < 0 || floorIndex >= floors.size()) {
             throw new IllegalArgumentException("Invalid floor level");
@@ -26,7 +29,10 @@ public class EnemyRoom implements RoomBehavior {
         
         this.enemy = floor.enemies().get().stream()
             .filter(en -> (en.level() >= minLevel && en.level() <= maxLevel)).findFirst().orElseThrow();
-            
+    }
+
+    public int takeStrength(){
+        return this.strength;
     }
     
     public void takeDamage(Double damage){
