@@ -44,7 +44,7 @@ public class DifficultyMenu {
 
         // Set button actions
         easyButton.setOnAction(e -> manager.switchTo("combat_view"));
-        mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
+        mediumButton.setOnAction(e -> manager.switchTo("treasure_view"));
         hardButton.setOnAction(e -> manager.switchTo("main_floor_view"));
 
         // Add buttons to container
