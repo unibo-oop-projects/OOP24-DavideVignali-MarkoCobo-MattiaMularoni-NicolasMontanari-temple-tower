@@ -2,6 +2,7 @@ package it.unibo.templetower.view;
 
 import java.io.InputStream;
 
+import it.unibo.templetower.controller.MusicController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,9 +43,20 @@ public class DifficultyMenu {
         Button hardButton = new Button("DIFFICILE");
 
         // Set button actions
-        easyButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-        mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-        hardButton.setOnAction(e -> manager.switchTo("main_floor_view"));
+       easyButton.setOnAction(e -> {
+            MusicController.getInstance().startNewMusic("sounds/musicacombattimento1.wav");
+            manager.switchTo("main_floor_view");
+        });
+        
+        mediumButton.setOnAction(e -> {
+            MusicController.getInstance().startNewMusic("sounds/musicacombattimento1.wav");
+            manager.switchTo("main_floor_view");
+        });
+        
+        hardButton.setOnAction(e -> {
+            MusicController.getInstance().startNewMusic("sounds/musicacombattimento1.wav");
+            manager.switchTo("main_floor_view");
+        });
 
         // Add buttons to container
         buttonContainer.getChildren().addAll(
