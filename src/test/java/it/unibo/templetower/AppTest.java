@@ -56,7 +56,7 @@ class AppTest {
     }
 
     @Test
-    void testSpawnManagerInteractive() {
+    void testSpawnManager() {
         int level = 1;
         
         // Load game data
@@ -78,6 +78,15 @@ class AppTest {
         generatedFloor.rooms().forEach(room -> {
             System.out.println("- Stanza " + room.getId() + ": " 
                 + (room.getBehavior() == null ? "Vuota" : room.getBehavior().getClass().getSimpleName()));
+            if (room.getBehavior() instanceof EnemyRoom) {
+                EnemyRoom er = (EnemyRoom) room.getBehavior();
+                System.out.println("  [EnemyRoom] Nome enemy: " + er.getName());
+                System.out.println("  [EnemyRoom] Danno Attacco: " + er.getAttackDamage());
+                System.out.println("  [EnemyRoom] Punti Vita: " + er.getLifePoints());
+            } else if (room.getBehavior() instanceof Trap) {
+                Trap trap = (Trap) room.getBehavior();
+                System.out.println("  [Trap] Danno: " + trap.getDamage());
+            }
         });
         System.out.println("=== Fine Dettagli ===\n");
     }
