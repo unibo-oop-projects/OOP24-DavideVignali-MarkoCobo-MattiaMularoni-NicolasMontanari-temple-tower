@@ -35,5 +35,9 @@ public class EnemyRoom implements RoomBehavior {
     public Double getLifePoints(){
         return this.lifePoints;
     }
+
+    public String getName() {
+        return this.enemy.name();
+    }
     
 }
