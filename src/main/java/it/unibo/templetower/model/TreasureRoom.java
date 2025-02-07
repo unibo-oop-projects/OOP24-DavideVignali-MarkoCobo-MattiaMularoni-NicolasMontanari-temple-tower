@@ -80,7 +80,7 @@ public class TreasureRoom implements RoomBehavior{
     }
 
     @Override
-    public void interact(Player player) {
+    public void interact(Player player, int direction) {
         if(this.enemy.isPresent()){
             player.takeDamage(this.enemy.get().attacks().get(0).getY());
         } else if(this.weapon.isPresent()){

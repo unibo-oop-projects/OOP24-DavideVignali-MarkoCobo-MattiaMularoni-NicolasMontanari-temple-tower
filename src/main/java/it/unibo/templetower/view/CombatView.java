@@ -133,6 +133,8 @@ public class CombatView {
                 double playerHealth = playerHealthBar.getProgress() - 0.1;
                 double enemyHealth = enemyHealthBar.getProgress() - 0.15;
 
+                controller.attackEnemy();
+
                 if (playerHealth < 0) playerHealth = 0;
                 if (enemyHealth < 0) enemyHealth = 0;
 

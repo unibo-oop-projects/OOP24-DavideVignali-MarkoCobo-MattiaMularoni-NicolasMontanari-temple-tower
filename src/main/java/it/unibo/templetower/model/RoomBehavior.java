@@ -13,6 +13,6 @@ public interface RoomBehavior {
     /**
      * @param player
      */
-    void interact(Player player);
+    void interact(Player player, int direction);
 
 }

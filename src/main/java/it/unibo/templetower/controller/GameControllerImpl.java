@@ -75,6 +75,11 @@ public class GameControllerImpl implements GameController{
         rooms.get(currentRoomIndex).enter(player);
         
     }
+    
+    @Override
+    public void attackEnemy() {
+        rooms.get(currentRoomIndex).attack(player);
+    }
 
     @Override
     public void enterFirstRoom() {

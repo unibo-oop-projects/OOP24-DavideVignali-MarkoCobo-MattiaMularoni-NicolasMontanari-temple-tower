@@ -16,10 +16,14 @@ public class Room {
     public void enter(Player player) {
         if (behavior != null) {
             player.changeRoom(this);
-            behavior.interact(player);
+            behavior.interact(player, 0);
         } else {
             System.out.println("The room is empty.");
         }
+    }
+
+    public void attack(Player player) {
+        behavior.interact(player, 1);
     }
 
     public int getId() {

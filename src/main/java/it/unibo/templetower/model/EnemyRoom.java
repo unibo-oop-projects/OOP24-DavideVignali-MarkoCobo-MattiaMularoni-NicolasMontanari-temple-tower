@@ -23,9 +23,13 @@ public class EnemyRoom implements RoomBehavior {
     }
 
     @Override
-    public void interact(Player player) {
-        System.out.println("Enemy attack Player");
-        player.takeDamage(enemy.attacks().get(0).getY());
+    public void interact(Player player, int direction) {
+        if (direction == 1) {
+            player.attack(this);
+        }else{
+            //TODO manage the enemy attack
+            player.takeDamage(this.enemy.attacks().get(0).getY());
+        }
     }
 
     public double getAttackDamage() {
