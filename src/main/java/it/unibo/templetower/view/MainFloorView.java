@@ -10,12 +10,14 @@ import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
@@ -124,7 +126,7 @@ public class MainFloorView {
     //Adapts the scene to the screen size
     private void adaptScene(Scene scene, GameController controller) {
         double centerX = scene.getWidth() / 2;
-        double centerY = scene.getHeight() / 2.5;
+        double centerY = scene.getHeight() / 2;
 
         updateCirclePositionAndRadius(outer, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / 3);
         updateCirclePositionAndRadius(inner, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / 5);
@@ -141,7 +143,10 @@ public class MainFloorView {
         for (int i = 0; i < controller.getNumberOfRooms(); i++) {
             createRoomAndSector(i, centerX, centerY, roomRadius);
         }
-
+        
+        Image im = new Image("/Images/inner_circle_background.png",false);
+        inner.setFill(new ImagePattern(im));
+        inner.setEffect(new DropShadow(+25d, 0d, +2d, Color.DARKSEAGREEN));
         inner.toFront();
     }
 
@@ -176,7 +181,7 @@ public class MainFloorView {
         // Highlight the selected sector
         Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
-            selectedSector.setFill(Color.YELLOW);
+            selectedSector.setFill(Color.rgb(138,74,243));
 
             FadeTransition fade = new FadeTransition(Duration.seconds(0.8), selectedSector);
             fade.setFromValue(1.0);
