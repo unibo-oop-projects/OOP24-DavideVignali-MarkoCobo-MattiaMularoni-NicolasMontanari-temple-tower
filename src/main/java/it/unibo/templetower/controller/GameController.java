@@ -42,7 +42,7 @@ public interface GameController {
     /**
      * Moves the player to the first room of the current floor.
      */
-    void enterFirstRoom();
+    void enterRoom();
 
     /**
      * Gets the index of the room where the player is currently located.

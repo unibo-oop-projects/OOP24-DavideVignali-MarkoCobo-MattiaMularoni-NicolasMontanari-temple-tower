@@ -16,7 +16,14 @@ public class Room {
     public void enter(Player player) {
         if (behavior != null) {
             player.changeRoom(this);
-            behavior.interact(player);
+        } else {
+            System.out.println("The room is empty.");
+        }
+    }
+
+    public void interactWithRoom(Player player, int direction) {
+        if (behavior != null) {
+            behavior.interact(player, direction);
         } else {
             System.out.println("The room is empty.");
         }

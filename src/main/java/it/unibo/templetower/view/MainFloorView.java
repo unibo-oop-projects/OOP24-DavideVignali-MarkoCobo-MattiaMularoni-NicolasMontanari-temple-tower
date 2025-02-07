@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import it.unibo.templetower.controller.GameController;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
@@ -20,6 +22,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
+import javafx.util.Duration;
 
 /** 
  * This scene represents a floor of the game, where the player can move between rooms.
@@ -108,7 +111,7 @@ public class MainFloorView {
     }
 
     private void handleFloorEnter(GameController controller) {
-        controller.enterFirstRoom();
+        controller.enterRoom();
         highlightSector(controller.getPlayerActualRoom());
     }
 
@@ -172,6 +175,13 @@ public class MainFloorView {
         Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
             selectedSector.setFill(Color.YELLOW);
+
+            FadeTransition fade = new FadeTransition(Duration.seconds(0.8), selectedSector);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.3);
+            fade.setCycleCount(Animation.INDEFINITE);
+            fade.setAutoReverse(true);
+            fade.play();
         }
     }
 

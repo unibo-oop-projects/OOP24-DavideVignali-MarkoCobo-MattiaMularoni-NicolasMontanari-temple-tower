@@ -20,6 +20,7 @@ public class GameControllerImpl implements GameController{
     private final Player player;
     private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
+    private static final int ROOMS_NUMBER = 8;
 
     public GameControllerImpl(){
         // Load game data
@@ -30,7 +31,9 @@ public class GameControllerImpl implements GameController{
 
         // Instantiate SpawnManagerImpl with loaded floor data
         SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
-        Floor generatedFloor = spawnManager.spawnFloor(1);
+
+        //TODO al posto dell'1 implementare logica di cambio piano
+        Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
 
         /* test asset manager */
         assetManager = new AssetManager();
@@ -71,17 +74,13 @@ public class GameControllerImpl implements GameController{
         } else {
             currentRoomIndex = 0; // Torna alla prima stanza
         }
-        
-        rooms.get(currentRoomIndex).enter(player);
-        
     }
 
     @Override
-    public void enterFirstRoom() {
-        currentRoomIndex = 0;
+    public void enterRoom() {
         rooms.get(currentRoomIndex).enter(player);
     }
-
+    
     @Override
     public int getPlayerActualRoom() {
         return currentRoomIndex;
