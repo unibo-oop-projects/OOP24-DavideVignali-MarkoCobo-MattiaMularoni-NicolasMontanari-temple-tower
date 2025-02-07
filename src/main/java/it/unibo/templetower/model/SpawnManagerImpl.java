@@ -1,12 +1,12 @@
 package it.unibo.templetower.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Collections;
 
-import it.unibo.templetower.utils.EnemyGenerator; // new import
+import it.unibo.templetower.utils.EnemyGenerator;
 
 public class SpawnManagerImpl {
     private List<FloorData> floors;
@@ -53,7 +53,7 @@ public class SpawnManagerImpl {
                 double roll = random.nextDouble();
                 if(roll < 0.50) {
                     // 50% chance: generate EnemyRoom with enemy generated via budget mechanism
-                    var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
+                    List<Enemy> enemies = generatedFloor.enemies().orElse(Collections.emptyList());
                     if(enemies.isEmpty()){
                         generatedRooms.add(new Room(null, i));
                     } else {
@@ -72,7 +72,7 @@ public class SpawnManagerImpl {
                     Optional<Weapon> randomWeapon = weapons.isEmpty() 
                         ? Optional.empty() 
                         : Optional.of(weapons.get(random.nextInt(weapons.size())));
-                    generatedRooms.add(new Room(new TreasureRoom(randomWeapon), i));
+                    generatedRooms.add(new Room(new TreasureRoom(level, randomWeapon, 0.5, 0.1, 0.4), i));
                 } else {
                     // 12.5% chance: Trap room with damage = 1
                     generatedRooms.add(new Room(new Trap(1), i));
