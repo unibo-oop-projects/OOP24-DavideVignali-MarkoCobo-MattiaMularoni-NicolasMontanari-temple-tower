@@ -57,7 +57,7 @@ public class MainFloorView {
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         
         //Inner and outer circles for create the rooms container
-        this.nRooms = controller.getRooms().size();
+        this.nRooms = controller.getNumberOfRooms();
         outer = createCircle("outer-circle-rooms", OUTER_RADIUS);
         inner = createCircle("inner-circle-rooms", INNER_RADIUS);
         dPane.getChildren().addAll(outer, inner);
@@ -67,7 +67,7 @@ public class MainFloorView {
         scene.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
         
         //Control buttons
-        createButtons(controller);
+        createButtons(controller, manager);
 
         /* Assetmanager test */
         InputStream spritetest = getClass().getClassLoader()
@@ -78,7 +78,7 @@ public class MainFloorView {
         return scene;
     }
 
-    private void createButtons(GameController controller) {
+    private void createButtons(GameController controller, SceneManager manager) {
         left = new ToggleButton("<");
         right = new ToggleButton(">");
         enter = new ToggleButton("ENTRA");
@@ -99,7 +99,7 @@ public class MainFloorView {
         right.setOnMouseClicked(e -> handleRoomChange(controller, 1));
 
         //When the enter button is clicked, the player moves to the first room
-        enter.setOnMouseClicked(e -> handleFloorEnter(controller));
+        enter.setOnMouseClicked(e -> handleFloorEnter(controller, manager));
         
         dPane.getChildren().add(buttons);
     }
@@ -110,9 +110,9 @@ public class MainFloorView {
         highlightSector(controller.getPlayerActualRoom());
     }
 
-    private void handleFloorEnter(GameController controller) {
-        controller.enterRoom();
+    private void handleFloorEnter(GameController controller, SceneManager manager) {
         highlightSector(controller.getPlayerActualRoom());
+        manager.switchTo(controller.enterRoom());
     }
 
     private Circle createCircle(String id, double radius) {
@@ -137,9 +137,11 @@ public class MainFloorView {
         
         dPane.getChildren().add(buttons);
         sectorMap.clear();
-        controller.getRooms().forEach(room -> {
-            createRoomAndSector(room.getId(), centerX, centerY, roomRadius);
-        });
+
+        for (int i = 0; i < controller.getNumberOfRooms(); i++) {
+            createRoomAndSector(i, centerX, centerY, roomRadius);
+        }
+
         inner.toFront();
     }
 

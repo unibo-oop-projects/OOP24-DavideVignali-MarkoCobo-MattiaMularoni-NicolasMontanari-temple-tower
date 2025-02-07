@@ -48,34 +48,34 @@ public class SpawnManagerImpl {
 
         for (int i = 0; i < roomNumber; i++) {
             if(i == stairsIndex) {
-                generatedRooms.add(new Room(new StairsRoom(), i));
+                generatedRooms.add(new Room(new StairsRoom(), "stairs_view", i));
             } else {
                 double roll = random.nextDouble();
                 if(roll < 0.50) {
                     // 50% chance: generate EnemyRoom with enemy generated via budget mechanism
                     List<Enemy> enemies = generatedFloor.enemies().orElse(Collections.emptyList());
                     if(enemies.isEmpty()){
-                        generatedRooms.add(new Room(null, i));
+                        generatedRooms.add(new Room(null, "empty_view", i));
                     } else {
                         // Select an enemy based on the current enemyBudget.
                         Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
                         // Decrement enemyBudget by the enemy's level, never going below one.
                         enemyBudget = Math.max(1, enemyBudget - selectedEnemy.level());
-                        generatedRooms.add(new Room(new EnemyRoom(selectedEnemy), i));
+                        generatedRooms.add(new Room(new EnemyRoom(selectedEnemy), "combat_view", i));
                     }
                 } else if(roll < 0.75) {
                     // 25% chance: Empty room (null behavior)
-                    generatedRooms.add(new Room(null, i));
+                    generatedRooms.add(new Room(null, "empty_view", i));
                 } else if(roll < 0.875) {
                     // 12.5% chance: TreasureRoom with an Optional random weapon from generatedFloor
                     var weapons = generatedFloor.weapons().orElse(Collections.emptyList());
                     Optional<Weapon> randomWeapon = weapons.isEmpty() 
                         ? Optional.empty() 
                         : Optional.of(weapons.get(random.nextInt(weapons.size())));
-                    generatedRooms.add(new Room(new TreasureRoom(level, randomWeapon, 0.5, 0.1, 0.4), i));
+                    generatedRooms.add(new Room(new TreasureRoom(level, randomWeapon, 0.5, 0.1, 0.4), "treasure_view", i));
                 } else {
                     // 12.5% chance: Trap room with damage = 1
-                    generatedRooms.add(new Room(new Trap(1), i));
+                    generatedRooms.add(new Room(new Trap(1), "trap_view", i));
                 }
             }
         }

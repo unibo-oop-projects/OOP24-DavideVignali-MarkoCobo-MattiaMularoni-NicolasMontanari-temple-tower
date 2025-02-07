@@ -1,7 +1,5 @@
 package it.unibo.templetower.controller;
 
-import java.util.List;
-
 import it.unibo.templetower.model.Room;
 
 /**
@@ -42,7 +40,7 @@ public interface GameController {
     /**
      * Moves the player to the first room of the current floor.
      */
-    void enterRoom();
+    String enterRoom();
 
     /**
      * Gets the index of the room where the player is currently located.
@@ -56,7 +54,7 @@ public interface GameController {
      *
      * @return A list of {@link Room} objects representing the rooms in the current floor.
      */
-    List<Room> getRooms();
+    int getNumberOfRooms();
 
     /** 
      * Return the path of the sprite of the enemy of the given level.

@@ -1,6 +1,5 @@
 package it.unibo.templetower.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,8 +76,9 @@ public class GameControllerImpl implements GameController{
     }
 
     @Override
-    public void enterRoom() {
+    public String enterRoom() {
         rooms.get(currentRoomIndex).enter(player);
+        return rooms.get(currentRoomIndex).getName();
     }
     
     @Override
@@ -87,8 +87,8 @@ public class GameControllerImpl implements GameController{
     }
 
     @Override
-    public List<Room> getRooms() {
-        return Collections.unmodifiableList(rooms);
+    public int getNumberOfRooms() {
+        return rooms.size();
     }
 
     @Override

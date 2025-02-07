@@ -6,11 +6,13 @@ package it.unibo.templetower.model;
  */
 public class Room {
     private final RoomBehavior behavior;
+    protected final String name;
     protected final int id;
 
-    public Room(RoomBehavior behavior, final int id) {
+    public Room(RoomBehavior behavior, final String name, final int id) {
         this.behavior = behavior;
         this.id = id;
+        this.name = name;
     }
 
     public void enter(Player player) {
@@ -31,6 +33,10 @@ public class Room {
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public RoomBehavior getBehavior(){
