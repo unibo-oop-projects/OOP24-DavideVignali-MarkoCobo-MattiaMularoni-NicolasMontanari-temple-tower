@@ -9,7 +9,7 @@ public class StairsRoom implements RoomBehavior{
     }
 
     @Override
-    public void interact(Player player) {
+    public void interact(Player player, int direction) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'interact'");
     }
