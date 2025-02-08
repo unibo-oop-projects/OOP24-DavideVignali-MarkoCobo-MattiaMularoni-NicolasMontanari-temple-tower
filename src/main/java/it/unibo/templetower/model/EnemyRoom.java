@@ -24,8 +24,12 @@ public class EnemyRoom implements RoomBehavior {
 
     @Override
     public void interact(Player player, int direction) {
-        System.out.println("Enemy attack Player");
-        player.takeDamage(enemy.attacks().get(0).getY());
+        if (direction == 1) {
+            player.attack(this);
+        }else{
+            //TODO manage the enemy attack
+            player.takeDamage(this.enemy.attacks().get(0).getY());
+        }
     }
 
     public double getAttackDamage() {
@@ -34,6 +38,10 @@ public class EnemyRoom implements RoomBehavior {
 
     public Double getLifePoints(){
         return this.lifePoints;
+    }
+
+    public String getName() {
+        return this.enemy.name();
     }
     
 }

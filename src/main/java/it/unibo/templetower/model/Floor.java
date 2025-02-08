@@ -1,9 +1,6 @@
 package it.unibo.templetower.model;
 
 import java.util.List;
-import java.util.Optional;
-
-import it.unibo.templetower.utils.Pair;
 
 /**
  * Record representing a floor's in the game.

@@ -31,6 +31,17 @@ public class Room {
         }
     }
 
+    public double getEnemyLife() {
+        if (behavior instanceof EnemyRoom enemyRoom) {
+            return enemyRoom.getLifePoints();
+        }
+        return -1; // Indica che la stanza non contiene un nemico
+    }
+
+    public double getLifePlayer(Player player){
+        return player.getLife();
+    }
+
     public int getId() {
         return id;
     }
@@ -42,4 +53,5 @@ public class Room {
     public RoomBehavior getBehavior(){
         return behavior;
     }
+
 }

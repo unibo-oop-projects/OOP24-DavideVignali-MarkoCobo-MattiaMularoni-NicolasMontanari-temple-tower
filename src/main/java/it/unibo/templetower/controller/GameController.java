@@ -65,4 +65,9 @@ public interface GameController {
      * Return the path of the sprite of the enemy of the given level.
      */
     String getEntiSpritePath(String type);
+
+    void attackEnemy();
+    void attackPlayer();
+    double getPlayerLife();
+    double getEnemyLifePoints();
 }

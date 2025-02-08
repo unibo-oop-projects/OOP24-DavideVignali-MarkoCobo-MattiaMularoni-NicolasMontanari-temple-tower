@@ -9,6 +9,11 @@ import java.util.Random;
 import it.unibo.templetower.utils.EnemyGenerator;
 
 public class SpawnManagerImpl {
+    // New probability constants
+    private static final double ENEMY_ROOM_CHANCE = 0.5;
+    private static final double EMPTY_ROOM_CHANCE = 0.25;
+    private static final double TREASURE_ROOM_CHANCE = 0.125;
+
     private List<FloorData> floors;
 
     public SpawnManagerImpl(List<FloorData> floors){
@@ -29,11 +34,6 @@ public class SpawnManagerImpl {
      * One room is randomly set as a StairsRoom.
      * The remaining rooms are generated based on arbitrary probability.
      * For enemy rooms, enemies are generated using a budget mechanism:
-     * <ul>
-     *   <li>Budget is initialized to level*5.</li>
-     *   <li>For each enemy room the method picks an enemy whose level is closest to a random value between 1 and the current budget.</li>
-     *   <li>The enemy's level is then subtracted from the budget (ensuring it never drops below 1), so that the sum of enemy levels is scaled with the floor level.</li>
-     * </ul>
      *
      * @param level the current floor level
      * @param roomNumber the total number of rooms to spawn (including the StairsRoom)
@@ -51,23 +51,21 @@ public class SpawnManagerImpl {
                 generatedRooms.add(new Room(new StairsRoom(), "stairs_view", i));
             } else {
                 double roll = random.nextDouble();
-                if(roll < 0.50) {
-                    // 50% chance: generate EnemyRoom with enemy generated via budget mechanism
-                    List<Enemy> enemies = generatedFloor.enemies().orElse(Collections.emptyList());
+                if(roll < ENEMY_ROOM_CHANCE) {
+                    // Enemy room: 50%
+                    var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
                     if(enemies.isEmpty()){
                         generatedRooms.add(new Room(null, "empty_view", i));
                     } else {
-                        // Select an enemy based on the current enemyBudget.
                         Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
-                        // Decrement enemyBudget by the enemy's level, never going below one.
                         enemyBudget = Math.max(1, enemyBudget - selectedEnemy.level());
                         generatedRooms.add(new Room(new EnemyRoom(selectedEnemy), "combat_view", i));
                     }
-                } else if(roll < 0.75) {
-                    // 25% chance: Empty room (null behavior)
-                    generatedRooms.add(new Room(null, "empty_view", i));
-                } else if(roll < 0.875) {
-                    // 12.5% chance: TreasureRoom with an Optional random weapon from generatedFloor
+                } else if(roll < ENEMY_ROOM_CHANCE + EMPTY_ROOM_CHANCE) {
+                    // Empty room: 25%
+                    generatedRooms.add(new Room( null, "empty_view", i));
+                } else if(roll < ENEMY_ROOM_CHANCE + EMPTY_ROOM_CHANCE + TREASURE_ROOM_CHANCE) {
+                    // Treasure room: 12.5%
                     var weapons = generatedFloor.weapons().orElse(Collections.emptyList());
                     Optional<Weapon> randomWeapon = weapons.isEmpty() 
                         ? Optional.empty() 

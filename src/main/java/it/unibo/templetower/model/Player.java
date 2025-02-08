@@ -31,10 +31,6 @@ public interface Player {
      */
     void changeRoom(Room room);
 
-    /**
-     * @return the player's health points.
-     */
-    int getHealth();
 
     /**
      * @return the player's experience points.
@@ -51,4 +47,7 @@ public interface Player {
      * @return the player's actual room.
      */
     int getActualRoom();
+
+    Weapon getActualWeapon();
+    double getLife();
 }
