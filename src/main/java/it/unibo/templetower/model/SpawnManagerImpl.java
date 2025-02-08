@@ -63,7 +63,7 @@ public class SpawnManagerImpl {
                     }
                 } else if(roll < ENEMY_ROOM_CHANCE + EMPTY_ROOM_CHANCE) {
                     // Empty room: 25%
-                    generatedRooms.add(new Room(null, i));
+                    generatedRooms.add(new Room( null, "empty_view", i));
                 } else if(roll < ENEMY_ROOM_CHANCE + EMPTY_ROOM_CHANCE + TREASURE_ROOM_CHANCE) {
                     // Treasure room: 12.5%
                     var weapons = generatedFloor.weapons().orElse(Collections.emptyList());
