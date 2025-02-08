@@ -3,6 +3,9 @@ package it.unibo.templetower.model;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import it.unibo.templetower.utils.Pair;
 
 /**
@@ -18,6 +21,9 @@ public record Enemy(
     List<Pair<String,Double>> attacks, 
     Map<String, Double> damageMultipliers,
     String spritePath) {
+
+    private static final Logger LOGGER = LogManager.getLogger(); 
+
     /**
      * Compact constructor for validation.
      * Ensures that no null values are passed to the record.
@@ -25,12 +31,15 @@ public record Enemy(
      */
     public Enemy {
         if (name == null || health == null || attacks == null || damageMultipliers == null || spritePath == null) {
+            LOGGER.error("Enemy parameters cannot be null");
             throw new IllegalArgumentException("Enemy parameters cannot be null");
         }
         if (health <= 0) {
+            LOGGER.error("Health must be positive");
             throw new IllegalArgumentException("Health must be positive");
         }
         if (level < 0) {
+            LOGGER.error("Level cannot be negative");
             throw new IllegalArgumentException("Level cannot be negative");
         }
     }

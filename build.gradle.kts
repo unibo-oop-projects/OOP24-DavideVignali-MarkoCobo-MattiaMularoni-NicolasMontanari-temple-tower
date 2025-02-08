@@ -48,6 +48,8 @@ dependencies {
     // Gson library
     implementation("com.google.code.gson:gson:2.10.1")
 
+    //logger
+    implementation ("org.apache.logging.log4j:log4j-core:2.16.0")
 }
 
 tasks.withType<Test> {

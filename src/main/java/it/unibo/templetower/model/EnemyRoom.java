@@ -1,10 +1,15 @@
 package it.unibo.templetower.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Represents a room in the game that contains an enemy.
  * The enemy room contains an enemy that the player must defeat to progress.
  */
 public class EnemyRoom implements RoomBehavior {
+    private static final Logger LOGGER = LogManager.getLogger(); 
+
     private final Enemy enemy;
     private Double lifePoints;
     
@@ -25,9 +30,10 @@ public class EnemyRoom implements RoomBehavior {
     @Override
     public void interact(Player player, int direction) {
         if (direction == 1) {
+            LOGGER.info("Player attacks enemy");
             player.attack(this);
         }else{
-            //TODO manage the enemy attack
+            LOGGER.info("Enemy attacks player");
             player.takeDamage(this.enemy.attacks().get(0).getY());
         }
     }

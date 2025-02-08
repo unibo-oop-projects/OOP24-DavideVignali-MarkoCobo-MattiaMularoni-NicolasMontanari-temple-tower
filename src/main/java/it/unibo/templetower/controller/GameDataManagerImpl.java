@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -29,6 +32,8 @@ import it.unibo.templetower.utils.Pair;
  * enemies and weapons data from JSON configuration files.
  */
 public class GameDataManagerImpl {
+    private static final Logger LOGGER = LogManager.getLogger(); 
+
     private List<FloorData> floors;
     private String floorsPath;
     private final Gson gson;
@@ -145,6 +150,7 @@ public class GameDataManagerImpl {
                 ));
             }
         } catch (IOException e) {
+            LOGGER.error("Error loading floor data: " + e.getMessage());
             throw new RuntimeException("Error loading floor data", e);
         }
     }
@@ -228,7 +234,7 @@ public class GameDataManagerImpl {
 
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error during read file: " + e.getMessage());
             return false;
         }
     }
@@ -244,7 +250,7 @@ public class GameDataManagerImpl {
             JsonArray enemiesArray = JsonParser.parseReader(reader).getAsJsonArray();
             return enemiesArray != null && enemiesArray.size() > 0;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error during read enemy file: " + e.getMessage());
             return false;
         }
     }
@@ -260,7 +266,7 @@ public class GameDataManagerImpl {
             JsonArray weaponsArray = JsonParser.parseReader(reader).getAsJsonArray();
             return weaponsArray != null && weaponsArray.size() > 0;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error during read weapon file: " + e.getMessage());
             return false;
         }
     }

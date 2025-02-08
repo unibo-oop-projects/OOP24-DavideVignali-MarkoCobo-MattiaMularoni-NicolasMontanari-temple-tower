@@ -4,12 +4,17 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class SceneManager {
+    private static final Logger LOGGER = LogManager.getLogger(); 
+
     private final Stage stage;
     private final Map<String, Scene> scenes = new HashMap<>();
     private final GameController controller;
@@ -28,7 +33,7 @@ public class SceneManager {
         try{
             scenes.put("home", new Home().createScene(this));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("File not found: " + e.getMessage());
         }
     }
 
@@ -40,7 +45,7 @@ public class SceneManager {
             stage.setScene(scene);
             stage.show();
         } else {
-            throw new IllegalArgumentException("Scene " + sceneName + " not found");
+            LOGGER.error("Scene " + sceneName + " not found");
         }
     }
 }

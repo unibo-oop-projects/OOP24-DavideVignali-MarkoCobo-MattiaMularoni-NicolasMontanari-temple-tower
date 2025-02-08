@@ -3,6 +3,9 @@ package it.unibo.templetower.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import it.unibo.templetower.model.Floor;
 import it.unibo.templetower.model.FloorData;
 import it.unibo.templetower.model.Player;
@@ -11,9 +14,10 @@ import it.unibo.templetower.model.Room;
 import it.unibo.templetower.model.SpawnManagerImpl;
 import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.AssetManager;
-import it.unibo.templetower.utils.Pair;
 
 public class GameControllerImpl implements GameController{
+    private static final Logger LOGGER = LogManager.getLogger(); 
+
     private List<Weapon> weapon;
     private final List<Room> rooms;
     private int currentRoomIndex = 0; // Traccia la stanza attuale
@@ -70,6 +74,7 @@ public class GameControllerImpl implements GameController{
 
     @Override
     public void changeRoom(Integer direction) {
+        LOGGER.info("player changed room");
         int newIndex = currentRoomIndex + direction;
         
         if (newIndex >= 0 && newIndex < rooms.size()) {
