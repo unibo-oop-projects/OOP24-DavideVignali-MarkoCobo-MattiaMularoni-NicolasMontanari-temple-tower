@@ -1,10 +1,13 @@
 package it.unibo.templetower.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import it.unibo.templetower.controller.GameDataManagerImpl;
+import it.unibo.templetower.utils.Pair;
 
 /**
  * Represents a room in the game that contains a treasure chest.
@@ -22,22 +25,14 @@ public class TreasureRoom implements RoomBehavior{
     private Optional<Integer> xps;
     private Optional<Enemy> enemy;
     private Optional<Weapon> weapon;
+    private final int level;
 
-    private FloorData floor;
-
-    public TreasureRoom(GameDataManagerImpl gameDataManager, int floorIndex, double xpsProbability, double enemyProbability, double weaponProbability) {
-
-        List<FloorData> floors = gameDataManager.getFloors();
-        if (floorIndex < 0 || floorIndex >= floors.size()) {
-            throw new IllegalArgumentException("Invalid floor level");
-        }
-        this.floor = floors.get(floorIndex);
-
+    public TreasureRoom(int level, Optional<Weapon> weapon, double xpsProbability, double enemyProbability, double weaponProbability) {
+        this.weapon = weapon;
+        this.level = level;
         this.probabilisticRunner(List.of(xpsProbability, enemyProbability, weaponProbability), List.of(() -> generateTreasureOutcome("xps"), () -> generateTreasureOutcome("enemy"), () -> generateTreasureOutcome("weapon")));
     }
-    public TreasureRoom(Optional<Weapon> weapon){
-        //to implement
-    }
+
     /* 
      * Run one of probabilistic action on list based on the given probabilities.
      */
@@ -58,24 +53,37 @@ public class TreasureRoom implements RoomBehavior{
         }
     }
 
-    private void generateTreasureOutcome(final String outcome){
+    private Enemy generateEnemy(){
+        List<Pair<String,Double>> attacks = new ArrayList<>();
+        attacks.add(new Pair<>("magical", 10.0));
+        Map<String,Double> damageMultipliers = new HashMap<>();
+        damageMultipliers.put("magical", 1.0);
+        return new Enemy("Treasure_enemy", 20.0, this.level, attacks, damageMultipliers, "");
+    }
+
+    private String generateTreasureOutcome(final String outcome){
         switch (outcome) {
             case "xps" -> {
                 this.xps = Optional.of(random.nextInt(100));
                 this.enemy = Optional.empty();
                 this.weapon = Optional.empty();
+                return "xps";
             }
             case "enemy" -> {
-                this.enemy = this.floor.enemies().get().stream().findAny();
+                this.enemy = Optional.of(generateEnemy());
                 this.xps = Optional.empty();
                 this.weapon = Optional.empty();
+                return "enemy";
             }
             case "weapon" -> {
-                this.weapon = this.floor.weapons().get().stream().findAny();
+                this.weapon = Optional.of(weapon.get());
                 this.xps = Optional.empty();
                 this.enemy = Optional.empty();
+                return "weapon";
             }
-            default -> throw new AssertionError();
+            default -> {
+                return "empty";
+            }
         }
     }
 

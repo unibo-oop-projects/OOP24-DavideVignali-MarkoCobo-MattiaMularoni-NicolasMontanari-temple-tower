@@ -1,6 +1,5 @@
 package it.unibo.templetower.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +22,7 @@ public class GameControllerImpl implements GameController{
     private final AssetManager assetManager;
     private static final int PLAYERDIRECTION = 1;
     private static final int ENEMYDIRECTION = 0;
+    private static final int ROOMS_NUMBER = 8;
 
     public GameControllerImpl(){
         // Load game data
@@ -33,7 +33,9 @@ public class GameControllerImpl implements GameController{
 
         // Instantiate SpawnManagerImpl with loaded floor data
         SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
-        Floor generatedFloor = spawnManager.spawnFloor(1);
+
+        //TODO al posto dell'1 implementare logica di cambio piano
+        Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
 
         /* test asset manager */
         assetManager = new AssetManager();
@@ -77,9 +79,6 @@ public class GameControllerImpl implements GameController{
         } else {
             currentRoomIndex = 0; // Torna alla prima stanza
         }
-        
-        rooms.get(currentRoomIndex).enter(player);
-        
     }
     /*public double getEnemyDamage() {
         return rooms.get(currentRoomIndex).getEnemyDamage();
@@ -91,11 +90,11 @@ public class GameControllerImpl implements GameController{
 
     @Override
     public void attackEnemy() {
-        rooms.get(currentRoomIndex).attackPlayer(player, ENEMYDIRECTION);
+        rooms.get(currentRoomIndex).interactWithRoom(player, ENEMYDIRECTION);
     }
 
     public void attackPlayer(){
-        rooms.get(currentRoomIndex).attackPlayer(player, PLAYERDIRECTION);
+        rooms.get(currentRoomIndex).interactWithRoom(player, PLAYERDIRECTION);
     }
 
     public double getPlayerLife(){
@@ -108,19 +107,19 @@ public class GameControllerImpl implements GameController{
     }
 
     @Override
-    public void enterFirstRoom() {
-        currentRoomIndex = 0;
+    public String enterRoom() {
         rooms.get(currentRoomIndex).enter(player);
+        return rooms.get(currentRoomIndex).getName();
     }
-
+    
     @Override
     public int getPlayerActualRoom() {
         return currentRoomIndex;
     }
 
     @Override
-    public List<Room> getRooms() {
-        return Collections.unmodifiableList(rooms);
+    public int getNumberOfRooms() {
+        return rooms.size();
     }
 
     @Override

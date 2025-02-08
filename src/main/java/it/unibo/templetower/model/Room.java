@@ -6,11 +6,13 @@ package it.unibo.templetower.model;
  */
 public class Room {
     private final RoomBehavior behavior;
+    protected final String name;
     protected final int id;
 
-    public Room(RoomBehavior behavior, final int id) {
+    public Room(RoomBehavior behavior, final String name, final int id) {
         this.behavior = behavior;
         this.id = id;
+        this.name = name;
     }
 
     public void enter(Player player) {
@@ -21,8 +23,12 @@ public class Room {
         }
     }
 
-    public void attackPlayer(Player player, int direction) {
-        behavior.interact(player, direction);
+    public void interactWithRoom(Player player, int direction) {
+        if (behavior != null) {
+            behavior.interact(player, direction);
+        } else {
+            System.out.println("The room is empty.");
+        }
     }
 
     public double getEnemyLife() {
@@ -38,6 +44,10 @@ public class Room {
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public RoomBehavior getBehavior(){

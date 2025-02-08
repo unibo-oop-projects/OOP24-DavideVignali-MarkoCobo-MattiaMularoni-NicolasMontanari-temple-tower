@@ -17,12 +17,16 @@
     -fx-stroke-width: 2px;
 }
 #inner-circle-rooms {
-    -fx-fill: rgb(0, 0, 44);
-    -fx-stroke: white;
-    -fx-stroke-width: 2px;
+    -fx-background-image: url("/Images/inner_circle_background.png");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 #circle-room-back{
-    -fx-background-color: rgb(0, 0, 44);
+    -fx-background-image: url("/Images/main_view_background.png");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 .sector{
     -fx-fill: transparent;

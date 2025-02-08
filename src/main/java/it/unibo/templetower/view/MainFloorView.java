@@ -5,21 +5,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 import it.unibo.templetower.controller.GameController;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
+import javafx.util.Duration;
 
 /** 
  * This scene represents a floor of the game, where the player can move between rooms.
@@ -54,7 +59,7 @@ public class MainFloorView {
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         
         //Inner and outer circles for create the rooms container
-        this.nRooms = controller.getRooms().size();
+        this.nRooms = controller.getNumberOfRooms();
         outer = createCircle("outer-circle-rooms", OUTER_RADIUS);
         inner = createCircle("inner-circle-rooms", INNER_RADIUS);
         dPane.getChildren().addAll(outer, inner);
@@ -64,7 +69,7 @@ public class MainFloorView {
         scene.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
         
         //Control buttons
-        createButtons(controller);
+        createButtons(controller, manager);
 
         /* Assetmanager test */
         InputStream spritetest = getClass().getClassLoader()
@@ -75,7 +80,7 @@ public class MainFloorView {
         return scene;
     }
 
-    private void createButtons(GameController controller) {
+    private void createButtons(GameController controller, SceneManager manager) {
         left = new ToggleButton("<");
         right = new ToggleButton(">");
         enter = new ToggleButton("ENTRA");
@@ -96,7 +101,7 @@ public class MainFloorView {
         right.setOnMouseClicked(e -> handleRoomChange(controller, 1));
 
         //When the enter button is clicked, the player moves to the first room
-        enter.setOnMouseClicked(e -> handleFloorEnter(controller));
+        enter.setOnMouseClicked(e -> handleFloorEnter(controller, manager));
         
         dPane.getChildren().add(buttons);
     }
@@ -107,9 +112,9 @@ public class MainFloorView {
         highlightSector(controller.getPlayerActualRoom());
     }
 
-    private void handleFloorEnter(GameController controller) {
-        controller.enterFirstRoom();
+    private void handleFloorEnter(GameController controller, SceneManager manager) {
         highlightSector(controller.getPlayerActualRoom());
+        manager.switchTo(controller.enterRoom());
     }
 
     private Circle createCircle(String id, double radius) {
@@ -121,7 +126,7 @@ public class MainFloorView {
     //Adapts the scene to the screen size
     private void adaptScene(Scene scene, GameController controller) {
         double centerX = scene.getWidth() / 2;
-        double centerY = scene.getHeight() / 2.5;
+        double centerY = scene.getHeight() / 2;
 
         updateCirclePositionAndRadius(outer, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / 3);
         updateCirclePositionAndRadius(inner, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / 5);
@@ -134,9 +139,14 @@ public class MainFloorView {
         
         dPane.getChildren().add(buttons);
         sectorMap.clear();
-        controller.getRooms().forEach(room -> {
-            createRoomAndSector(room.getId(), centerX, centerY, roomRadius);
-        });
+
+        for (int i = 0; i < controller.getNumberOfRooms(); i++) {
+            createRoomAndSector(i, centerX, centerY, roomRadius);
+        }
+        
+        Image im = new Image("/Images/inner_circle_background.png",false);
+        inner.setFill(new ImagePattern(im));
+        inner.setEffect(new DropShadow(+25d, 0d, +2d, Color.DARKSEAGREEN));
         inner.toFront();
     }
 
@@ -171,7 +181,14 @@ public class MainFloorView {
         // Highlight the selected sector
         Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
-            selectedSector.setFill(Color.YELLOW);
+            selectedSector.setFill(Color.rgb(138,74,243));
+
+            FadeTransition fade = new FadeTransition(Duration.seconds(0.8), selectedSector);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.3);
+            fade.setCycleCount(Animation.INDEFINITE);
+            fade.setAutoReverse(true);
+            fade.play();
         }
     }
 
