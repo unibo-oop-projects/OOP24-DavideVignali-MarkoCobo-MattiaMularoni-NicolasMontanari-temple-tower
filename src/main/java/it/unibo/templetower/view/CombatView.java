@@ -123,6 +123,10 @@ public class CombatView {
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
+        exitButton.setOnAction(e -> {
+            manager.switchTo("main_floor_view");
+        });
+
         attackButton.setOnAction(event -> {
             Timeline timeline = new Timeline();
             double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - 30;
@@ -130,10 +134,16 @@ public class CombatView {
             KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
             timeline.getKeyFrames().add(kf);
             timeline.setOnFinished(e -> {
-                double playerHealth = playerHealthBar.getProgress() - 0.1;
-                double enemyHealth = enemyHealthBar.getProgress() - 0.15;
-
                 controller.attackEnemy();
+                double enemyDamage = controller.getEnemyLifePoints();
+
+                // Attacca il player e ottieni il danno inflitto
+                controller.attackPlayer();
+                double playerDamage = controller.getPlayerLife();
+
+                // Aggiorna le barre di salute
+                double playerHealth = playerHealthBar.getProgress() - (playerDamage / 100);
+                double enemyHealth = enemyHealthBar.getProgress() - (enemyDamage / 100);
 
                 if (playerHealth < 0) playerHealth = 0;
                 if (enemyHealth < 0) enemyHealth = 0;

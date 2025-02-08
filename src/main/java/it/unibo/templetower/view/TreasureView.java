@@ -47,11 +47,13 @@ public class TreasureView {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
 
-        // Associa le dimensioni del video a quelle del root
+        // Associa le dimensioni del video alla scena
         mediaView.fitWidthProperty().bind(root.widthProperty());
         mediaView.fitHeightProperty().bind(root.heightProperty());
-        mediaView.setPreserveRatio(true);
-        mediaView.setStyle("-fx-background-color: black; -fx-video-transform: scale(1.1);");
+        mediaView.setPreserveRatio(false); // Rimuove i bordi forzando l'adattamento alla finestra
+
+        // Allinea il video al centro per evitare margini indesiderati
+        StackPane.setAlignment(mediaView, Pos.CENTER);
 
         // Azione del bottone "Apri": rimuove i bottoni, aggiunge il video e lo avvia
         openButton.setOnAction(e -> {
@@ -60,10 +62,12 @@ public class TreasureView {
             mediaPlayer.play();
         });
 
+
         // Azione del bottone "Esci": esce dalla stanza (in questo esempio termina l'applicazione)
         exitButton.setOnAction(e -> {
             System.out.println("Hai scelto di uscire dalla stanza!");
             // Qui puoi richiamare un metodo del SceneManager per passare a un'altra scena
+            manager.switchTo("main_floor_view");
             Platform.exit();
         });
 

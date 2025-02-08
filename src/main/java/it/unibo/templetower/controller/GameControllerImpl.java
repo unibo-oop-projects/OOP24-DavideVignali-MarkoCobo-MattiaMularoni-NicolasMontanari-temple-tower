@@ -12,9 +12,10 @@ import it.unibo.templetower.model.Room;
 import it.unibo.templetower.model.SpawnManagerImpl;
 import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.AssetManager;
+import it.unibo.templetower.utils.Pair;
 
 public class GameControllerImpl implements GameController{
-    private Weapon weapon;
+    private List<Weapon> weapon;
     private final List<Room> rooms;
     private int currentRoomIndex = 0; // Traccia la stanza attuale
     private final Player player;
@@ -37,6 +38,9 @@ public class GameControllerImpl implements GameController{
         /* test asset manager */
         assetManager = new AssetManager();
         assetManager.addEnemyAsset(12, "images/enemy.png");
+
+        //test
+        //weapon.add(new Weapon("GUN", 1, new Pair<String, Double>("Gun", 1.0), testPath));
 
         rooms = generatedFloor.rooms();
         player = new PlayerImpl(weapon, Optional.empty());
@@ -77,7 +81,14 @@ public class GameControllerImpl implements GameController{
         rooms.get(currentRoomIndex).enter(player);
         
     }
+    /*public double getEnemyDamage() {
+        return rooms.get(currentRoomIndex).getEnemyDamage();
+    }
     
+    public double getPlayerDamage() {
+        return rooms.get(currentRoomIndex).getPlayerDamage();
+    }*/
+
     @Override
     public void attackEnemy() {
         rooms.get(currentRoomIndex).attackPlayer(player, ENEMYDIRECTION);
@@ -85,6 +96,15 @@ public class GameControllerImpl implements GameController{
 
     public void attackPlayer(){
         rooms.get(currentRoomIndex).attackPlayer(player, PLAYERDIRECTION);
+    }
+
+    public double getPlayerLife(){
+        rooms.get(currentRoomIndex).getLifePlayer(player);
+        return player.getLife();
+    }
+
+    public double getEnemyLifePoints(){
+        return rooms.get(currentRoomIndex).getEnemyLife();
     }
 
     @Override

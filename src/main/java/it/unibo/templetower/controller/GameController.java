@@ -69,4 +69,7 @@ public interface GameController {
     String getEntiSpritePath(String type);
 
     void attackEnemy();
+    void attackPlayer();
+    double getPlayerLife();
+    double getEnemyLifePoints();
 }
