@@ -20,6 +20,8 @@ public class GameControllerImpl implements GameController{
     private final Player player;
     private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
+    private static final int PLAYERDIRECTION = 1;
+    private static final int ENEMYDIRECTION = 0;
 
     public GameControllerImpl(){
         // Load game data
@@ -78,7 +80,11 @@ public class GameControllerImpl implements GameController{
     
     @Override
     public void attackEnemy() {
-        rooms.get(currentRoomIndex).attack(player);
+        rooms.get(currentRoomIndex).attackPlayer(player, ENEMYDIRECTION);
+    }
+
+    public void attackPlayer(){
+        rooms.get(currentRoomIndex).attackPlayer(player, PLAYERDIRECTION);
     }
 
     @Override
