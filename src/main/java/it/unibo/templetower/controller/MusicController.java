@@ -8,7 +8,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
-
 public class MusicController {
 
     private static MusicController instance;

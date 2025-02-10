@@ -49,10 +49,10 @@ public class Home {
         content.setAlignment(Pos.CENTER);
 
         // Add difficulty menu button
-        Button difficultyButton = new Button("Go to Difficulty Menu");
+        Button difficultyButton = new Button("Go to Enter Menu");
         difficultyButton.setOnAction(e -> {
             // Non fermiamo più la musica quando cambiamo scena
-            manager.switchTo("difficulty_menu");
+            manager.switchTo("enter_menu");
         });
         content.getChildren().add(difficultyButton);
 

@@ -43,16 +43,16 @@ public class DifficultyMenu {
         Button hardButton = new Button("DIFFICILE");
 
         // Set button actions
-       easyButton.setOnAction(e -> {
+        easyButton.setOnAction(e -> {
             MusicController.getInstance().startNewMusic("sounds/musicacombattimento1.wav");
             manager.switchTo("main_floor_view");
         });
-        
+
         mediumButton.setOnAction(e -> {
             MusicController.getInstance().startNewMusic("sounds/musicacombattimento1.wav");
             manager.switchTo("main_floor_view");
         });
-        
+
         hardButton.setOnAction(e -> {
             MusicController.getInstance().startNewMusic("sounds/musicacombattimento1.wav");
             manager.switchTo("main_floor_view");
