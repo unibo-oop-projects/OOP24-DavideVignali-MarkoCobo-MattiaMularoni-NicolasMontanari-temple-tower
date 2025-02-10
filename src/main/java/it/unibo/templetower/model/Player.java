@@ -1,5 +1,8 @@
 package it.unibo.templetower.model;
 
+/**
+ * Represents the Player in the game.
+ */
 public interface Player {
     /**
      * @param enemy
@@ -13,6 +16,7 @@ public interface Player {
 
     /**
      * @param damage
+     * It can be called by the enemy or traps to deal damage to the player.
      */
     void takeDamage(double damage);
 
@@ -22,27 +26,28 @@ public interface Player {
     void chooseMove();
 
     /**
-     * 
+     * @param room
+     * Change the actual room of the player.
      */
     void changeRoom(Room room);
 
-    /**
-     * @return
-     */
-    int getHealth();
 
     /**
-     * @return
+     * @return the player's experience points.
      */
     int getExperience();
 
     /**
-     * 
+     * @param xp
+     * It can be called by a treasure that contains experience points.
      */
     void increaseExperience(int xp);
 
     /**
-     * 
+     * @return the player's actual room.
      */
     int getActualRoom();
+
+    Weapon getActualWeapon();
+    double getLife();
 }

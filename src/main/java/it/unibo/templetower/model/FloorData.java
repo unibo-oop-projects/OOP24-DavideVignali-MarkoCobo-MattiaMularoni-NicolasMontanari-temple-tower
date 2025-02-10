@@ -7,9 +7,8 @@ import it.unibo.templetower.utils.Pair;
 
 /**
  * Record representing a floor's data in the game.
- * Contains information about the floor's name, sprite, enemies, weapons, spawn range and spawn weight.
- * Enemy and weapon lists are optional and may be empty if their respective files are
- * empty or invalid.
+ * Contains information about the floor's name, sprite, enemies, weapons, spawn range, spawn weight and visibility.
+ * Visibility (a double between 0 and 1) indicates the probability of viewing the floor's tiles.
  *
  * @param floorName the name of the floor
  * @param spritePath path to the floor's sprite resource
@@ -17,6 +16,7 @@ import it.unibo.templetower.utils.Pair;
  * @param weapons optional list of weapons that can be found on this floor
  * @param spawningRange pair containing min and max levels for floor generation
  * @param spawnWeight weight value affecting how likely this floor is to be selected during generation
+ * @param visibility probability (0 to 1) of viewing the floor's tiles
  */
 public record FloorData(
     String floorName,
@@ -24,7 +24,8 @@ public record FloorData(
     Optional<List<Enemy>> enemies,
     Optional<List<Weapon>> weapons,
     Pair<Integer, Integer> spawningRange,
-    int spawnWeight
+    int spawnWeight,
+    double visibility
 ) {
     /**
      * Compact constructor for validation.
@@ -37,6 +38,9 @@ public record FloorData(
         }
         if (spawnWeight < 1) {
             throw new IllegalArgumentException("Spawn weight must be at least 1");
+        }
+        if (visibility < 0.0 || visibility > 1.0) {
+            throw new IllegalArgumentException("Visibility must be between 0 and 1");
         }
         // If enemies or weapons are null, convert to Optional.empty()
         enemies = Optional.ofNullable(enemies).orElse(Optional.empty());

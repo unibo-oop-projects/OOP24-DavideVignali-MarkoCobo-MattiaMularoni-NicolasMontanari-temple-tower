@@ -1,23 +1,32 @@
 package it.unibo.templetower.model;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class PlayerImpl implements Player {
 
-    private Weapon weapon;
+    private List<Weapon> weapon;
     private double life;
-    private Room actualRoom;
+    private Optional<Room> actualRoom;
     private int experience;
+    private int actualWeaponIndex;
 
-    public PlayerImpl(final Weapon weapon, final Room actualRoom) {
-        this.weapon = weapon;
-        this.actualRoom = actualRoom;
+    public PlayerImpl(final List<Weapon> weapon, final Optional<Room> actualRoom) {
+        this.weapon = new ArrayList<>();
+        if (actualRoom.isEmpty()) {
+            this.actualRoom = Optional.empty();
+        }else{
+            this.actualRoom = Optional.of(actualRoom.get());
+        }
         this.life = 100;
         this.experience = 0;
+        this.actualWeaponIndex = 0;
     }
 
     @Override
     public void attack(EnemyRoom enemy) {
         if ( enemy != null) {
-            enemy.takeDamage(weapon.attack().getY());
+            enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY());
         }
     }
 
@@ -30,7 +39,10 @@ public class PlayerImpl implements Player {
     @Override
     public void changeWeapon(Weapon weapon) {
         System.out.println("Player changed weapon");
-        this.weapon = weapon;
+        this.actualWeaponIndex += 1;
+        if(this.actualWeaponIndex == 3){
+            this.actualWeaponIndex = 0;
+        }
     }
 
     @Override
@@ -41,13 +53,8 @@ public class PlayerImpl implements Player {
 
     @Override
     public void changeRoom(Room room) {
-        this.actualRoom = room;
-    }
-
-    @Override
-    public int getHealth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHealth'");
+        System.out.println("Player changed room: "+room.id);
+        this.actualRoom = Optional.of(room);
     }
 
     @Override
@@ -55,8 +62,8 @@ public class PlayerImpl implements Player {
         return this.experience;
     }
 
-    public Weapon getWeapon() {
-        return this.weapon;
+    public Weapon getActualWeapon() {
+        return this.weapon.get(actualWeaponIndex);
     }
 
     public double getLife() {
@@ -71,6 +78,10 @@ public class PlayerImpl implements Player {
 
     @Override
     public int getActualRoom() {
-        return actualRoom.id;
+        if (actualRoom.isEmpty()) {
+            return -1;
+        }else{
+            return actualRoom.get().id;
+        }
     }
 }

@@ -1,35 +1,51 @@
 package it.unibo.templetower.controller;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
-import it.unibo.templetower.model.EnemyRoom;
+import it.unibo.templetower.model.Floor;
+import it.unibo.templetower.model.FloorData;
 import it.unibo.templetower.model.Player;
 import it.unibo.templetower.model.PlayerImpl;
 import it.unibo.templetower.model.Room;
-import it.unibo.templetower.model.Trap;
-import it.unibo.templetower.model.TreasureRoom;
+import it.unibo.templetower.model.SpawnManagerImpl;
 import it.unibo.templetower.model.Weapon;
+import it.unibo.templetower.utils.AssetManager;
+import it.unibo.templetower.utils.Pair;
 
 public class GameControllerImpl implements GameController{
-    Weapon weapon;
-    List<Room> rooms;
-    Iterator<Room> roomsIt;
-    Player player;
-    GameDataManagerImpl gameDataManager;
+    private List<Weapon> weapon;
+    private final List<Room> rooms;
+    private int currentRoomIndex = 0; // Traccia la stanza attuale
+    private final Player player;
+    private final GameDataManagerImpl gameDataManager;
+    private final AssetManager assetManager;
+    private static final int PLAYERDIRECTION = 1;
+    private static final int ENEMYDIRECTION = 0;
+    private static final int ROOMS_NUMBER = 8;
 
     public GameControllerImpl(){
+        // Load game data
         gameDataManager = new GameDataManagerImpl();
-        gameDataManager.loadGameData("tower/floors/floors-data.json");
+        String testPath = "tower/floors/floors-data.json";
+        gameDataManager.loadGameData(testPath);
+        List<FloorData> floors = gameDataManager.getFloors();
 
-        rooms = new ArrayList<>();
-        rooms.add(new Room(new Trap(2), 1));
-        rooms.add(new Room(new EnemyRoom(gameDataManager, 0), 2));
-        rooms.add(new Room(new TreasureRoom(gameDataManager, 0, 0.5, 0.1, 0.4), 3));
+        // Instantiate SpawnManagerImpl with loaded floor data
+        SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
 
-        roomsIt = rooms.iterator();
-        player = new PlayerImpl(weapon, rooms.getFirst());
+        //TODO al posto dell'1 implementare logica di cambio piano
+        Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
+
+        /* test asset manager */
+        assetManager = new AssetManager();
+        assetManager.addEnemyAsset(12, "images/enemy.png");
+
+        //test
+        //weapon.add(new Weapon("GUN", 1, new Pair<String, Double>("Gun", 1.0), testPath));
+
+        rooms = generatedFloor.rooms();
+        player = new PlayerImpl(weapon, Optional.empty());
     }
 
     @Override
@@ -54,17 +70,65 @@ public class GameControllerImpl implements GameController{
 
     @Override
     public void changeRoom(Integer direction) {
-        if (direction == 1){
-            if(roomsIt.hasNext()){
-                roomsIt.next().enter(player);
-            }
-        }else {
-            //TODO fare iteratore doveè possibile anche andare indietro (next e previous)
+        int newIndex = currentRoomIndex + direction;
+        
+        if (newIndex >= 0 && newIndex < rooms.size()) {
+            currentRoomIndex = newIndex;
+        } else if (newIndex < 0) {
+            currentRoomIndex = rooms.size() - 1; // Torna all'ultima stanza
+        } else {
+            currentRoomIndex = 0; // Torna alla prima stanza
         }
+    }
+    /*public double getEnemyDamage() {
+        return rooms.get(currentRoomIndex).getEnemyDamage();
+    }
+    
+    public double getPlayerDamage() {
+        return rooms.get(currentRoomIndex).getPlayerDamage();
+    }*/
+
+    @Override
+    public void attackEnemy() {
+        rooms.get(currentRoomIndex).interactWithRoom(player, ENEMYDIRECTION);
+    }
+
+    public void attackPlayer(){
+        rooms.get(currentRoomIndex).interactWithRoom(player, PLAYERDIRECTION);
+    }
+
+    public double getPlayerLife(){
+        rooms.get(currentRoomIndex).getLifePlayer(player);
+        return player.getLife();
+    }
+
+    public double getEnemyLifePoints(){
+        return rooms.get(currentRoomIndex).getEnemyLife();
     }
 
     @Override
+    public String enterRoom() {
+        rooms.get(currentRoomIndex).enter(player);
+        return rooms.get(currentRoomIndex).getName();
+    }
+    
+    @Override
     public int getPlayerActualRoom() {
-        return player.getActualRoom();
+        return currentRoomIndex;
+    }
+
+    @Override
+    public int getNumberOfRooms() {
+        return rooms.size();
+    }
+
+    @Override
+    public String getEnemySpritePath(int level){
+        return assetManager.getEnemyAsset(level);
+    }
+
+    @Override
+    public String getEntiSpritePath(String type) {
+        return assetManager.getGenericEntityAsset(type);
     }
 }

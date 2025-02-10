@@ -14,7 +14,7 @@ public class Trap implements RoomBehavior{
     }
 
     @Override
-    public void interact(Player player) {
+    public void interact(Player player, int direction) {
         System.out.println("Player take a trap");
         player.takeDamage(damage);
     }
