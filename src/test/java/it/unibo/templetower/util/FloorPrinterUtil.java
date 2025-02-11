@@ -4,9 +4,21 @@ import java.util.List;
 import java.util.Optional;
 import it.unibo.templetower.model.FloorData;
 
-public class FloorPrinterUtil {
+/**
+ * Utility class for printing floor details in a formatted way.
+ */
+public final class FloorPrinterUtil {
 
-    public static void printFloorDetails(List<FloorData> floors) {
+    private FloorPrinterUtil() {
+        // Utility class constructor
+    }
+
+    /**
+     * Prints detailed information about a list of floors.
+     *
+     * @param floors the list of floor data to print
+     */
+    public static void printFloorDetails(final List<FloorData> floors) {
         System.out.println("\n=== Floor Data Details ===");
         for (int i = 0; i < floors.size(); i++) {
             FloorData floor = floors.get(i);

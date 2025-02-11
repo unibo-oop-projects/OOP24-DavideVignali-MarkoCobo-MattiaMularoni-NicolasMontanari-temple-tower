@@ -43,6 +43,13 @@ public interface Player {
      */
     int getActualRoom();
 
+    /**
+     * @return the player's current weapon.
+     */
     Weapon getActualWeapon();
+
+    /**
+     * @return the player's current life points.
+     */
     double getLife();
 }

@@ -4,19 +4,21 @@
 package it.unibo.templetower;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-
 import it.unibo.templetower.controller.GameDataManagerImpl;
-import it.unibo.templetower.model.*;
+import it.unibo.templetower.model.EnemyRoom;
+import it.unibo.templetower.model.FloorData;
+import it.unibo.templetower.model.SpawnManagerImpl;
+import it.unibo.templetower.model.Trap;
 import it.unibo.templetower.util.FloorPrinterUtil;
 
 
 class AppTest {
+    private static final int MAX_FLOORS = 20;
 
     @Test 
     void testAppHasAGreeting() throws ClassNotFoundException {
@@ -27,7 +29,7 @@ class AppTest {
     void testVerifyPath() {
         GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
         String testPath = "tower/floors/floors-data.json";
-        assertTrue(gameDataManager.verifyPath(testPath, 20));
+        assertTrue(gameDataManager.verifyPath(testPath, MAX_FLOORS));
     }
 
     /**
@@ -41,16 +43,12 @@ class AppTest {
     void testLoadAndPrintFloorData() {
         GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
         String testPath = "tower/floors/floors-data.json";
-        
         // Load the game data
         gameDataManager.loadGameData(testPath);
-        
         // Get the floors list
         List<FloorData> floors = gameDataManager.getFloors();
-        
         // Verify that floors were loaded
         assertFalse(floors.isEmpty(), "Floor list should not be empty");
-        
         // Print floor data
         FloorPrinterUtil.printFloorDetails(floors);
     }
@@ -58,17 +56,14 @@ class AppTest {
     @Test
     void testSpawnManager() {
         int level = 1;
-        
         // Load game data
         GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
         String testPath = "tower/floors/floors-data.json";
         gameDataManager.loadGameData(testPath);
         var floors = gameDataManager.getFloors();
-        
         // Instantiate SpawnManagerImpl with loaded floor data
         SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
         var generatedFloor = spawnManager.spawnFloor(level);
-        
         // Print generated floor details
         System.out.println("\n=== Dettagli del Piano Generato ===");
         System.out.println("Nome Piano: " + generatedFloor.floorName());

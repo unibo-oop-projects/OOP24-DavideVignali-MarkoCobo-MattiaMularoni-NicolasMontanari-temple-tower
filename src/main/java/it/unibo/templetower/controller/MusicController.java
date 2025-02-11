@@ -8,11 +8,20 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
-public class MusicController {
+/**
+ * Controller class for managing background music in the game.
+ * Implements the Singleton pattern to ensure only one instance controls the audio.
+ */
+public final class MusicController {
 
+    private static final float DEFAULT_VOLUME = -10.0f;
     private static MusicController instance;
     private Clip audioClip;
 
+    /**
+     * Returns the singleton instance of MusicController.
+     * @return the unique instance of MusicController
+     */
     public static MusicController getInstance() {
         if (instance == null) {
             instance = new MusicController();
@@ -20,7 +29,11 @@ public class MusicController {
         return instance;
     }
 
-    public void startNewMusic(String musicFile) {
+    /**
+     * Starts playing a new music track, stopping any currently playing music.
+     * @param musicFile the name of the music file to play, located in the audio resources folder
+     */
+    public void startNewMusic(final String musicFile) {
         try {
             // Ferma la musica precedente se sta suonando
             stopMusic();
@@ -44,7 +57,7 @@ public class MusicController {
             // Imposta il volume
             FloatControl gainControl
                     = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-10.0f);
+            gainControl.setValue(DEFAULT_VOLUME);
 
             // Avvia la nuova musica
             audioClip.setFramePosition(0);
@@ -56,6 +69,9 @@ public class MusicController {
         }
     }
 
+    /**
+     * Stops the currently playing music track, if any.
+     */
     public void stopMusic() {
         if (audioClip != null && audioClip.isRunning()) {
             audioClip.stop();

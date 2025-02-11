@@ -3,7 +3,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class PlayerImpl implements Player {
+/**
+ * Implementation of the Player interface representing a player in the game.
+ * The player has weapons, life points, and can move between rooms.
+ */
+public final class PlayerImpl implements Player {
 
     private List<Weapon> weapon;
     private double life;
@@ -11,11 +15,17 @@ public class PlayerImpl implements Player {
     private int experience;
     private int actualWeaponIndex;
 
+    /**
+     * Creates a new player with initial weapon and room.
+     * 
+     * @param startweapon the initial weapon for the player
+     * @param actualRoom the starting room
+     */
     public PlayerImpl(final Weapon startweapon, final Optional<Room> actualRoom) {
         this.weapon = new ArrayList<>();
         if (actualRoom.isEmpty()) {
             this.actualRoom = Optional.empty();
-        }else{
+        } else {
             this.actualRoom = Optional.of(actualRoom.get());
         }
         weapon.add(startweapon);
@@ -25,37 +35,43 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public void attack(EnemyRoom enemy) {
-        if ( enemy != null) {
+    public void attack(final EnemyRoom enemy) {
+        if (enemy != null) {
             enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY());
         }
     }
 
     @Override
-    public void takeDamage(double damage){
+    public void takeDamage(final double damage) {
         System.out.println("Player got damaged");
         this.life = this.life - damage;
     }
 
-    public void addWeapon(Weapon newWeapon){
+    /**
+     * Adds a new weapon to the player's inventory.
+     * If inventory is full (4 weapons), removes the first weapon.
+     * 
+     * @param newWeapon the weapon to add
+     */
+    public void addWeapon(final Weapon newWeapon) {
         this.weapon.add(newWeapon);
-        if(this.weapon.size() == 4){
+        if (this.weapon.size() == 4) {
             this.weapon.remove(0);
         }
     }
 
     @Override
-    public void changeWeapon(Weapon weapon) {
+    public void changeWeapon(final Weapon weapon) {
         System.out.println("Player changed weapon");
         this.actualWeaponIndex += 1;
-        if(this.actualWeaponIndex == 3){
+        if (this.actualWeaponIndex == 3) {
             this.actualWeaponIndex = 0;
         }
     }
 
     @Override
-    public void changeRoom(Room room) {
-        System.out.println("Player changed room: "+room.id);
+    public void changeRoom(final Room room) {
+        System.out.println("Player changed room: " + room.getId());
         this.actualRoom = Optional.of(room);
     }
 
@@ -64,16 +80,26 @@ public class PlayerImpl implements Player {
         return this.experience;
     }
 
+    /**
+     * Gets the currently equipped weapon.
+     * 
+     * @return the current weapon
+     */
     public Weapon getActualWeapon() {
         return this.weapon.get(actualWeaponIndex);
     }
 
+    /**
+     * Gets the player's current life points.
+     * 
+     * @return the current life points
+     */
     public double getLife() {
         return this.life;
     }
 
     @Override
-    public void increaseExperience(int xp) {
+    public void increaseExperience(final int xp) {
         System.out.println("Player increased experience");
         this.experience += xp;
     }
@@ -82,8 +108,8 @@ public class PlayerImpl implements Player {
     public int getActualRoom() {
         if (actualRoom.isEmpty()) {
             return -1;
-        }else{
-            return actualRoom.get().id;
+        } else {
+            return actualRoom.get().getId();
         }
     }
 }

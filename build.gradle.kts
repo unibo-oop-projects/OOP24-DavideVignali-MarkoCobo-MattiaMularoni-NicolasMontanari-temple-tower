@@ -30,7 +30,7 @@ val platform = when {
 }
 
 dependencies {
-    val javaFxVersion = "23.0.1"
+    val javaFxVersion = "17.0.2"
 
     // JavaFX modules
     for (module in javaFXModules) {
@@ -48,6 +48,12 @@ dependencies {
     // Gson library
     implementation("com.google.code.gson:gson:2.10.1")
 
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 tasks.withType<Test> {
