@@ -7,6 +7,7 @@ import java.util.Map;
 import it.unibo.templetower.controller.GameController;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
@@ -101,7 +102,7 @@ public class MainFloorView {
         right.setOnMouseClicked(e -> handleRoomChange(controller, 1));
 
         //When the enter button is clicked, the player moves to the first room
-        enter.setOnMouseClicked(e -> handleFloorEnter(controller, manager));
+        enter.setOnMouseClicked(e -> handleRoomEnter(controller, manager));
         
         dPane.getChildren().add(buttons);
     }
@@ -112,7 +113,7 @@ public class MainFloorView {
         highlightSector(controller.getPlayerActualRoom());
     }
 
-    private void handleFloorEnter(GameController controller, SceneManager manager) {
+    private void handleRoomEnter(GameController controller, SceneManager manager) {
         highlightSector(controller.getPlayerActualRoom());
         manager.switchTo(controller.enterRoom());
     }
@@ -148,6 +149,7 @@ public class MainFloorView {
         inner.setFill(new ImagePattern(im));
         inner.setEffect(new DropShadow(+25d, 0d, +2d, Color.DARKSEAGREEN));
         inner.toFront();
+        Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom()));
     }
 
     private void updateCirclePositionAndRadius(Circle circle, double centerX, double centerY, double radius) {
