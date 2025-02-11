@@ -21,11 +21,6 @@ public interface Player {
     void takeDamage(double damage);
 
     /**
-     * 
-     */
-    void chooseMove();
-
-    /**
      * @param room
      * Change the actual room of the player.
      */

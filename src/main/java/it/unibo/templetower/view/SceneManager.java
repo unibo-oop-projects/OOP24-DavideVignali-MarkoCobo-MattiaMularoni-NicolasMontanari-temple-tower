@@ -25,6 +25,7 @@ public class SceneManager {
         scenes.put("main_floor_view", new MainFloorView().createScene(this, controller));
         scenes.put("combat_view", new CombatView().createScene(this, controller));
         scenes.put("treasure_view", new TreasureView().createScene(this, controller));
+        scenes.put("stairs_view", new StairsView().createScene(this, controller));
         try{
             scenes.put("home", new Home().createScene(this));
         } catch (FileNotFoundException e) {

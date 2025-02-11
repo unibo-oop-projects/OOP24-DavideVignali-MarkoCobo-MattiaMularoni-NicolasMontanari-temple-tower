@@ -2,6 +2,7 @@ package it.unibo.templetower.view;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,7 +12,6 @@ import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import java.util.Optional;
 
 public class TreasureView {
 
@@ -28,11 +28,11 @@ public class TreasureView {
         Button exitButton = new Button("Esci");
         openButton.getStyleClass().add("openExitButton");
         exitButton.getStyleClass().add("openExitButton");
-        
+
         // Rendere i bottoni più grandi impostando dimensioni e padding
         openButton.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
         exitButton.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
-        
+
         // Contenitore orizzontale per i bottoni, centrato
         HBox buttonContainer = new HBox(20);
         buttonContainer.setAlignment(Pos.CENTER);
@@ -62,17 +62,23 @@ public class TreasureView {
             mediaPlayer.play();
         });
 
-
-        // Azione del bottone "Esci": esce dalla stanza (in questo esempio termina l'applicazione)
+        // Azione del bottone "Esci": esce dalla stanza (in questo esempio termina
+        // l'applicazione)
         exitButton.setOnAction(e -> {
             System.out.println("Hai scelto di uscire dalla stanza!");
             // Qui puoi richiamare un metodo del SceneManager per passare a un'altra scena
             manager.switchTo("main_floor_view");
-            Platform.exit();
+            // Platform.exit();
         });
 
         // Al termine della riproduzione del video, mostra il popup
-        mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(this::showWeaponPopup));
+        mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
+            // Mostra il popup e aspetta la sua chiusura
+            showWeaponPopup(() -> {
+                // Dopo la chiusura del popup, torna alla main floor view
+                manager.switchTo("main_floor_view");
+            });
+        }));
 
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
@@ -80,40 +86,59 @@ public class TreasureView {
         return scene;
     }
 
-    private void showWeaponPopup() {
-        // Creazione del Dialog per l'arma
-        Dialog<ButtonType> dialog = new Dialog<>();
+    private void showWeaponPopup(Runnable onClose) {
+        Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Oggetto Trovato!");
         dialog.setHeaderText("Hai trovato un'arma!");
 
-        // Definizione dei bottoni "Take" e "Leave"
-        ButtonType takeButton = new ButtonType("Take", ButtonBar.ButtonData.OK_DONE);
-        ButtonType leaveButton = new ButtonType("Leave", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(takeButton, leaveButton);
+        // 🔹 Aggiungiamo un ButtonType per permettere la chiusura con la X
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
-        // Caricamento dell'immagine dell'arma
         Image image = new Image(getClass().getResource("/images/Gun-PNG-File.png").toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(100);
         imageView.setFitHeight(100);
 
-        // Creazione della progress bar per il danno dell'arma (80% di danno)
         ProgressBar damageBar = new ProgressBar(0.8);
         damageBar.setPrefWidth(200);
         Label damageLabel = new Label("Danno: 80%");
 
-        // Layout del contenuto del dialog
-        VBox content = new VBox(10);
         HBox weaponInfo = new HBox(10, imageView, damageLabel);
-        content.getChildren().addAll(weaponInfo, damageBar);
-        dialog.getDialogPane().setContent(content);
+        VBox content = new VBox(10, weaponInfo, damageBar);
 
-        // Mostra il dialogo e attende la scelta dell'utente
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == takeButton) {
+        Button takeButton = new Button("Take");
+        Button leaveButton = new Button("Leave");
+
+        takeButton.setOnAction(event -> {
             System.out.println("Hai preso l'arma!");
-        } else {
+            dialog.close();
+            if (onClose != null) {
+                onClose.run();
+            }
+        });
+
+        leaveButton.setOnAction(event -> {
             System.out.println("Hai lasciato l'arma!");
-        }
+            dialog.close();
+            if (onClose != null) {
+                onClose.run();
+            }
+        });
+
+        HBox buttonBox = new HBox(10, takeButton, leaveButton);
+        VBox layout = new VBox(10, content, buttonBox);
+        layout.setPadding(new Insets(10));
+
+        dialog.getDialogPane().setContent(layout);
+
+        // 🔹 Se l'utente chiude il popup con la X, esegue comunque onClose()
+        dialog.setOnCloseRequest(event -> {
+            if (onClose != null) {
+                onClose.run();
+            }
+        });
+
+        dialog.showAndWait();
     }
+
 }

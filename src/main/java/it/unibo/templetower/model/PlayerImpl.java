@@ -11,13 +11,14 @@ public class PlayerImpl implements Player {
     private int experience;
     private int actualWeaponIndex;
 
-    public PlayerImpl(final List<Weapon> weapon, final Optional<Room> actualRoom) {
+    public PlayerImpl(final Weapon startweapon, final Optional<Room> actualRoom) {
         this.weapon = new ArrayList<>();
         if (actualRoom.isEmpty()) {
             this.actualRoom = Optional.empty();
         }else{
             this.actualRoom = Optional.of(actualRoom.get());
         }
+        weapon.add(startweapon);
         this.life = 100;
         this.experience = 0;
         this.actualWeaponIndex = 0;
@@ -36,6 +37,13 @@ public class PlayerImpl implements Player {
         this.life = this.life - damage;
     }
 
+    public void addWeapon(Weapon newWeapon){
+        this.weapon.add(newWeapon);
+        if(this.weapon.size() == 4){
+            this.weapon.remove(0);
+        }
+    }
+
     @Override
     public void changeWeapon(Weapon weapon) {
         System.out.println("Player changed weapon");
@@ -43,12 +51,6 @@ public class PlayerImpl implements Player {
         if(this.actualWeaponIndex == 3){
             this.actualWeaponIndex = 0;
         }
-    }
-
-    @Override
-    public void chooseMove() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'chooseMove'");
     }
 
     @Override
