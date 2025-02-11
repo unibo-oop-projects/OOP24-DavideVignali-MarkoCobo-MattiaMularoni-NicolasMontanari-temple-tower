@@ -46,7 +46,7 @@ public final class AssetManager {
      * @return the path to the appropriate asset
      */
     public String getEnemyAsset(final Integer level) {
-        Integer closestLevel = enemyAssets.floorKey(level);
+        final Integer closestLevel = enemyAssets.floorKey(level);
 
         // If there is no key <= level, return the first available asset
         if (closestLevel == null) {

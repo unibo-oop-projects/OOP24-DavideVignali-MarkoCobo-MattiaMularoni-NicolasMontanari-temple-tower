@@ -2,6 +2,8 @@ package it.unibo.templetower.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import it.unibo.templetower.utils.Pair;
 
@@ -27,7 +29,7 @@ public record Enemy(
     String spritePath) {
     /**
      * Compact constructor for validation.
-     * Ensures that no null values are passed to the record.
+     * Ensures that no null values are passed to the record and creates defensive copies of mutable objects.
      * @throws IllegalArgumentException if any parameter is null
      */
     public Enemy {
@@ -40,5 +42,26 @@ public record Enemy(
         if (level < 0) {
             throw new IllegalArgumentException("Level cannot be negative");
         }
+        // Create defensive copies of mutable objects
+        attacks = new ArrayList<>(attacks);
+        damageMultipliers = new HashMap<>(damageMultipliers);
+    }
+
+    /**
+     * Returns a defensive copy of the attacks list.
+     * @return a new list containing the attacks
+     */
+    @Override
+    public List<Pair<String, Double>> attacks() {
+        return new ArrayList<>(attacks);
+    }
+
+    /**
+     * Returns a defensive copy of the damage multipliers map.
+     * @return a new map containing the damage multipliers
+     */
+    @Override
+    public Map<String, Double> damageMultipliers() {
+        return new HashMap<>(damageMultipliers);
     }
 }

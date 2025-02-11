@@ -1,6 +1,7 @@
 package it.unibo.templetower.model;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Record representing a floor's in the game.
@@ -23,11 +24,18 @@ public record Floor(
      * @throws IllegalArgumentException if required parameters are null or if spawnWeight is less than 1
      */
     public Floor {
-        if (floorName == null || spritePath == null) {
+        if (floorName == null || spritePath == null || rooms == null) {
             throw new IllegalArgumentException("Required floor parameters cannot be null");
         }
         if (visibility < 0.0 || visibility > 1.0) {
             throw new IllegalArgumentException("Visibility must be between 0 and 1");
         }
+        // Create defensive copy of mutable list
+        rooms = new ArrayList<>(rooms);
+    }
+
+    @Override
+    public List<Room> rooms() {
+        return new ArrayList<>(rooms);
     }
 }

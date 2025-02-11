@@ -22,11 +22,11 @@ public final class EnemyGenerator {
      * @return the chosen Enemy
      */
     public static Enemy pickEnemyByBudget(final List<Enemy> enemyList, final int budget, final Random random) {
-        int target = random.nextInt(budget) + 1; // random value in [1, budget]
+        final int target = random.nextInt(budget) + 1; // random value in [1, budget]
         Enemy best = enemyList.get(0);
         int bestDiff = Math.abs(best.level() - target);
-        for (Enemy e : enemyList) {
-            int diff = Math.abs(e.level() - target);
+        for (final Enemy e : enemyList) {
+            final int diff = Math.abs(e.level() - target);
             if (diff < bestDiff) {
                 best = e;
                 bestDiff = diff;

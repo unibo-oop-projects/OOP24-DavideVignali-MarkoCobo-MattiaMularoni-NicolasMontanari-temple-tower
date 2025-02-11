@@ -53,12 +53,12 @@ public final class TreasureRoom implements RoomBehavior {
      * Run one of probabilistic action on list based on the given probabilities.
      */
     private void probabilisticRunner(final List<Double> probabilities, final List<Runnable> actions) {
-        double cumulativeProbability = probabilities.stream().mapToDouble(mapper -> mapper).sum();
+        final double cumulativeProbability = probabilities.stream().mapToDouble(mapper -> mapper).sum();
         if (Math.abs(cumulativeProbability - 1.0) > EPSILON) {
             throw new IllegalArgumentException("Probabilities must sum to 1");
         }
 
-        double roll = random.nextDouble();
+        final double roll = random.nextDouble();
         double cumulative = 0;
         for (int i = 0; i < probabilities.size(); i++) {
             cumulative += probabilities.get(i);
@@ -70,9 +70,9 @@ public final class TreasureRoom implements RoomBehavior {
     }
 
     private Enemy generateEnemy() {
-        List<Pair<String, Double>> attacks = new ArrayList<>();
+        final List<Pair<String, Double>> attacks = new ArrayList<>();
         attacks.add(new Pair<>("magical", ENEMY_ATTACK_DAMAGE));
-        Map<String, Double> damageMultipliers = new HashMap<>();
+        final Map<String, Double> damageMultipliers = new HashMap<>();
         damageMultipliers.put("magical", 1.0);
         return new Enemy("Treasure_enemy", ENEMY_BASE_HEALTH, this.level, attacks, damageMultipliers, "");
     }

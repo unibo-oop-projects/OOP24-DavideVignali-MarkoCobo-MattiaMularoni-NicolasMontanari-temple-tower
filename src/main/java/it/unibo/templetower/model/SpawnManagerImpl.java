@@ -22,6 +22,7 @@ public class SpawnManagerImpl {
     private static final double TREASURE_COIN_CHANCE = 0.4;
 
     private final List<FloorData> floors;
+    private final Random random;
 
     /**
      * Creates a new SpawnManager with the given floor data.
@@ -30,6 +31,7 @@ public class SpawnManagerImpl {
      */
     public SpawnManagerImpl(final List<FloorData> floors) {
         this.floors = new ArrayList<>(floors);
+        this.random = new Random();
     }
 
     /**
@@ -55,7 +57,6 @@ public class SpawnManagerImpl {
     public Floor spawnFloor(final int level, final int roomNumber) {
         final FloorData generatedFloor = selectFloortype(level);
         final List<Room> generatedRooms = new ArrayList<>();
-        final Random random = new Random();
         final int stairsIndex = random.nextInt(roomNumber);
         int enemyBudget = level * BUDGET_MULTIPLIER;
 

@@ -33,17 +33,17 @@ public final class EnterMenu {
      */
     public Scene createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
-        StackPane root = new StackPane();
+        final StackPane root = new StackPane();
 
         // Set up background image
-        InputStream backgroundStream = getClass().getClassLoader()
+        final InputStream backgroundStream = getClass().getClassLoader()
                 .getResourceAsStream("images/Entermenu.png");
         if (backgroundStream == null) {
             throw new FileNotFoundException("Could not find background image: images/Entermenu.png");
         }
 
         // Create and configure background
-        ImageView background = new ImageView(new Image(backgroundStream));
+        final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
         background.setFitWidth(WINDOW_WIDTH);
         background.setFitHeight(WINDOW_HEIGHT);
@@ -55,25 +55,25 @@ public final class EnterMenu {
                 -> background.setFitHeight(newVal.doubleValue()));
 
         // Create content layout
-        VBox content = new VBox(BUTTON_SPACING);
+        final VBox content = new VBox(BUTTON_SPACING);
         content.setAlignment(Pos.CENTER);
 
         // Add difficulty menu button
-        Button difficultyButton = new Button("Go to Difficulty Menu");
+        final Button difficultyButton = new Button("Go to Difficulty Menu");
         difficultyButton.setOnAction(e -> {
             // Non fermiamo più la musica quando cambiamo scena
             manager.switchTo("difficulty_menu");
         });
         content.getChildren().add(difficultyButton);
 
-        VBox rightButtons = new VBox(BUTTON_SPACING);
+        final VBox rightButtons = new VBox(BUTTON_SPACING);
         rightButtons.setAlignment(Pos.CENTER_RIGHT);
         rightButtons.setPadding(new Insets(0, RIGHT_PADDING, 0, 0)); // Add right padding
 
-        Button personalizationButton = new Button("Personalization");
-        Button leaderBoardButton = new Button("LeaderBoard");
-        Button moddingButton = new Button("Modding Menu");
-        Button settingsButton = new Button("Settings");
+        final Button personalizationButton = new Button("Personalization");
+        final Button leaderBoardButton = new Button("LeaderBoard");
+        final Button moddingButton = new Button("Modding Menu");
+        final Button settingsButton = new Button("Settings");
 
         // Add action handlers for the new buttons
         personalizationButton.setOnAction(e -> {
@@ -93,16 +93,15 @@ public final class EnterMenu {
         rightButtons.getChildren().addAll(personalizationButton, leaderBoardButton, moddingButton, settingsButton);
 
         // Create main layout using BorderPane
-        BorderPane mainLayout = new BorderPane();
+        final BorderPane mainLayout = new BorderPane();
         mainLayout.setCenter(content);
         mainLayout.setRight(rightButtons);
 
         // Combine background and content
         root.getChildren().addAll(background, mainLayout);
 
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        return scene;
+        // Return scene directly without storing in a variable
+        return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     }
 

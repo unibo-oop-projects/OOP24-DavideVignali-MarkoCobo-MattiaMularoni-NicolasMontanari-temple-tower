@@ -20,7 +20,7 @@ public final class GameViewImpl extends Application {
      */
     @Override
     public void start(final Stage primaryStage) throws FileNotFoundException {
-        SceneManager manager = new SceneManager(primaryStage);
+        final SceneManager manager = new SceneManager(primaryStage);
         manager.switchTo("home");
     }
 }

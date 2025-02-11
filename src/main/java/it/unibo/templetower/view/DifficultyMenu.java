@@ -29,12 +29,12 @@ public final class DifficultyMenu {
      */
     public Scene createScene(final SceneManager manager, final GameController controller) {
         // Create root container
-        StackPane root = new StackPane();
+        final StackPane root = new StackPane();
 
         // Set up background image
-        InputStream backgroundStream = getClass().getClassLoader()
+        final InputStream backgroundStream = getClass().getClassLoader()
                 .getResourceAsStream("images/menu.png");
-        ImageView background = new ImageView(new Image(backgroundStream));
+        final ImageView background = new ImageView(new Image(backgroundStream));
 
         // Configure background properties
         background.setPreserveRatio(false);
@@ -48,13 +48,13 @@ public final class DifficultyMenu {
                 -> background.setFitHeight(newVal.doubleValue()));
 
         // Create difficulty buttons layout
-        VBox buttonContainer = new VBox(BUTTON_SPACING);
+        final VBox buttonContainer = new VBox(BUTTON_SPACING);
         buttonContainer.setAlignment(Pos.CENTER);
 
         // Create difficulty buttons
-        Button easyButton = new Button("FACILE");
-        Button mediumButton = new Button("INTERMEDIO");
-        Button hardButton = new Button("DIFFICILE");
+        final Button easyButton = new Button("FACILE");
+        final Button mediumButton = new Button("INTERMEDIO");
+        final Button hardButton = new Button("DIFFICILE");
 
         // Set button actions
         easyButton.setOnAction(e -> manager.switchTo("main_floor_view"));

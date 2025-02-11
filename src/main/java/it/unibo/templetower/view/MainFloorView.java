@@ -26,6 +26,9 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
+import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * This scene represents a floor of the game, where the player can move between rooms.
@@ -48,6 +51,7 @@ public class MainFloorView {
     private static final int SHADOW_Y_OFFSET = 2;
     private static final Color HIGHLIGHT_COLOR = Color.rgb(138, 74, 243);
     private static final int SECTOR_ANGLE_OFFSET = 35;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainFloorView.class);
     private Pane dPane;
     private Circle outer;
     private Circle inner;
@@ -66,12 +70,12 @@ public class MainFloorView {
      */
     public Scene createScene(final SceneManager manager, final GameController controller) {
         //Background
-        BorderPane root = new BorderPane();
+        final BorderPane root = new BorderPane();
         dPane = new Pane();
         root.setCenter(dPane);
         root.setId("circle-room-back");
 
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
+        final Scene scene = new Scene(root, WIDTH, HEIGHT);
 
         //Inner and outer circles for create the rooms container
         this.nRooms = controller.getNumberOfRooms();
@@ -87,9 +91,9 @@ public class MainFloorView {
         createButtons(controller, manager);
 
         /* Assetmanager test */
-        ClassLoader loader = getClass().getClassLoader();
-        InputStream spritetest = loader.getResourceAsStream(controller.getEnemySpritePath(ENEMY_SPRITE_ID));
-        ImageView spriteImg = new ImageView(new Image(spritetest));
+        final ClassLoader loader = getClass().getClassLoader();
+        final InputStream spritetest = loader.getResourceAsStream(controller.getEnemySpritePath(ENEMY_SPRITE_ID));
+        final ImageView spriteImg = new ImageView(new Image(spritetest));
         dPane.getChildren().add(spriteImg);
 
         return scene;
@@ -132,26 +136,26 @@ public class MainFloorView {
     }
 
     private Circle createCircle(final String id, final double radius) {
-        Circle circle = new Circle(radius);
+        final Circle circle = new Circle(radius);
         circle.setId(id);
         return circle;
     }
 
     //Adapts the scene to the screen size
     private void adaptScene(final Scene scene, final GameController controller) {
-        double centerX = scene.getWidth() / 2;
-        double centerY = scene.getHeight() / 2;
+        final double centerX = scene.getWidth() / 2;
+        final double centerY = scene.getHeight() / 2;
 
         updateCirclePositionAndRadius(outer, centerX, centerY, 
         Math.min(scene.getWidth(), scene.getHeight()) / 3);
         updateCirclePositionAndRadius(inner, centerX, centerY, 
         Math.min(scene.getWidth(), scene.getHeight()) / INNER_CIRCLE_RATIO);
 
-        double roomRadius = (outer.getRadius() + inner.getRadius()) / 2;
+        final double roomRadius = (outer.getRadius() + inner.getRadius()) / 2;
         dPane.getChildren().removeIf(node -> node instanceof Arc || node instanceof Text 
         || node instanceof Line || node instanceof HBox);
 
-        buttons.setLayoutX(centerX - ((buttons.getPrefWidth() * 3) / 2));
+        buttons.setLayoutX(centerX - buttons.getPrefWidth() * 3 / 2);
         buttons.setLayoutY(scene.getHeight() / BUTTON_VERTICAL_POSITION);
 
         dPane.getChildren().add(buttons);
@@ -161,8 +165,16 @@ public class MainFloorView {
             createRoomAndSector(i, centerX, centerY, roomRadius);
         }
 
-        Image im = new Image("/Images/inner_circle_background.png", false);
-        inner.setFill(new ImagePattern(im));
+        try {
+            final URL imageUrl = MainFloorView.class.getResource("/Images/inner_circle_background.png");
+            if (imageUrl != null) {
+                final Image im = new Image(imageUrl.toExternalForm(), false);
+                inner.setFill(new ImagePattern(im));
+            }
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Failed to load inner circle background image", e);
+        }
+
         inner.setEffect(new DropShadow(SHADOW_SPREAD, 0d, SHADOW_Y_OFFSET, Color.DARKSEAGREEN));
         inner.toFront();
         Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom()));
@@ -177,14 +189,14 @@ public class MainFloorView {
 
     private void createRoomAndSector(final int roomIndex, final double centerX,
             final double centerY, final double roomRadius) {
-        double angle = 2 * Math.PI / nRooms * roomIndex;
-        double x = centerX + roomRadius * Math.cos(angle) - SECTOR_ANGLE_OFFSET;
-        double y = centerY + roomRadius * Math.sin(angle) - SECTOR_ANGLE_OFFSET;
+        final double angle = 2 * Math.PI / nRooms * roomIndex;
+        final double x = centerX + roomRadius * Math.cos(angle) - SECTOR_ANGLE_OFFSET;
+        final double y = centerY + roomRadius * Math.sin(angle) - SECTOR_ANGLE_OFFSET;
 
         // Room label
         dPane.getChildren().add(createRoomLabel(x, y, roomIndex));
 
-        Arc sector = createSector(centerX, centerY, outer.getRadius(), roomIndex);
+        final Arc sector = createSector(centerX, centerY, outer.getRadius(), roomIndex);
 
         //add the sector to the map for highlighting
         sectorMap.put(roomIndex, sector);
@@ -198,11 +210,11 @@ public class MainFloorView {
         sectorMap.values().forEach(sector -> sector.setFill(null));
 
         // Highlight the selected sector
-        Arc selectedSector = sectorMap.get(roomIndex);
+        final Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
             selectedSector.setFill(HIGHLIGHT_COLOR);
 
-            FadeTransition fade = new FadeTransition(Duration.seconds(FADE_DURATION), selectedSector);
+            final FadeTransition fade = new FadeTransition(Duration.seconds(FADE_DURATION), selectedSector);
             fade.setFromValue(1.0);
             fade.setToValue(FADE_MIN_OPACITY);
             fade.setCycleCount(Animation.INDEFINITE);
@@ -212,7 +224,7 @@ public class MainFloorView {
     }
 
     private Text createRoomLabel(final double x, final double y, final int roomIndex) {
-        Text label = new Text(x + 10, y + ROOM_LABEL_OFFSET, "R" + (roomIndex + 1));
+        final Text label = new Text(x + 10, y + ROOM_LABEL_OFFSET, "R" + (roomIndex + 1));
         label.setFill(Color.WHITE);
         return label;
     }
@@ -221,22 +233,22 @@ public class MainFloorView {
             final double outerRadius, final int roomIndex) {
         double startAngle = (nRooms - roomIndex - 1) * (360.0 / nRooms);
         startAngle = startAngle + ANGLE_OFFSET;
-        double sectorLength = 360.0 / nRooms;
+        final double sectorLength = 360.0 / nRooms;
 
-        Arc sector = new Arc(centerX, centerY, outerRadius, outerRadius, startAngle, sectorLength);
+        final Arc sector = new Arc(centerX, centerY, outerRadius, outerRadius, startAngle, sectorLength);
         sector.getStyleClass().add("sector");
         sector.setType(ArcType.ROUND);
         return sector;
     }
 
     private Line createDivisionLine(final double centerX, final double centerY, final double angle) {
-        double rotatedAngle = angle - 90;
-        double startX = centerX + inner.getRadius() * Math.cos(rotatedAngle + Math.PI / 2); // Cerchio interno
-        double startY = centerY + inner.getRadius() * Math.sin(rotatedAngle + Math.PI / 2);
-        double endX = centerX + outer.getRadius() * Math.cos(rotatedAngle + Math.PI / 2);   // Cerchio esterno
-        double endY = centerY + outer.getRadius() * Math.sin(rotatedAngle + Math.PI / 2);
+        final double rotatedAngle = angle - 90;
+        final double startX = centerX + inner.getRadius() * Math.cos(rotatedAngle + Math.PI / 2); // Cerchio interno
+        final double startY = centerY + inner.getRadius() * Math.sin(rotatedAngle + Math.PI / 2);
+        final double endX = centerX + outer.getRadius() * Math.cos(rotatedAngle + Math.PI / 2);   // Cerchio esterno
+        final double endY = centerY + outer.getRadius() * Math.sin(rotatedAngle + Math.PI / 2);
 
-        Line line = new Line(startX, startY, endX, endY);
+        final Line line = new Line(startX, startY, endX, endY);
         line.setStroke(Color.WHITE);
         return line;
     }

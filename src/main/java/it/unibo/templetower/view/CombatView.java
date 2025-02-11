@@ -18,6 +18,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents the combat view of the game where battles take place.
@@ -34,6 +36,8 @@ public final class CombatView {
     private static final int ATTACK_DISTANCE = 30;
     private static final double INITIAL_HEALTH = 1.0;
     private static final int MAX_HEALTH = 100;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CombatView.class);
 
     private ProgressBar playerHealthBar;
     private ProgressBar enemyHealthBar;
@@ -67,7 +71,8 @@ public final class CombatView {
             });
 
             root.getChildren().add(backgroundView);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Failed to load background image: {}", e.getMessage());
             final Label errorLabel = new Label("Background image not found.");
             errorLabel.getStyleClass().add("label");
             root.getChildren().add(errorLabel);
@@ -145,14 +150,14 @@ public final class CombatView {
         healthBarsPane.setRight(enemyHealthBox);
 
         exitButton.setOnAction(e -> {
-            System.err.println("controller life: " + controller.getEnemyLifePoints());
+            LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
             manager.switchTo("main_floor_view");
         });
 
         attackButton.setOnAction(event -> {
-            System.err.println("controller life: " + controller.getEnemyLifePoints());
+            LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
             final Timeline timeline = new Timeline();
-            final double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - ATTACK_DISTANCE;
+            final double distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - ATTACK_DISTANCE;
             final KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
             final KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
             timeline.getKeyFrames().add(kf);
@@ -164,8 +169,8 @@ public final class CombatView {
                 final double playerDamage = controller.getPlayerLife();
 
                 // Aggiorna le barre di salute
-                double playerHealth = playerHealthBar.getProgress() - (playerDamage / MAX_HEALTH);
-                double enemyHealth = enemyHealthBar.getProgress() - (enemyDamage / MAX_HEALTH);
+                double playerHealth = playerHealthBar.getProgress() - playerDamage / MAX_HEALTH;
+                double enemyHealth = enemyHealthBar.getProgress() - enemyDamage / MAX_HEALTH;
 
                 if (playerHealth < 0) {
                     playerHealth = 0;

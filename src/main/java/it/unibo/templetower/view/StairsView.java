@@ -29,24 +29,24 @@ public final class StairsView {
      */
     public Scene createScene(final SceneManager manager, final GameController controller) {
         // Creazione della label con il messaggio
-        Label message = new Label("Do you want to go to the next floor?");
+        final Label message = new Label("Do you want to go to the next floor?");
 
         // Creazione dei pulsanti
-        Button yesButton = new Button("Yes");
-        Button noButton = new Button("No");
+        final Button yesButton = new Button("Yes");
+        final Button noButton = new Button("No");
 
         // Preparazione del video
-        String videoPath = getClass().getResource("/video/treasure.mp4").toExternalForm();
-        Media media = new Media(videoPath);
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        MediaView mediaView = new MediaView(mediaPlayer);
+        final String videoPath = getClass().getResource("/video/treasure.mp4").toExternalForm();
+        final Media media = new Media(videoPath);
+        final MediaPlayer mediaPlayer = new MediaPlayer(media);
+        final MediaView mediaView = new MediaView(mediaPlayer);
 
         // Layout iniziale con messaggio e pulsanti
-        VBox layout = new VBox(SPACING, message, yesButton, noButton);
+        final VBox layout = new VBox(SPACING, message, yesButton, noButton);
         layout.setAlignment(Pos.CENTER);
 
         // Contenitore principale per gestire il passaggio alla modalità video
-        StackPane root = new StackPane(layout);
+        final StackPane root = new StackPane(layout);
 
         yesButton.setOnAction(event -> {
             controller.goToNextFloor();

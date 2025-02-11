@@ -20,7 +20,6 @@ import it.unibo.templetower.utils.Pair;
 public final class GameControllerImpl implements GameController {
     private final List<Room> rooms;
     private int currentRoomIndex; // Traccia la stanza attuale
-    private int currentFloorIndex; // traccia il piano attuale
     private final Player player;
     private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
@@ -53,7 +52,7 @@ public final class GameControllerImpl implements GameController {
         assetManager.addEnemyAsset(DEFAULT_ENEMY_LEVEL, "images/enemy.png");
 
         // first weapon
-        startWeapon = new Weapon("GUN", 1, new Pair<String, Double>("Gun", 1.0), testPath);
+        startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), testPath);
 
         rooms = generatedFloor.rooms();
         player = new PlayerImpl(startWeapon, Optional.empty());
@@ -88,8 +87,7 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void goToNextFloor() {
-        currentFloorIndex += 1;
-        gameDataManager.getFloors().get(currentFloorIndex);
+        // TODO implements logic to change floor
     }
 
     /**
@@ -129,7 +127,6 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public double getPlayerLife() {
-        rooms.get(currentRoomIndex).getLifePlayer(player);
         return player.getLife();
     }
 

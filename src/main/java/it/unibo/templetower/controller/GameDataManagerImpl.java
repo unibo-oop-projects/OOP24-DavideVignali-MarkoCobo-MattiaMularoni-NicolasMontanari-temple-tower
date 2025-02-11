@@ -1,7 +1,9 @@
 package it.unibo.templetower.controller;
 
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,7 +131,7 @@ public final class GameDataManagerImpl {
     }
 
     private void loadFloors() {
-        try (FileReader reader = new FileReader(floorsPath)) {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(floorsPath), StandardCharsets.UTF_8)) {
             final JsonArray floorsArray = JsonParser.parseReader(reader).getAsJsonArray();
             for (final var floorElement : floorsArray) {
                 final JsonObject floorObj = floorElement.getAsJsonObject();
@@ -165,7 +167,7 @@ public final class GameDataManagerImpl {
         if (enemyPath.isEmpty()) {
             return Optional.empty();
         }
-        try (FileReader reader = new FileReader(enemyPath)) {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(enemyPath), StandardCharsets.UTF_8)) {
             final List<Enemy> enemies = gson.fromJson(reader, new TypeToken<List<Enemy>>() { }.getType());
             return enemies != null && !enemies.isEmpty() ? Optional.of(enemies) : Optional.empty();
         } catch (final IOException e) {
@@ -178,10 +180,11 @@ public final class GameDataManagerImpl {
         if (weaponsPath.isEmpty()) {
             return Optional.empty();
         }
-        try (FileReader reader = new FileReader(weaponsPath)) {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(weaponsPath), StandardCharsets.UTF_8)) {
             final List<Weapon> weapons = gson.fromJson(reader, new TypeToken<List<Weapon>>() { }.getType());
             return weapons != null && !weapons.isEmpty() ? Optional.of(weapons) : Optional.empty();
         } catch (final IOException e) {
+            LOGGER.error("Error loading weapons: {}", e.getMessage(), e);
             return Optional.empty();
         }
     }
@@ -207,7 +210,8 @@ public final class GameDataManagerImpl {
         if (towerHeight < 1) {
             return false;
         }
-        try (FileReader reader = new FileReader(Paths.get(testPath).toString())) {
+        try (InputStreamReader reader = new InputStreamReader(
+            new FileInputStream(Paths.get(testPath).toString()), StandardCharsets.UTF_8)) {
             final JsonArray floorsArray = JsonParser.parseReader(reader).getAsJsonArray();
             if (floorsArray == null || floorsArray.size() == 0) {
                 return false;
@@ -241,7 +245,7 @@ public final class GameDataManagerImpl {
 
             return true;
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error verifying path: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -253,7 +257,7 @@ public final class GameDataManagerImpl {
      * @return true if the file exists and contains valid enemy data, false otherwise
      */
     private boolean verifyEnemyFile(final String enemyPath) {
-        try (FileReader reader = new FileReader(enemyPath)) {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(enemyPath), StandardCharsets.UTF_8)) {
             final JsonArray enemiesArray = JsonParser.parseReader(reader).getAsJsonArray();
             return enemiesArray != null && enemiesArray.size() > 0;
         } catch (final IOException e) {
@@ -269,11 +273,11 @@ public final class GameDataManagerImpl {
      * @return true if the file exists and contains valid weapon data, false otherwise
      */
     private boolean verifyWeaponFile(final String weaponsPath) {
-        try (FileReader reader = new FileReader(weaponsPath)) {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(weaponsPath), StandardCharsets.UTF_8)) {
             final JsonArray weaponsArray = JsonParser.parseReader(reader).getAsJsonArray();
             return weaponsArray != null && weaponsArray.size() > 0;
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error verifying weapon file: {}", e.getMessage(), e);
             return false;
         }
     }

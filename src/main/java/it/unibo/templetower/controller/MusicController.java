@@ -75,8 +75,12 @@ public final class MusicController {
             audioClip.setFramePosition(0);
             audioClip.loop(Clip.LOOP_CONTINUOUSLY);
 
-        } catch (final Exception e) {
-            LOGGER.error("Errore nel caricamento della musica: {}", e.getMessage(), e);
+        } catch (javax.sound.sampled.UnsupportedAudioFileException e) {
+            LOGGER.error("Audio file format not supported: {}", e.getMessage(), e);
+        } catch (javax.sound.sampled.LineUnavailableException e) {
+            LOGGER.error("Audio line unavailable: {}", e.getMessage(), e);
+        } catch (java.io.IOException e) {
+            LOGGER.error("IO error while loading audio: {}", e.getMessage(), e);
         }
     }
 

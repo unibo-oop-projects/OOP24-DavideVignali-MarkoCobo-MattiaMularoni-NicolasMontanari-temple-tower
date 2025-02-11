@@ -1,9 +1,13 @@
 package it.unibo.templetower.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Represents a trap that can damage players when they interact with it.
  */
 public final class Trap implements RoomBehavior {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Trap.class);
     private final int damage;
 
     /**
@@ -27,7 +31,7 @@ public final class Trap implements RoomBehavior {
      */
     @Override
     public void interact(final Player player, final int direction) {
-        System.out.println("Player take a trap");
+        LOGGER.info("Player triggered a trap");
         player.takeDamage(damage);
     }
 
