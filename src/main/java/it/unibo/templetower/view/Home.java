@@ -17,11 +17,26 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class Home {
+/**
+ * Home screen view class that manages the initial game screen and background music.
+ * This class is not designed for extension.
+ */
+public final class Home {
+
+    private static final int WINDOW_WIDTH = 400;
+    private static final int WINDOW_HEIGHT = 300;
+    private static final float MUSIC_VOLUME = -10.0f;
 
     private Clip audioClip;
 
-    public Scene createScene(SceneManager manager) throws FileNotFoundException {
+    /**
+     * Creates and returns the home scene with background image and menu button.
+     *
+     * @param manager The scene manager to handle scene transitions
+     * @return Scene object representing the home screen
+     * @throws FileNotFoundException if background image resource cannot be found
+     */
+    public Scene createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         StackPane root = new StackPane();
 
@@ -35,8 +50,8 @@ public class Home {
         // Create and configure background
         ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        background.setFitWidth(400);
-        background.setFitHeight(300);
+        background.setFitWidth(WINDOW_WIDTH);
+        background.setFitHeight(WINDOW_HEIGHT);
 
         // Make background responsive to window resizing
         root.widthProperty().addListener((obs, old, newVal)
@@ -59,7 +74,7 @@ public class Home {
         // Combine background and content
         root.getChildren().addAll(background, content);
 
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         try {
             InputStream audioStream = getClass().getClassLoader()
@@ -80,7 +95,7 @@ public class Home {
             // Imposta il volume
             FloatControl gainControl
                     = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-10.0f);
+            gainControl.setValue(MUSIC_VOLUME);
 
             // Avvia la musica immediatamente
             audioClip.setFramePosition(0);
@@ -95,6 +110,9 @@ public class Home {
 
     }
 
+    /**
+     * Stops the background music if it is currently playing.
+     */
     public void stopMusic() {
         if (audioClip != null && audioClip.isRunning()) {
             audioClip.stop();

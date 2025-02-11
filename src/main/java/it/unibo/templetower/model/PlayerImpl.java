@@ -2,6 +2,8 @@ package it.unibo.templetower.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Player interface representing a player in the game.
@@ -9,7 +11,8 @@ import java.util.Optional;
  */
 public final class PlayerImpl implements Player {
 
-    private List<Weapon> weapon;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlayerImpl.class);
+    private final List<Weapon> weapon;
     private double life;
     private Optional<Room> actualRoom;
     private int experience;
@@ -43,7 +46,7 @@ public final class PlayerImpl implements Player {
 
     @Override
     public void takeDamage(final double damage) {
-        System.out.println("Player got damaged");
+        LOGGER.info("Player got damaged");
         this.life = this.life - damage;
     }
 
@@ -62,7 +65,7 @@ public final class PlayerImpl implements Player {
 
     @Override
     public void changeWeapon(final Weapon weapon) {
-        System.out.println("Player changed weapon");
+        LOGGER.info("Player changed weapon");
         this.actualWeaponIndex += 1;
         if (this.actualWeaponIndex == 3) {
             this.actualWeaponIndex = 0;
@@ -71,7 +74,7 @@ public final class PlayerImpl implements Player {
 
     @Override
     public void changeRoom(final Room room) {
-        System.out.println("Player changed room: " + room.getId());
+        LOGGER.info("Player changed room: {}", room.getId());
         this.actualRoom = Optional.of(room);
     }
 
@@ -85,6 +88,7 @@ public final class PlayerImpl implements Player {
      * 
      * @return the current weapon
      */
+    @Override
     public Weapon getActualWeapon() {
         return this.weapon.get(actualWeaponIndex);
     }
@@ -94,13 +98,14 @@ public final class PlayerImpl implements Player {
      * 
      * @return the current life points
      */
+    @Override
     public double getLife() {
         return this.life;
     }
 
     @Override
     public void increaseExperience(final int xp) {
-        System.out.println("Player increased experience");
+        LOGGER.info("Player increased experience");
         this.experience += xp;
     }
 

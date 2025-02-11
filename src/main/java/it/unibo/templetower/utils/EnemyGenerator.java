@@ -7,7 +7,11 @@ import it.unibo.templetower.model.Enemy;
 /**
  * Utility class for generating enemies based on a level budget.
  */
-public class EnemyGenerator {
+public final class EnemyGenerator {
+
+    private EnemyGenerator() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
 
     /**
      * Picks an enemy from the provided list whose level is closest to a random target between 1 and budget.
@@ -17,7 +21,7 @@ public class EnemyGenerator {
      * @param random an instance of Random
      * @return the chosen Enemy
      */
-    public static Enemy pickEnemyByBudget(List<Enemy> enemyList, int budget, Random random) {
+    public static Enemy pickEnemyByBudget(final List<Enemy> enemyList, final int budget, final Random random) {
         int target = random.nextInt(budget) + 1; // random value in [1, budget]
         Enemy best = enemyList.get(0);
         int bestDiff = Math.abs(best.level() - target);

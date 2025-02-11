@@ -8,15 +8,23 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Controller class for managing background music in the game.
  * Implements the Singleton pattern to ensure only one instance controls the audio.
  */
 public final class MusicController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MusicController.class);
     private static final float DEFAULT_VOLUME = -10.0f;
-    private static MusicController instance;
+    private static volatile MusicController instance;
     private Clip audioClip;
+
+    private MusicController() {
+        // Private constructor to prevent instantiation
+    }
 
     /**
      * Returns the singleton instance of MusicController.
@@ -24,7 +32,11 @@ public final class MusicController {
      */
     public static MusicController getInstance() {
         if (instance == null) {
-            instance = new MusicController();
+            synchronized (MusicController.class) {
+                if (instance == null) {
+                    instance = new MusicController();
+                }
+            }
         }
         return instance;
     }
@@ -39,15 +51,15 @@ public final class MusicController {
             stopMusic();
 
             // Carica la nuova musica
-            InputStream audioStream = getClass().getClassLoader()
+            final InputStream audioStream = getClass().getClassLoader()
                     .getResourceAsStream("audio/" + musicFile);
 
             if (audioStream == null) {
-                System.out.println("File audio non trovato: " + musicFile);
+                LOGGER.error("File audio non trovato: {}", musicFile);
                 return;
             }
 
-            AudioInputStream audioInput = AudioSystem.getAudioInputStream(
+            final AudioInputStream audioInput = AudioSystem.getAudioInputStream(
                     new BufferedInputStream(audioStream)
             );
 
@@ -55,7 +67,7 @@ public final class MusicController {
             audioClip.open(audioInput);
 
             // Imposta il volume
-            FloatControl gainControl
+            final FloatControl gainControl
                     = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(DEFAULT_VOLUME);
 
@@ -63,9 +75,8 @@ public final class MusicController {
             audioClip.setFramePosition(0);
             audioClip.loop(Clip.LOOP_CONTINUOUSLY);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Errore nel caricamento della musica: " + e.getMessage());
+        } catch (final Exception e) {
+            LOGGER.error("Errore nel caricamento della musica: {}", e.getMessage(), e);
         }
     }
 

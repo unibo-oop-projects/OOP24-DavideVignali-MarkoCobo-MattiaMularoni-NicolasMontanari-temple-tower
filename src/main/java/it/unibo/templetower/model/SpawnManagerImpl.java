@@ -53,31 +53,31 @@ public class SpawnManagerImpl {
      * @return a Floor with all the rooms generated
      */
     public Floor spawnFloor(final int level, final int roomNumber) {
-        FloorData generatedFloor = selectFloortype(level);
-        List<Room> generatedRooms = new ArrayList<>();
-        Random random = new Random();
-        int stairsIndex = random.nextInt(roomNumber);
+        final FloorData generatedFloor = selectFloortype(level);
+        final List<Room> generatedRooms = new ArrayList<>();
+        final Random random = new Random();
+        final int stairsIndex = random.nextInt(roomNumber);
         int enemyBudget = level * BUDGET_MULTIPLIER;
 
         for (int i = 0; i < roomNumber; i++) {
             if (i == stairsIndex) {
                 generatedRooms.add(new Room(new StairsRoom(), "stairs_view", i));
             } else {
-                double roll = random.nextDouble();
+                final double roll = random.nextDouble();
                 if (roll < ENEMY_ROOM_CHANCE) {
-                    var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
+                    final var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
                     if (enemies.isEmpty()) {
                         generatedRooms.add(new Room(null, "empty_view", i));
                     } else {
-                        Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
+                        final Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
                         enemyBudget = Math.max(1, enemyBudget - selectedEnemy.level());
                         generatedRooms.add(new Room(new EnemyRoom(selectedEnemy), "combat_view", i));
                     }
                 } else if (roll < ENEMY_ROOM_CHANCE + EMPTY_ROOM_CHANCE) {
                     generatedRooms.add(new Room(null, "empty_view", i));
                 } else if (roll < ENEMY_ROOM_CHANCE + EMPTY_ROOM_CHANCE + TREASURE_ROOM_CHANCE) {
-                    var weapons = generatedFloor.weapons().orElse(Collections.emptyList());
-                    Optional<Weapon> randomWeapon = weapons.isEmpty() 
+                    final var weapons = generatedFloor.weapons().orElse(Collections.emptyList());
+                    final Optional<Weapon> randomWeapon = weapons.isEmpty() 
                         ? Optional.empty() 
                         : Optional.of(weapons.get(random.nextInt(weapons.size())));
                     generatedRooms.add(new Room(new TreasureRoom(level, randomWeapon, 
@@ -99,9 +99,9 @@ public class SpawnManagerImpl {
      * @return the FloorData selected based on the level and its spawnWeight, or null if no eligible floor is found
      */
     private FloorData selectFloortype(final int level) {
-        List<FloorData> eligibleFloors = floors.stream()
+        final List<FloorData> eligibleFloors = floors.stream()
             .filter(fd -> {
-                var range = fd.spawningRange();
+                final var range = fd.spawningRange();
                 return level >= range.getX() && level <= range.getY();
             })
             .toList();
@@ -110,10 +110,10 @@ public class SpawnManagerImpl {
             return null;
         }
 
-        int totalWeight = eligibleFloors.stream().mapToInt(FloorData::spawnWeight).sum();
-        double r = Math.random() * totalWeight;
+        final int totalWeight = eligibleFloors.stream().mapToInt(FloorData::spawnWeight).sum();
+        final double r = Math.random() * totalWeight;
         int cumulative = 0;
-        for (FloorData fd : eligibleFloors) {
+        for (final FloorData fd : eligibleFloors) {
             cumulative += fd.spawnWeight();
             if (r < cumulative) {
                 return fd;

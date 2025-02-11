@@ -47,7 +47,7 @@ public class MainFloorView {
     private static final int SHADOW_SPREAD = 25;
     private static final int SHADOW_Y_OFFSET = 2;
     private static final Color HIGHLIGHT_COLOR = Color.rgb(138, 74, 243);
-    
+    private static final int SECTOR_ANGLE_OFFSET = 35;
     private Pane dPane;
     private Circle outer;
     private Circle inner;
@@ -72,23 +72,23 @@ public class MainFloorView {
         root.setId("circle-room-back");
 
         Scene scene = new Scene(root, WIDTH, HEIGHT);
-        
+
         //Inner and outer circles for create the rooms container
         this.nRooms = controller.getNumberOfRooms();
         outer = createCircle("outer-circle-rooms", OUTER_RADIUS);
         inner = createCircle("inner-circle-rooms", INNER_RADIUS);
         dPane.getChildren().addAll(outer, inner);
-        
+
         //Listener for keeping the scene responsive to screen size changes
         scene.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
         scene.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
-        
+
         //Control buttons
         createButtons(controller, manager);
 
         /* Assetmanager test */
-        InputStream spritetest = getClass().getClassLoader()
-                .getResourceAsStream(controller.getEnemySpritePath(ENEMY_SPRITE_ID));
+        ClassLoader loader = getClass().getClassLoader();
+        InputStream spritetest = loader.getResourceAsStream(controller.getEnemySpritePath(ENEMY_SPRITE_ID));
         ImageView spriteImg = new ImageView(new Image(spritetest));
         dPane.getChildren().add(spriteImg);
 
@@ -99,7 +99,6 @@ public class MainFloorView {
         left = new ToggleButton("<");
         right = new ToggleButton(">");
         enter = new ToggleButton("ENTRA");
-        
         buttons = new HBox(left, enter, right);
         buttons.getStyleClass().add("buttons");
         buttons.setAlignment(Pos.BOTTOM_CENTER);
@@ -108,7 +107,7 @@ public class MainFloorView {
         left.setMinWidth(buttons.getPrefWidth());
         right.setMinWidth(buttons.getPrefWidth());
         enter.setMinWidth(buttons.getPrefWidth());
-        
+
         //When the left button is clicked, the player moves to the previous room
         left.setOnMouseClicked(e -> handleRoomChange(controller, -1));
 
@@ -117,7 +116,7 @@ public class MainFloorView {
 
         //When the enter button is clicked, the player moves to the first room
         enter.setOnMouseClicked(e -> handleRoomEnter(controller, manager));
-        
+
         dPane.getChildren().add(buttons);
     }
 
@@ -143,42 +142,44 @@ public class MainFloorView {
         double centerX = scene.getWidth() / 2;
         double centerY = scene.getHeight() / 2;
 
-        updateCirclePositionAndRadius(outer, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / 3);
-        updateCirclePositionAndRadius(inner, centerX, centerY, Math.min(scene.getWidth(), scene.getHeight()) / INNER_CIRCLE_RATIO);
+        updateCirclePositionAndRadius(outer, centerX, centerY, 
+        Math.min(scene.getWidth(), scene.getHeight()) / 3);
+        updateCirclePositionAndRadius(inner, centerX, centerY, 
+        Math.min(scene.getWidth(), scene.getHeight()) / INNER_CIRCLE_RATIO);
 
         double roomRadius = (outer.getRadius() + inner.getRadius()) / 2;
-        dPane.getChildren().removeIf(node -> node instanceof Arc || node instanceof Text || node instanceof Line || node instanceof HBox);
+        dPane.getChildren().removeIf(node -> node instanceof Arc || node instanceof Text 
+        || node instanceof Line || node instanceof HBox);
 
         buttons.setLayoutX(centerX - ((buttons.getPrefWidth() * 3) / 2));
         buttons.setLayoutY(scene.getHeight() / BUTTON_VERTICAL_POSITION);
-        
+
         dPane.getChildren().add(buttons);
         sectorMap.clear();
 
         for (int i = 0; i < controller.getNumberOfRooms(); i++) {
             createRoomAndSector(i, centerX, centerY, roomRadius);
         }
-        
-        Image im = new Image("/Images/inner_circle_background.png",false);
+
+        Image im = new Image("/Images/inner_circle_background.png", false);
         inner.setFill(new ImagePattern(im));
         inner.setEffect(new DropShadow(SHADOW_SPREAD, 0d, SHADOW_Y_OFFSET, Color.DARKSEAGREEN));
         inner.toFront();
         Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom()));
     }
 
-    private void updateCirclePositionAndRadius(final Circle circle, final double centerX, 
+    private void updateCirclePositionAndRadius(final Circle circle, final double centerX,
             final double centerY, final double radius) {
         circle.setCenterX(centerX);
         circle.setCenterY(centerY);
         circle.setRadius(radius);
     }
 
-    private void createRoomAndSector(final int roomIndex, final double centerX, 
+    private void createRoomAndSector(final int roomIndex, final double centerX,
             final double centerY, final double roomRadius) {
-        int ANGLE_COMPENSATION = 35;
         double angle = 2 * Math.PI / nRooms * roomIndex;
-        double x = centerX + roomRadius * Math.cos(angle) - ANGLE_COMPENSATION;
-        double y = centerY + roomRadius * Math.sin(angle) - ANGLE_COMPENSATION;
+        double x = centerX + roomRadius * Math.cos(angle) - SECTOR_ANGLE_OFFSET;
+        double y = centerY + roomRadius * Math.sin(angle) - SECTOR_ANGLE_OFFSET;
 
         // Room label
         dPane.getChildren().add(createRoomLabel(x, y, roomIndex));
@@ -195,7 +196,7 @@ public class MainFloorView {
     private void highlightSector(final int roomIndex) {
         // Reset all previous highlights
         sectorMap.values().forEach(sector -> sector.setFill(null));
-        
+
         // Highlight the selected sector
         Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
@@ -216,7 +217,7 @@ public class MainFloorView {
         return label;
     }
 
-    private Arc createSector(final double centerX, final double centerY, 
+    private Arc createSector(final double centerX, final double centerY,
             final double outerRadius, final int roomIndex) {
         double startAngle = (nRooms - roomIndex - 1) * (360.0 / nRooms);
         startAngle = startAngle + ANGLE_OFFSET;
@@ -240,19 +241,34 @@ public class MainFloorView {
         return line;
     }
 
-    // Getter methods for private fields
+    /**
+     * Gets the left navigation button.
+     * @return The left ToggleButton instance
+     */
     protected ToggleButton getLeftButton() {
         return left;
     }
 
+    /**
+     * Gets the right navigation button.
+     * @return The right ToggleButton instance
+     */
     protected ToggleButton getRightButton() {
         return right;
     }
 
+    /**
+     * Gets the enter button used to access rooms.
+     * @return The enter ToggleButton instance
+     */
     protected ToggleButton getEnterButton() {
         return enter;
     }
 
+    /**
+     * Gets the container holding all navigation buttons.
+     * @return The HBox containing the navigation buttons
+     */
     protected HBox getButtons() {
         return buttons;
     }

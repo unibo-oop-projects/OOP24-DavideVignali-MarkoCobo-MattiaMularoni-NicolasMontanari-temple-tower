@@ -1,26 +1,41 @@
 package it.unibo.templetower.model;
 
-public class Trap implements RoomBehavior{
+/**
+ * Represents a trap that can damage players when they interact with it.
+ */
+public final class Trap implements RoomBehavior {
     private final int damage;
 
-    public Trap(final int damage){
+    /**
+     * Constructs a new trap with specified damage.
+     * @param damage the amount of damage this trap deals
+     */
+    public Trap(final int damage) {
         this.damage = damage;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void generateContent() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
+        // No content needs to be generated for traps
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void interact(Player player, int direction) {
+    public void interact(final Player player, final int direction) {
         System.out.println("Player take a trap");
         player.takeDamage(damage);
     }
 
+    /**
+     * Gets the damage amount of this trap.
+     * @return the damage amount
+     */
     public int getDamage() {
         return this.damage;
     }
-    
 }

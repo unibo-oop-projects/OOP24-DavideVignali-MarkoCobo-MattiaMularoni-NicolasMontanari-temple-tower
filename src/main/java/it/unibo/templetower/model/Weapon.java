@@ -11,4 +11,4 @@ import it.unibo.templetower.utils.Pair;
  * @param attack the attack details of the weapon
  * @param spritePath the file path to the weapon's sprite
  */
-public record Weapon(String name, Integer level, Pair<String,Double> attack, String spritePath) {}
+public record Weapon(String name, Integer level, Pair<String, Double> attack, String spritePath) { }

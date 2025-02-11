@@ -2,12 +2,15 @@ package it.unibo.templetower.util;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import it.unibo.templetower.model.FloorData;
 
 /**
  * Utility class for printing floor details in a formatted way.
  */
 public final class FloorPrinterUtil {
+
+    private static final Logger LOGGER = Logger.getLogger(FloorPrinterUtil.class.getName());
 
     private FloorPrinterUtil() {
         // Utility class constructor
@@ -19,47 +22,47 @@ public final class FloorPrinterUtil {
      * @param floors the list of floor data to print
      */
     public static void printFloorDetails(final List<FloorData> floors) {
-        System.out.println("\n=== Floor Data Details ===");
+        LOGGER.info("\n=== Floor Data Details ===");
         for (int i = 0; i < floors.size(); i++) {
-            FloorData floor = floors.get(i);
-            System.out.println("\nFloor #" + (i + 1));
-            System.out.println("Name: " + floor.floorName());
-            System.out.println("Sprite Path: " + floor.spritePath());
-            System.out.println("Spawn Weight: " + floor.spawnWeight());
-            System.out.println("Visibility: " + floor.visibility());
-            System.out.println("Number of Enemies: " + floor.enemies().map(List::size).orElse(0));
-            System.out.println("Number of Weapons: " + floor.weapons().map(List::size).orElse(0));
-            System.out.println("Level Range: " + floor.spawningRange().getX() 
+            final FloorData floor = floors.get(i);
+            LOGGER.info("\nFloor #" + (i + 1));
+            LOGGER.info("Name: " + floor.floorName());
+            LOGGER.info("Sprite Path: " + floor.spritePath());
+            LOGGER.info("Spawn Weight: " + floor.spawnWeight());
+            LOGGER.info("Visibility: " + floor.visibility());
+            LOGGER.info("Number of Enemies: " + floor.enemies().map(List::size).orElse(0));
+            LOGGER.info("Number of Weapons: " + floor.weapons().map(List::size).orElse(0));
+            LOGGER.info("Level Range: " + floor.spawningRange().getX() 
                                 + " - " + floor.spawningRange().getY());
 
             // Print enemy details with attack IDs and sprite path
-            System.out.println("\nEnemies:");
+            LOGGER.info("\nEnemies:");
             floor.enemies().ifPresent(enemies ->
                 enemies.forEach(enemy -> {
-                    System.out.println("- " + enemy.name() + " (Level " + enemy.level() 
+                    LOGGER.info("- " + enemy.name() + " (Level " + enemy.level() 
                         + ", Health: " + enemy.health() + ")");
-                    System.out.println("  Sprite: " + enemy.spritePath());
+                    LOGGER.info("  Sprite: " + enemy.spritePath());
                     enemy.attacks().forEach(attack -> 
-                        System.out.println("  Attack: " + attack.getX() + " - Damage: " + attack.getY()));
-                    System.out.println("  Damage Multipliers:");
+                        LOGGER.info("  Attack: " + attack.getX() + " - Damage: " + attack.getY()));
+                    LOGGER.info("  Damage Multipliers:");
                     enemy.damageMultipliers().forEach((attackId, multiplier) ->
-                        System.out.println("    " + attackId + ": x" + multiplier));
+                        LOGGER.info("    " + attackId + ": x" + multiplier));
                 })
             );
 
             // Print weapon details with attack type, damage, level and sprite path
-            System.out.println("\nWeapons:");
+            LOGGER.info("\nWeapons:");
             floor.weapons().ifPresent(weapons ->
                 weapons.forEach(weapon -> {
-                    String damage = Optional.ofNullable(weapon.attack())
+                    final String damage = Optional.ofNullable(weapon.attack())
                         .map(attack -> "Type: " + attack.getX() + ", Damage: " + attack.getY())
                         .orElse("N/A");
-                    System.out.println("- " + weapon.name() + " (Level " + weapon.level() + ")");
-                    System.out.println("  " + damage);
-                    System.out.println("  Sprite: " + weapon.spritePath());
+                    LOGGER.info("- " + weapon.name() + " (Level " + weapon.level() + ")");
+                    LOGGER.info("  " + damage);
+                    LOGGER.info("  Sprite: " + weapon.spritePath());
                 })
             );
         }
-        System.out.println("\n=== End of Floor Data ===\n");
+        LOGGER.info("\n=== End of Floor Data ===\n");
     }
 }

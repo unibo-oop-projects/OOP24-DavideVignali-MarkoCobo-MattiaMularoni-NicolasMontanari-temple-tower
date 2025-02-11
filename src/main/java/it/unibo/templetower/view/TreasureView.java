@@ -19,9 +19,28 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
-public class TreasureView {
+/**
+ * View class responsible for displaying the treasure room scene.
+ * This class manages the treasure discovery sequence including
+ * video playback and weapon selection dialog.
+ */
+public final class TreasureView {
 
-    public Scene createScene(SceneManager manager, GameController controller) {
+    private static final int BUTTON_FONT_SIZE = 20;
+    private static final int SCENE_WIDTH = 800;
+    private static final int SCENE_HEIGHT = 600;
+    private static final double WEAPON_DAMAGE = 0.8;
+    private static final int DAMAGE_BAR_WIDTH = 200;
+    private static final int BUTTON_SPACING = 20; // Added constant for HBox spacing
+
+    /**
+     * Creates and returns the treasure room scene.
+     * 
+     * @param manager    the scene manager to handle scene transitions
+     * @param controller the game controller to handle game logic
+     * @return          the created Scene object
+     */
+    public Scene createScene(final SceneManager manager, final GameController controller) {
         // Creazione del layout radice (StackPane)
         StackPane root = new StackPane();
 
@@ -36,11 +55,11 @@ public class TreasureView {
         exitButton.getStyleClass().add("openExitButton");
 
         // Rendere i bottoni più grandi impostando dimensioni e padding
-        openButton.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
-        exitButton.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+        openButton.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
+        exitButton.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
 
         // Contenitore orizzontale per i bottoni, centrato
-        HBox buttonContainer = new HBox(20);
+        HBox buttonContainer = new HBox(BUTTON_SPACING); // Use constant instead of magic number
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.getChildren().addAll(openButton, exitButton);
 
@@ -86,13 +105,18 @@ public class TreasureView {
             });
         }));
 
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
 
         return scene;
     }
 
-    private void showWeaponPopup(Runnable onClose) {
+    /**
+     * Shows a popup dialog for weapon selection.
+     * 
+     * @param onClose callback to be executed when the dialog is closed
+     */
+    private void showWeaponPopup(final Runnable onClose) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Oggetto Trovato!");
         dialog.setHeaderText("Hai trovato un'arma!");
@@ -105,8 +129,8 @@ public class TreasureView {
         imageView.setFitWidth(100);
         imageView.setFitHeight(100);
 
-        ProgressBar damageBar = new ProgressBar(0.8);
-        damageBar.setPrefWidth(200);
+        ProgressBar damageBar = new ProgressBar(WEAPON_DAMAGE);
+        damageBar.setPrefWidth(DAMAGE_BAR_WIDTH);
         Label damageLabel = new Label("Danno: 80%");
 
         HBox weaponInfo = new HBox(10, imageView, damageLabel);

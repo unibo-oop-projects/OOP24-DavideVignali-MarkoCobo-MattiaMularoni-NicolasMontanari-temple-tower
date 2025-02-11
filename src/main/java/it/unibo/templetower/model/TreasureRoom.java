@@ -12,13 +12,12 @@ import it.unibo.templetower.utils.Pair;
 /**
  * Represents a room in the game that contains a treasure chest.
  * The treasure room can contain experience points, a weapon, or an enemy.
- * @param xpsProbability the probability of the treasure containing experience points
- * @param enemyProbability the probability of the treasure containing an enemy
- * @param weaponProbability the probability of the treasure containing a weapon
- * @return a treasure room with the specified probabilities
  */
-public class TreasureRoom implements RoomBehavior{
+public final class TreasureRoom implements RoomBehavior {
 
+    private static final double EPSILON = 1e-6;
+    private static final double ENEMY_BASE_HEALTH = 20.0;
+    private static final double ENEMY_ATTACK_DAMAGE = 10.0;
     private final Random random = new Random();
 
     //possible outcomes of the treasure
@@ -27,18 +26,35 @@ public class TreasureRoom implements RoomBehavior{
     private Optional<Weapon> weapon;
     private final int level;
 
-    public TreasureRoom(int level, Optional<Weapon> weapon, double xpsProbability, double enemyProbability, double weaponProbability) {
+    /**
+     * Creates a new treasure room with specified probabilities for different outcomes.
+     * @param level the level of the room
+     * @param weapon the optional weapon that could be found
+     * @param xpsProbability probability of finding experience points
+     * @param enemyProbability probability of encountering an enemy
+     * @param weaponProbability probability of finding a weapon
+     */
+    public TreasureRoom(
+            final int level, 
+            final Optional<Weapon> weapon, 
+            final double xpsProbability, 
+            final double enemyProbability, 
+            final double weaponProbability) {
         this.weapon = weapon;
         this.level = level;
-        this.probabilisticRunner(List.of(xpsProbability, enemyProbability, weaponProbability), List.of(() -> generateTreasureOutcome("xps"), () -> generateTreasureOutcome("enemy"), () -> generateTreasureOutcome("weapon")));
+        this.probabilisticRunner(
+            List.of(xpsProbability, enemyProbability, weaponProbability),
+            List.of(() -> generateTreasureOutcome("xps"),
+                   () -> generateTreasureOutcome("enemy"),
+                   () -> generateTreasureOutcome("weapon")));
     }
 
     /* 
      * Run one of probabilistic action on list based on the given probabilities.
      */
-    private void probabilisticRunner(List<Double> probabilities, List<Runnable> actions){
+    private void probabilisticRunner(final List<Double> probabilities, final List<Runnable> actions) {
         double cumulativeProbability = probabilities.stream().mapToDouble(mapper -> mapper).sum();
-        if (Math.abs(cumulativeProbability - 1.0) > 1e-6) {
+        if (Math.abs(cumulativeProbability - 1.0) > EPSILON) {
             throw new IllegalArgumentException("Probabilities must sum to 1");
         }
 
@@ -53,15 +69,15 @@ public class TreasureRoom implements RoomBehavior{
         }
     }
 
-    private Enemy generateEnemy(){
-        List<Pair<String,Double>> attacks = new ArrayList<>();
-        attacks.add(new Pair<>("magical", 10.0));
-        Map<String,Double> damageMultipliers = new HashMap<>();
+    private Enemy generateEnemy() {
+        List<Pair<String, Double>> attacks = new ArrayList<>();
+        attacks.add(new Pair<>("magical", ENEMY_ATTACK_DAMAGE));
+        Map<String, Double> damageMultipliers = new HashMap<>();
         damageMultipliers.put("magical", 1.0);
-        return new Enemy("Treasure_enemy", 20.0, this.level, attacks, damageMultipliers, "");
+        return new Enemy("Treasure_enemy", ENEMY_BASE_HEALTH, this.level, attacks, damageMultipliers, "");
     }
 
-    private String generateTreasureOutcome(final String outcome){
+    private String generateTreasureOutcome(final String outcome) {
         switch (outcome) {
             case "xps" -> {
                 this.xps = Optional.of(random.nextInt(100));
@@ -87,21 +103,29 @@ public class TreasureRoom implements RoomBehavior{
         }
     }
 
+    /**
+     * Handles player interaction with the treasure room.
+     * @param player the player interacting with the room
+     * @param direction the direction of interaction
+     */
     @Override
-    public void interact(Player player, int direction) {
-        if(this.enemy.isPresent()){
+    public void interact(final Player player, final int direction) {
+        if (this.enemy.isPresent()) {
             player.takeDamage(this.enemy.get().attacks().get(0).getY());
-        } else if(this.weapon.isPresent()){
+        } else if (this.weapon.isPresent()) {
             player.changeWeapon(this.weapon.get());
-        } else if(this.xps.isPresent()){
+        } else if (this.xps.isPresent()) {
             player.increaseExperience(this.xps.get());
         }
     }
 
+    /**
+     * Generates the content for this room.
+     * This method is currently not implemented.
+     */
     @Override
     public void generateContent() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
-    }
-    
+    } 
 }

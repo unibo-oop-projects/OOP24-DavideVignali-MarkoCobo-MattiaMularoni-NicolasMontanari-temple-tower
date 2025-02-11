@@ -19,8 +19,8 @@ import it.unibo.templetower.utils.Pair;
  */
 public final class GameControllerImpl implements GameController {
     private final List<Room> rooms;
-    private int currentRoomIndex = 0; // Traccia la stanza attuale
-    private int currentFloorIndex = 0; // traccia il piano attuale
+    private int currentRoomIndex; // Traccia la stanza attuale
+    private int currentFloorIndex; // traccia il piano attuale
     private final Player player;
     private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
@@ -38,15 +38,15 @@ public final class GameControllerImpl implements GameController {
     public GameControllerImpl() {
         // Load game data
         gameDataManager = new GameDataManagerImpl();
-        String testPath = "tower/floors/floors-data.json";
+        final String testPath = "tower/floors/floors-data.json";
         gameDataManager.loadGameData(testPath);
-        List<FloorData> floors = gameDataManager.getFloors();
+        final List<FloorData> floors = gameDataManager.getFloors();
 
         // Instantiate SpawnManagerImpl with loaded floor data
-        SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
+        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
 
         // TODO al posto dell'1 implementare logica di cambio piano
-        Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
+        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
 
         /* test asset manager */
         assetManager = new AssetManager();
@@ -97,7 +97,7 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void changeRoom(final Integer direction) {
-        int newIndex = currentRoomIndex + direction;
+        final int newIndex = currentRoomIndex + direction;
 
         if (newIndex >= 0 && newIndex < rooms.size()) {
             currentRoomIndex = newIndex;

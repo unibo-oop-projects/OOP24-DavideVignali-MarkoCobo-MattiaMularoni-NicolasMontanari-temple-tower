@@ -11,9 +11,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class DifficultyMenu {
+/**
+ * The DifficultyMenu class represents the menu where the player can select the game difficulty.
+ */
+public final class DifficultyMenu {
 
-    public Scene createScene(SceneManager manager, GameController controller) {
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
+    private static final int BUTTON_SPACING = 10;
+
+    /**
+     * Creates the scene for the difficulty menu.
+     *
+     * @param manager the scene manager
+     * @param controller the game controller
+     * @return the created scene
+     */
+    public Scene createScene(final SceneManager manager, final GameController controller) {
         // Create root container
         StackPane root = new StackPane();
 
@@ -24,8 +38,8 @@ public class DifficultyMenu {
 
         // Configure background properties
         background.setPreserveRatio(false);
-        background.setFitWidth(800);
-        background.setFitHeight(600);
+        background.setFitWidth(WIDTH);
+        background.setFitHeight(HEIGHT);
 
         // Make background responsive to window resizing
         root.widthProperty().addListener((obs, old, newVal)
@@ -34,7 +48,7 @@ public class DifficultyMenu {
                 -> background.setFitHeight(newVal.doubleValue()));
 
         // Create difficulty buttons layout
-        VBox buttonContainer = new VBox(10);
+        VBox buttonContainer = new VBox(BUTTON_SPACING);
         buttonContainer.setAlignment(Pos.CENTER);
 
         // Create difficulty buttons
@@ -58,6 +72,6 @@ public class DifficultyMenu {
         root.getChildren().addAll(background, buttonContainer);
 
         // Create and return the scene
-        return new Scene(root, 800, 600);
+        return new Scene(root, WIDTH, HEIGHT);
     }
 }

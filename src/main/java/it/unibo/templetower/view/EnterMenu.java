@@ -13,9 +13,25 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class EnterMenu {
+/**
+ * Class responsible for creating and managing the enter menu scene.
+ * This class provides the initial menu interface for the game.
+ */
+public final class EnterMenu {
 
-    public Scene createScene(SceneManager manager) throws FileNotFoundException {
+    private static final int WINDOW_WIDTH = 400;
+    private static final int WINDOW_HEIGHT = 300;
+    private static final int RIGHT_PADDING = 20;
+    private static final int BUTTON_SPACING = 10;
+
+    /**
+     * Creates and returns the enter menu scene.
+     *
+     * @param manager The scene manager to handle scene transitions
+     * @return A new Scene object containing the enter menu interface
+     * @throws FileNotFoundException if required image resources are not found
+     */
+    public Scene createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         StackPane root = new StackPane();
 
@@ -29,8 +45,8 @@ public class EnterMenu {
         // Create and configure background
         ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        background.setFitWidth(400);
-        background.setFitHeight(300);
+        background.setFitWidth(WINDOW_WIDTH);
+        background.setFitHeight(WINDOW_HEIGHT);
 
         // Make background responsive to window resizing
         root.widthProperty().addListener((obs, old, newVal)
@@ -39,7 +55,7 @@ public class EnterMenu {
                 -> background.setFitHeight(newVal.doubleValue()));
 
         // Create content layout
-        VBox content = new VBox(10);
+        VBox content = new VBox(BUTTON_SPACING);
         content.setAlignment(Pos.CENTER);
 
         // Add difficulty menu button
@@ -50,31 +66,31 @@ public class EnterMenu {
         });
         content.getChildren().add(difficultyButton);
 
-        VBox rightButtons = new VBox(10);
+        VBox rightButtons = new VBox(BUTTON_SPACING);
         rightButtons.setAlignment(Pos.CENTER_RIGHT);
-        rightButtons.setPadding(new Insets(0, 20, 0, 0)); // Add right padding
+        rightButtons.setPadding(new Insets(0, RIGHT_PADDING, 0, 0)); // Add right padding
 
-        Button Personalizzationbutton = new Button("Personalization");
-        Button LeaderBoardbutton = new Button("LeaderBoard");
-        Button Moddingbutton = new Button("Modding Menu");
-        Button Settingsbutton = new Button("Settings");
+        Button personalizationButton = new Button("Personalization");
+        Button leaderBoardButton = new Button("LeaderBoard");
+        Button moddingButton = new Button("Modding Menu");
+        Button settingsButton = new Button("Settings");
 
-// Add action handlers for the new buttons
-        Personalizzationbutton.setOnAction(e -> {
+        // Add action handlers for the new buttons
+        personalizationButton.setOnAction(e -> {
             // Add your action here
         });
-        LeaderBoardbutton.setOnAction(e -> {
+        leaderBoardButton.setOnAction(e -> {
             // Add your action here
         });
-        Moddingbutton.setOnAction(e -> {
+        moddingButton.setOnAction(e -> {
             // Add your action here
         });
-        Settingsbutton.setOnAction(e -> {
+        settingsButton.setOnAction(e -> {
             // Add your action here
         });
 
-// Add buttons to rightButtons in the correct order
-        rightButtons.getChildren().addAll(Personalizzationbutton, LeaderBoardbutton, Moddingbutton, Settingsbutton);
+        // Add buttons to rightButtons in the correct order
+        rightButtons.getChildren().addAll(personalizationButton, leaderBoardButton, moddingButton, settingsButton);
 
         // Create main layout using BorderPane
         BorderPane mainLayout = new BorderPane();
@@ -84,7 +100,7 @@ public class EnterMenu {
         // Combine background and content
         root.getChildren().addAll(background, mainLayout);
 
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         return scene;
 

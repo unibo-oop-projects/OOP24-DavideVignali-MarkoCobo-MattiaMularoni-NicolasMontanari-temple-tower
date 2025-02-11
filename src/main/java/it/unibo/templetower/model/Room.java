@@ -1,11 +1,15 @@
 package it.unibo.templetower.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  * Useful class for implement the strategy pattern, 
  * it represents a generic room that can interact with the player.
  * This class is designed for extension to support different types of rooms.
  */
 public final class Room {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Room.class);
     private final RoomBehavior behavior;
     private final String name;
     private final int id;
@@ -30,7 +34,7 @@ public final class Room {
         if (behavior != null) {
             player.changeRoom(this);
         } else {
-            System.out.println("The room is empty.");
+            LOGGER.info("The room is empty.");
         }
     }
 
@@ -43,7 +47,7 @@ public final class Room {
         if (behavior != null) {
             behavior.interact(player, direction);
         } else {
-            System.out.println("The room is empty.");
+            LOGGER.info("The room is empty.");
         }
     }
 

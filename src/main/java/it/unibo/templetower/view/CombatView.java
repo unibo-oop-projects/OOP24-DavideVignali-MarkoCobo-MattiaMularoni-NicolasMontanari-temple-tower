@@ -19,19 +19,41 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-public class CombatView {
+/**
+ * Represents the combat view of the game where battles take place.
+ * This class is responsible for creating and managing the combat scene.
+ */
+public final class CombatView {
+    private static final int WINDOW_WIDTH = 800;
+    private static final int WINDOW_HEIGHT = 600;
+    private static final int SPACING_LARGE = 20;
+    private static final int SPACING_SMALL = 5;
+    private static final int CHARACTER_SIZE = 150;
+    private static final int BUTTON_WIDTH = 150;
+    private static final int HEALTH_BAR_WIDTH = 200;
+    private static final int ATTACK_DISTANCE = 30;
+    private static final double INITIAL_HEALTH = 1.0;
+    private static final int MAX_HEALTH = 100;
+
     private ProgressBar playerHealthBar;
     private ProgressBar enemyHealthBar;
     private Button attackButton;
     private Button exitButton;
 
-    public Scene createScene(SceneManager manager, GameController controller) {
-        StackPane root = new StackPane();
+    /**
+     * Creates and returns the combat scene with all necessary UI elements.
+     * 
+     * @param manager    the scene manager to handle scene transitions
+     * @param controller the game controller to handle game logic
+     * @return          the created combat scene
+     */
+    public Scene createScene(final SceneManager manager, final GameController controller) {
+        final StackPane root = new StackPane();
         root.getStyleClass().add("root");
 
-        ImageView backgroundView = new ImageView();
+        final ImageView backgroundView = new ImageView();
         try {
-            Image backgroundImage = new Image(getClass().getResource("/Images/combat_room.jpg").toExternalForm());
+            final Image backgroundImage = new Image(getClass().getResource("/Images/combat_room.jpg").toExternalForm());
             backgroundView.setImage(backgroundImage);
             backgroundView.setPreserveRatio(false);
             backgroundView.setFitWidth(Region.USE_COMPUTED_SIZE);
@@ -46,28 +68,27 @@ public class CombatView {
 
             root.getChildren().add(backgroundView);
         } catch (Exception e) {
-            Label errorLabel = new Label("Background image not found.");
+            final Label errorLabel = new Label("Background image not found.");
             errorLabel.getStyleClass().add("label");
             root.getChildren().add(errorLabel);
-            Scene scene = new Scene(root, 800, 600);
+            final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
             scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
             return scene;
         }
 
-        VBox contentBox = new VBox(20);
+        final VBox contentBox = new VBox(SPACING_LARGE);
         contentBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        HBox charactersBox = new HBox(100);
+        final HBox charactersBox = new HBox(SPACING_LARGE);
         charactersBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        ImageView playerImage = new ImageView(new Image(getClass().getResource("/Images/player.png").toExternalForm()));
-        ImageView enemyImage = new ImageView(new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
+        final ImageView playerImage = new ImageView(new Image(getClass().getResource("/Images/player.png").toExternalForm()));
+        final ImageView enemyImage = new ImageView(new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
 
-        double initialSize = 150;
-        playerImage.setFitWidth(initialSize);
-        playerImage.setFitHeight(initialSize);
-        enemyImage.setFitWidth(initialSize);
-        enemyImage.setFitHeight(initialSize);
+        playerImage.setFitWidth(CHARACTER_SIZE);
+        playerImage.setFitHeight(CHARACTER_SIZE);
+        enemyImage.setFitWidth(CHARACTER_SIZE);
+        enemyImage.setFitHeight(CHARACTER_SIZE);
 
         // **Inizializziamo i pulsanti PRIMA del listener**
         attackButton = new Button("Attack!");
@@ -76,16 +97,16 @@ public class CombatView {
         exitButton = new Button("Exit");
         exitButton.getStyleClass().add("button");
 
-        playerHealthBar = new ProgressBar(1.0);
+        playerHealthBar = new ProgressBar(INITIAL_HEALTH);
         playerHealthBar.getStyleClass().add("health-bar-player");
 
-        enemyHealthBar = new ProgressBar(1.0);
+        enemyHealthBar = new ProgressBar(INITIAL_HEALTH);
         enemyHealthBar.getStyleClass().add("health-bar-enemy");
 
         // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
         root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            double scaleFactor = newWidth.doubleValue() / 800;
-            double newSize = initialSize * scaleFactor;
+            final double scaleFactor = newWidth.doubleValue() / WINDOW_WIDTH;
+            final double newSize = CHARACTER_SIZE * scaleFactor;
 
             playerImage.setFitWidth(newSize);
             playerImage.setFitHeight(newSize);
@@ -93,8 +114,8 @@ public class CombatView {
             enemyImage.setFitHeight(newSize);
 
             // Ridimensiona i bottoni e le progress bar
-            double newButtonWidth = 150 * scaleFactor;
-            double newProgressBarWidth = 200 * scaleFactor;
+            final double newButtonWidth = BUTTON_WIDTH * scaleFactor;
+            final double newProgressBarWidth = HEALTH_BAR_WIDTH * scaleFactor;
 
             attackButton.setPrefWidth(newButtonWidth);
             exitButton.setPrefWidth(newButtonWidth);
@@ -105,21 +126,21 @@ public class CombatView {
 
         charactersBox.getChildren().addAll(playerImage, enemyImage);
 
-        VBox rootBox = new VBox();
+        final VBox rootBox = new VBox();
         rootBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        BorderPane healthBarsPane = new BorderPane();
+        final BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        Label playerHpLabel = new Label("100 HP");
+        final Label playerHpLabel = new Label("100 HP");
         playerHpLabel.getStyleClass().add("label");
-        VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
+        final VBox playerHealthBox = new VBox(SPACING_SMALL, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
         healthBarsPane.setLeft(playerHealthBox);
 
-        Label enemyHpLabel = new Label("100 HP");
+        final Label enemyHpLabel = new Label("100 HP");
         enemyHpLabel.getStyleClass().add("label");
-        VBox enemyHealthBox = new VBox(5, enemyHpLabel, enemyHealthBar);
+        final VBox enemyHealthBox = new VBox(SPACING_SMALL, enemyHpLabel, enemyHealthBar);
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
@@ -130,30 +151,34 @@ public class CombatView {
 
         attackButton.setOnAction(event -> {
             System.err.println("controller life: " + controller.getEnemyLifePoints());
-            Timeline timeline = new Timeline();
-            double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - 30;
-            KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
-            KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
+            final Timeline timeline = new Timeline();
+            final double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - ATTACK_DISTANCE;
+            final KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
+            final KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
             timeline.getKeyFrames().add(kf);
             timeline.setOnFinished(e -> {
                 controller.attackEnemy();
-                double enemyDamage = controller.getEnemyLifePoints();
+                final double enemyDamage = controller.getEnemyLifePoints();
                 // Attacca il player e ottieni il danno inflitto
                 controller.attackPlayer();
-                double playerDamage = controller.getPlayerLife();
+                final double playerDamage = controller.getPlayerLife();
 
                 // Aggiorna le barre di salute
-                double playerHealth = playerHealthBar.getProgress() - (playerDamage / 100);
-                double enemyHealth = enemyHealthBar.getProgress() - (enemyDamage / 100);
+                double playerHealth = playerHealthBar.getProgress() - (playerDamage / MAX_HEALTH);
+                double enemyHealth = enemyHealthBar.getProgress() - (enemyDamage / MAX_HEALTH);
 
-                if (playerHealth < 0) playerHealth = 0;
-                if (enemyHealth < 0) enemyHealth = 0;
+                if (playerHealth < 0) {
+                    playerHealth = 0;
+                }
+                if (enemyHealth < 0) {
+                    enemyHealth = 0;
+                }
 
                 playerHealthBar.setProgress(playerHealth);
                 enemyHealthBar.setProgress(enemyHealth);
 
-                playerHpLabel.setText((int) (playerHealth * 100) + " HP");
-                enemyHpLabel.setText((int) (enemyHealth * 100) + " HP");
+                playerHpLabel.setText((int) (playerHealth * MAX_HEALTH) + " HP");
+                enemyHpLabel.setText((int) (enemyHealth * MAX_HEALTH) + " HP");
 
                 if (playerHealth <= 0 || enemyHealth <= 0) {
                     attackButton.setDisable(true);
@@ -164,14 +189,14 @@ public class CombatView {
             timeline.play();
         });
 
-        HBox buttonBox = new HBox(20, attackButton, exitButton);
+        final HBox buttonBox = new HBox(SPACING_LARGE, attackButton, exitButton);
         buttonBox.setAlignment(Pos.BOTTOM_CENTER);
         healthBarsPane.setBottom(buttonBox);
 
         rootBox.getChildren().addAll(charactersBox, healthBarsPane);
         root.getChildren().add(rootBox);
 
-        Scene scene = new Scene(root, 800, 600);
+        final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
 
         return scene;
