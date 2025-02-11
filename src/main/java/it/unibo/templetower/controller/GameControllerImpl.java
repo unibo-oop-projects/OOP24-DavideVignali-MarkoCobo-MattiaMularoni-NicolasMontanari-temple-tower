@@ -16,7 +16,8 @@ import it.unibo.templetower.utils.Pair;
 public class GameControllerImpl implements GameController {
     private final List<Room> rooms;
     private int currentRoomIndex = 0; // Traccia la stanza attuale
-    private int currentFloorIndex = 0; // traccia il piano attuale
+    private int currentFloorIndex; // traccia il piano attuale
+    private Floor currentFloor;
     private final Player player;
     private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
@@ -24,6 +25,7 @@ public class GameControllerImpl implements GameController {
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 8;
     private final Weapon startWeapon;
+    SpawnManagerImpl spawnManager;
 
     public GameControllerImpl() {
         // Load game data
@@ -31,12 +33,13 @@ public class GameControllerImpl implements GameController {
         String testPath = "tower/floors/floors-data.json";
         gameDataManager.loadGameData(testPath);
         List<FloorData> floors = gameDataManager.getFloors();
+        currentFloorIndex = 1;
 
         // Instantiate SpawnManagerImpl with loaded floor data
-        SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
+        spawnManager = new SpawnManagerImpl(floors);
 
         // TODO al posto dell'1 implementare logica di cambio piano
-        Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
+        currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
 
         /* test asset manager */
         assetManager = new AssetManager();
@@ -45,7 +48,7 @@ public class GameControllerImpl implements GameController {
         // first weapon
         startWeapon = new Weapon("GUN", 1, new Pair<String, Double>("Gun", 1.0), testPath);
 
-        rooms = generatedFloor.rooms();
+        rooms = currentFloor.rooms();
         player = new PlayerImpl(startWeapon, Optional.empty());
     }
 
@@ -67,7 +70,9 @@ public class GameControllerImpl implements GameController {
     @Override
     public void goToNextFloor() {
         currentFloorIndex += 1;
-        gameDataManager.getFloors().get(currentFloorIndex);
+        rooms.removeAll(rooms);
+        currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
+        rooms.addAll(currentFloor.rooms());
     }
 
     @Override
