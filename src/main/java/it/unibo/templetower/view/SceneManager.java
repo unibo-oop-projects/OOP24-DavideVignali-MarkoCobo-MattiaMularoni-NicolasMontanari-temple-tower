@@ -28,7 +28,8 @@ public class SceneManager {
         scenes.put("stairs_view", new StairsView().createScene(this, controller));
         try {
             scenes.put("enter_menu", new EnterMenu().createScene(this));
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
         try{
             scenes.put("home", new Home().createScene(this));
@@ -39,7 +40,7 @@ public class SceneManager {
 
     public void switchTo(String sceneName) {
         Scene scene = scenes.get(sceneName);
-        String css = this.getClass().getResource("/css/SimpleGui.css").toExternalForm(); 
+        String css = this.getClass().getResource("/css/main.css").toExternalForm(); 
         if (scene != null) {
             scene.getStylesheets().add(css);
             stage.setScene(scene);

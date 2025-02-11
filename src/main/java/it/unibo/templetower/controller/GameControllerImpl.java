@@ -88,15 +88,18 @@ public class GameControllerImpl implements GameController {
         rooms.get(currentRoomIndex).interactWithRoom(player, ENEMYDIRECTION);
     }
 
+    @Override
     public void attackPlayer() {
         rooms.get(currentRoomIndex).interactWithRoom(player, PLAYERDIRECTION);
     }
 
+    @Override
     public double getPlayerLife() {
         rooms.get(currentRoomIndex).getLifePlayer(player);
         return player.getLife();
     }
 
+    @Override
     public double getEnemyLifePoints() {
         return rooms.get(currentRoomIndex).getEnemyLife();
     }

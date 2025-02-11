@@ -124,10 +124,12 @@ public class CombatView {
         healthBarsPane.setRight(enemyHealthBox);
 
         exitButton.setOnAction(e -> {
+            System.err.println("controller life: " + controller.getEnemyLifePoints());
             manager.switchTo("main_floor_view");
         });
 
         attackButton.setOnAction(event -> {
+            System.err.println("controller life: " + controller.getEnemyLifePoints());
             Timeline timeline = new Timeline();
             double distance = (enemyImage.getLayoutX() - playerImage.getLayoutX()) - 30;
             KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
@@ -136,7 +138,6 @@ public class CombatView {
             timeline.setOnFinished(e -> {
                 controller.attackEnemy();
                 double enemyDamage = controller.getEnemyLifePoints();
-
                 // Attacca il player e ottieni il danno inflitto
                 controller.attackPlayer();
                 double playerDamage = controller.getPlayerLife();
