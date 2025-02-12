@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -24,6 +25,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
+
+import java.io.InputStream;
 import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,12 +90,6 @@ public class MainFloorView {
 
         //Control buttons
         createButtons(controller, manager);
-
-        /* Assetmanager test */
-        final ClassLoader loader = getClass().getClassLoader();
-        final InputStream spritetest = loader.getResourceAsStream(controller.getEnemySpritePath(ENEMY_SPRITE_ID));
-        final ImageView spriteImg = new ImageView(new Image(spritetest));
-        dPane.getChildren().add(spriteImg);
 
         return scene;
     }

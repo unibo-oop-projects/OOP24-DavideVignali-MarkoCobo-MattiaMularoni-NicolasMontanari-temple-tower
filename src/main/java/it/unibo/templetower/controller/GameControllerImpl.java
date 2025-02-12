@@ -20,17 +20,19 @@ import it.unibo.templetower.utils.Pair;
 public final class GameControllerImpl implements GameController {
     private final List<Room> rooms;
     private int currentRoomIndex; // Traccia la stanza attuale
-    private Floor currentFloor;
     private int currentFloorIndex; // traccia il piano attuale
     private final Player player;
+    @SuppressWarnings("unused")
+    private Floor currentFloor;
     private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
     private static final int PLAYERDIRECTION = 1;
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 8;
     private static final int DEFAULT_ENEMY_LEVEL = 12;
+    private static final Double DAMAGE = 30.0;
     private final Weapon startWeapon;
-    private SpawnManagerImpl spawnManager;
+    private final SpawnManagerImpl spawnManager;
 
     /**
      * Constructs a new GameControllerImpl instance.
@@ -42,7 +44,7 @@ public final class GameControllerImpl implements GameController {
         gameDataManager = new GameDataManagerImpl();
         final String testPath = "tower/floors/floors-data.json";
         gameDataManager.loadGameData(testPath);
-        List<FloorData> floors = gameDataManager.getFloors();
+        final List<FloorData> floors = gameDataManager.getFloors();
         currentFloorIndex = 1;
         currentRoomIndex = 1;
 
@@ -56,7 +58,7 @@ public final class GameControllerImpl implements GameController {
         assetManager.addEnemyAsset(DEFAULT_ENEMY_LEVEL, "images/enemy.png");
 
         // first weapon
-        startWeapon = new Weapon("GUN", 1, new Pair<String, Double>("Gun", 30.0), testPath);
+        startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", DAMAGE), testPath);
 
         rooms = currentFloor.rooms();
         player = new PlayerImpl(startWeapon, Optional.empty());
@@ -85,7 +87,6 @@ public final class GameControllerImpl implements GameController {
     public void handleAction(final String action) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
 
     /**
      * {@inheritDoc}
@@ -93,7 +94,7 @@ public final class GameControllerImpl implements GameController {
     @Override
     public void goToNextFloor() {
         currentFloorIndex += 1;
-        rooms.removeAll(rooms);
+        rooms.clear();
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
         rooms.addAll(currentFloor.rooms());
     }
@@ -143,7 +144,6 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public double getEnemyLifePoints() {
-        System.out.println(rooms.get(currentRoomIndex).getEnemyLife());
         return rooms.get(currentRoomIndex).getEnemyLife();
     }
 
@@ -186,5 +186,11 @@ public final class GameControllerImpl implements GameController {
     @Override
     public String getEntiSpritePath(final String type) {
         return assetManager.getGenericEntityAsset(type);
+    }
+
+    @Override
+    public String getEnemySpritePath(final int level) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEnemySpritePath'");
     }
 }

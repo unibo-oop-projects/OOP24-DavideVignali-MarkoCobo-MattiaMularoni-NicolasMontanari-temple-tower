@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Manages the different scenes in the game application.
- * This class is responsible for creating, storing, and switching between different game scenes.
+ * This class is responsible for creating, storing, and switching between
+ * different game scenes.
  */
 public final class SceneManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(SceneManager.class);
@@ -38,7 +39,6 @@ public final class SceneManager {
      * Initializes all game scenes.
      */
     private void initializeScenes() {
-    private void initializeScenes()  {
         scenes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
         scenes.put("main_floor_view", new MainFloorView().createScene(this, controller));
         scenes.put("treasure_view", new TreasureView().createScene(this, controller));
@@ -59,23 +59,22 @@ public final class SceneManager {
 
     /**
      * Switches the current scene to the specified scene.
-     * This method can be overridden by subclasses to provide custom scene switching behavior.
-     * When overriding, ensure that the scene exists in the scenes map and properly apply CSS styles.
+     * This method can be overridden by subclasses to provide custom scene switching
+     * behavior.
+     * When overriding, ensure that the scene exists in the scenes map and properly
+     * apply CSS styles.
      *
      * @param sceneName the name of the scene to switch to
      * @throws IllegalArgumentException if the specified scene name is not found
      */
     public void switchTo(final String sceneName) {
-        final Scene scene = scenes.get(sceneName);
-        if (scene == null) {
-    public void switchTo(String sceneName) {
-        Scene scene;
-        if(sceneName == "combat_view"){ // ogni volta che entriamo in una enemy room, aggiorna i dati dell'enemy
+        final Scene scene;
+        if ("combat_view".equals(sceneName)) { // ogni volta che entriamo in una enemy room, aggiorna i dati dell'enemy
             scene = new CombatView().createScene(this, controller);
-        }else{
+        } else {
             scene = scenes.get(sceneName);
         }
-        String css = this.getClass().getResource("/css/main.css").toExternalForm(); 
+        final String css = this.getClass().getResource("/css/main.css").toExternalForm();
         if (scene != null) {
             scene.getStylesheets().add(css);
             stage.setScene(scene);
