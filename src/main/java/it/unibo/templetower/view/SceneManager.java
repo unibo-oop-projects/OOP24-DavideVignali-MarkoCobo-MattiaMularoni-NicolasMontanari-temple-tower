@@ -46,6 +46,7 @@ public final class SceneManager {
             scenes.put("stairs_view", new StairsView().createScene(this, controller));
             scenes.put("enter_menu", new EnterMenu().createScene(this));
             scenes.put("home", new Home().createScene(this));
+            scenes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to initialize scenes", e);
@@ -75,5 +76,19 @@ public final class SceneManager {
 
         stage.setScene(scene);
         stage.show();
+
+        // Notify view if it implements SceneActivationListener
+        if (scene.getUserData() instanceof SceneActivationListener) {
+            ((SceneActivationListener) scene.getUserData()).onSceneActivated();
+        }
+    }
+
+    /**
+     * Gets the primary stage of the application.
+     * 
+     * @return the JavaFX stage used by this scene manager
+     */
+    public Stage getStage() {
+        return stage;
     }
 }
