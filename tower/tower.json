@@ -1,0 +1,7 @@
+{
+  "name": "Temple Tower",
+  "description": "A legendary tower filled with mysteries and ancient battles.",
+  "pathToFloors": "floors/floors-data.json",
+  "pathToAttacks": "attacks-data.json",
+  "height": 20
+}

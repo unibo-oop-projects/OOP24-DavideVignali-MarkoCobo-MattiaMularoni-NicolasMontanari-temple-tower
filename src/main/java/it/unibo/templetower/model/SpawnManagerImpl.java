@@ -23,15 +23,17 @@ public class SpawnManagerImpl {
 
     private final List<FloorData> floors;
     private final Random random;
+    private final int towerHeight;
 
     /**
-     * Creates a new SpawnManager with the given floor data.
+     * Creates a new SpawnManager using the tower configuration.
      *
-     * @param floors the list of available floor types
+     * @param towerData the tower record holding floor data among other info
      */
-    public SpawnManagerImpl(final List<FloorData> floors) {
-        this.floors = new ArrayList<>(floors);
+    public SpawnManagerImpl(final Tower towerData) {
+        this.floors = new ArrayList<>(towerData.floors());
         this.random = new Random();
+        this.towerHeight = towerData.height();
     }
 
     /**
@@ -100,6 +102,10 @@ public class SpawnManagerImpl {
      * @return the FloorData selected based on the level and its spawnWeight, or null if no eligible floor is found
      */
     private FloorData selectFloortype(final int level) {
+        if (level < 1 || level > towerHeight) {
+            return null;
+        }
+
         final List<FloorData> eligibleFloors = floors.stream()
             .filter(fd -> {
                 final var range = fd.spawningRange();

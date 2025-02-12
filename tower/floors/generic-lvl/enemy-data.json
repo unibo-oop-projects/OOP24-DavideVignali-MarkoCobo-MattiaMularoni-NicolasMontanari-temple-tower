@@ -19,7 +19,7 @@
           "multiplier": 0.8
         }
       ],
-      "spritePath": "tower/sprites/Goblin.jpg"
+      "spritePath": "sprites/Goblin.jpg"
     },
     {
       "name": "wizard",
@@ -45,7 +45,7 @@
           "multiplier": 0.5
         }
       ],
-      "spritePath": "tower/sprites/Wizard.jpg"
+      "spritePath": "sprites/Wizard.jpg"
     },
     {
       "name": "orc",
@@ -62,7 +62,7 @@
         }
       ],
       "damageMultipliers": [],
-      "spritePath": "tower/sprites/Orc.jpg"
+      "spritePath": "sprites/Orc.jpg"
     },
     {
       "name": "skeleton",
@@ -84,7 +84,7 @@
           "multiplier": 1.1
         }
       ],
-      "spritePath": "tower/sprites/Skeleton.jpg"
+      "spritePath": "sprites/Skeleton.jpg"
     }
 ]
 

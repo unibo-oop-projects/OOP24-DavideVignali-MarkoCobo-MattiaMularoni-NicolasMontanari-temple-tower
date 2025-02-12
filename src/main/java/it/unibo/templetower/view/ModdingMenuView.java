@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Modality;
 import it.unibo.templetower.controller.ModdingMenuController;
+import it.unibo.templetower.utils.Pair;
 
 /**
  * Class responsible for creating and managing the modding menu scene.
@@ -40,6 +41,7 @@ public final class ModdingMenuView implements SceneActivationListener {
     private static final double SCREEN_DIVISION_FACTOR = 2.0;
     private static final double SPACING = 10;
     private static final double BUTTON_WIDTH = 200;
+    private static final String MODDING_MENU_CSS = "/css/modding_menu.css";
 
     private boolean hasShownPopup;
     private Stage ownerStage;
@@ -100,7 +102,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         final Button importFolderButton = createStyledButton("Import Folder", this::handleImportFolder);
         final Button importZipButton = createStyledButton("Import ZIP", this::handleImportZip);
         final Button newTowerButton = createStyledButton("Create New Tower", this::handleCreateNewTower);
-        final Button clearButton = createStyledButton("Clear", () -> { /* no-op for now */ });
+        final Button clearButton = createStyledButton("Clear", this::handleClearAction);
         final Button exitButton = createStyledButton("Exit", () -> manager.switchTo("enter_menu"));
 
         // Buttons container
@@ -114,7 +116,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         root.getChildren().addAll(background, content);
 
         final Scene newScene = new Scene(root, windowWidth, windowHeight);
-        newScene.getStylesheets().add(getClass().getResource("/css/modding_menu.css").toExternalForm());
+        newScene.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());
         newScene.setUserData(this);
 
         ownerStage.setWidth(windowWidth);
@@ -136,7 +138,6 @@ public final class ModdingMenuView implements SceneActivationListener {
         final DirectoryChooser dirChooser = new DirectoryChooser();
         dirChooser.setTitle("Select Tower Folder");
         dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        
         final File selectedDirectory = dirChooser.showDialog(ownerStage);
         if (selectedDirectory != null) {
             final Optional<String> error = controller.importFolder(selectedDirectory);
@@ -177,7 +178,21 @@ public final class ModdingMenuView implements SceneActivationListener {
 
     private void updateTowerList() {
         towerList.getItems().clear();
-        towerList.getItems().addAll(importedTowers);
+        for (final String towerDirName : importedTowers) {
+            final Optional<Pair<String, String>> towerInfo = controller.getTowerInfo(towerDirName);
+            if (towerInfo.isPresent()) {
+                final Pair<String, String> info = towerInfo.get();
+                try {
+                    final int height = controller.getTowerHeight(towerDirName);
+                    final String displayText = info.getX() + " (Height: " + height + ") - " + info.getY();
+                    towerList.getItems().add(displayText);
+                } catch (IllegalArgumentException e) {
+                    towerList.getItems().add(towerDirName + " (Invalid tower: " + e.getMessage() + ")");
+                }
+            } else {
+                towerList.getItems().add(towerDirName + " (Invalid tower)");
+            }
+        }
     }
 
     private void showErrorDialog(final String title, final String content) {
@@ -193,14 +208,8 @@ public final class ModdingMenuView implements SceneActivationListener {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
-        alert.initOwner(ownerStage);
-        
-        // Apply stylesheet to the dialog pane directly
-        alert.getDialogPane().getStylesheets().add(
-            getClass().getResource("/css/modding_menu.css").toExternalForm()
-        );
+        alert.getDialogPane().getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());
         alert.getDialogPane().getStyleClass().add("alert-dialog");
-        
         alert.showAndWait();
     }
 
@@ -257,29 +266,63 @@ public final class ModdingMenuView implements SceneActivationListener {
         final Stage popupStage = new Stage(StageStyle.UNDECORATED);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.initOwner(ownerStage);
-
         final VBox popupRoot = new VBox(10);
         popupRoot.getStyleClass().add("popup-root");
-
         final Label message = new Label(POPUP_MESSAGE);
         message.getStyleClass().add("popup-label");
         message.setWrapText(true);
         message.setPrefWidth(POPUP_WIDTH - POPUP_PADDING);
-
         final Button closeButton = new Button("Close");
         closeButton.getStyleClass().add("popup-button");
         closeButton.setOnAction(e -> popupStage.close());
-
         popupRoot.getChildren().addAll(message, closeButton);
-
         final Scene popupScene = new Scene(popupRoot, POPUP_WIDTH, POPUP_HEIGHT);
-        String stylesheet = getClass().getResource("/css/modding_menu.css").toExternalForm();
-        if (stylesheet != null) {
-            popupScene.getStylesheets().add(stylesheet);
-        }
-
+        popupScene.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());
         popupStage.setScene(popupScene);
         popupStage.centerOnScreen();
         popupStage.show();
+    }
+
+    /**
+     * Handles the clear action by showing a confirmation popup.
+     * In the MVC pattern, the view manages the popup while the controller will later be called to perform deletion.
+     * Currently, both Yes and No buttons close the popup.
+     */
+    private void handleClearAction() {
+        final Stage popupStage = new Stage(StageStyle.UNDECORATED);
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.initOwner(ownerStage);
+        final VBox popupRoot = new VBox(10);
+        popupRoot.getStyleClass().add("popup-root");
+        final Label message = new Label("Are you sure you want to delete the entire folder?");
+        message.getStyleClass().add("popup-label");
+        message.setWrapText(true);
+        message.setPrefWidth(POPUP_WIDTH - POPUP_PADDING);
+        final HBox buttonContainer = new HBox(10);
+        buttonContainer.setAlignment(Pos.CENTER);
+        final Button yesButton = new Button("Yes");
+        yesButton.getStyleClass().add("popup-button");
+        yesButton.setOnAction(e -> {
+            final Optional<String> error = this.controller.clearTowersDirectory();
+            if (error.isPresent()) {
+                showErrorDialog("Clear Error", error.get());
+            } else {
+                showSuccessDialog("Clear Successful", "All towers removed successfully.");
+                this.importedTowers.clear();
+                this.importedTowers.addAll(this.controller.getImportedTowers());
+                updateTowerList();
+            }
+            popupStage.close();
+        });
+        final Button noButton = new Button("No");
+        noButton.getStyleClass().add("popup-button");
+        noButton.setOnAction(e -> popupStage.close());
+        buttonContainer.getChildren().addAll(yesButton, noButton);
+        popupRoot.getChildren().addAll(message, buttonContainer);
+        final Scene popupScene = new Scene(popupRoot, POPUP_WIDTH, POPUP_HEIGHT);
+        popupScene.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());
+        popupStage.setScene(popupScene);
+        popupStage.centerOnScreen();
+        popupStage.showAndWait();
     }
 }

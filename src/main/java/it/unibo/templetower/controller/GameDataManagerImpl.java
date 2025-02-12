@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.io.File;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +25,7 @@ import it.unibo.templetower.model.Enemy;
 import it.unibo.templetower.model.FloorData;
 import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.Pair;
+import it.unibo.templetower.model.Tower;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +36,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class GameDataManagerImpl {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameDataManagerImpl.class);
+    private static final String ATTACK_ID_KEY = "attackId";
+    private static final String NAME_KEY = "name";
     private final List<FloorData> floors;
     private String floorsPath;
     private final Gson gson;
-    private static final int DEFAULT_TOWER_HEIGHT = 20;
+    private String baseDir;
+    private Tower towerData;
 
     /**
      * Creates a new GameDataManagerImpl instance with an empty floors list and configured Gson instance.
@@ -50,7 +55,7 @@ public final class GameDataManagerImpl {
         // Create custom deserializer for Enemy class
         final JsonDeserializer<Enemy> enemyDeserializer = (json, typeOfT, context) -> {
             final JsonObject jsonObject = json.getAsJsonObject();
-            final String name = jsonObject.get("name").getAsString();
+            final String name = jsonObject.get(NAME_KEY).getAsString();
             final Double health = jsonObject.get("health").getAsDouble();
             final int level = jsonObject.get("level").getAsInt();
             final String spritePath = jsonObject.get("spritePath").getAsString();
@@ -59,7 +64,7 @@ public final class GameDataManagerImpl {
             final JsonArray attacksArray = jsonObject.getAsJsonArray("attacks");
             for (final JsonElement attackElement : attacksArray) {
                 final JsonObject attackObj = attackElement.getAsJsonObject();
-                final String attackId = attackObj.get("attackId").getAsString();
+                final String attackId = attackObj.get(ATTACK_ID_KEY).getAsString();
                 final Double damage = attackObj.get("damage").getAsDouble();
                 attacks.add(new Pair<>(attackId, damage));
             }
@@ -69,7 +74,7 @@ public final class GameDataManagerImpl {
             if (multipliersArray != null) {
                 for (final JsonElement multiplierElement : multipliersArray) {
                     final JsonObject multiplierObj = multiplierElement.getAsJsonObject();
-                    final String attackId = multiplierObj.get("attackId").getAsString();
+                    final String attackId = multiplierObj.get(ATTACK_ID_KEY).getAsString();
                     final Double multiplier = multiplierObj.get("multiplier").getAsDouble();
                     multipliersMap.put(attackId, multiplier);
                 }
@@ -81,13 +86,13 @@ public final class GameDataManagerImpl {
         // Custom deserializer for Weapon class
         final JsonDeserializer<Weapon> weaponDeserializer = (json, typeOfT, context) -> {
             final JsonObject jsonObject = json.getAsJsonObject();
-            final String name = jsonObject.get("name").getAsString();
+            final String name = jsonObject.get(NAME_KEY).getAsString();
             final Integer level = jsonObject.get("level").getAsInt();
             final String spritePath = jsonObject.get("spritePath").getAsString();
 
             final JsonArray attacksArray = jsonObject.getAsJsonArray("attacks");
             final JsonObject attackObj = attacksArray.get(0).getAsJsonObject();
-            final String attackId = attackObj.get("attackId").getAsString();
+            final String attackId = attackObj.get(ATTACK_ID_KEY).getAsString();
             final Double damage = attackObj.get("damage").getAsDouble();
 
             return new Weapon(name, level, new Pair<>(attackId, damage), spritePath);
@@ -105,11 +110,10 @@ public final class GameDataManagerImpl {
      * enemy data, and weapon data for each floor.
      *
      * @param path the path to the main floor configuration file
-     * @param towerHeight the height of the tower in levels
      * @throws IllegalArgumentException if the path is invalid or contains invalid data
      */
-    public void loadGameData(final String path, final int towerHeight) {
-        if (!verifyPath(path, towerHeight)) {
+    public void loadGameData(final String path) {
+        if (!verifyPath(path)) {
             throw new IllegalArgumentException("Invalid game data path");
         }
         this.floorsPath = path;
@@ -117,17 +121,89 @@ public final class GameDataManagerImpl {
     }
 
     /**
-     * Loads game data using the default tower height of 20 levels.
+     * Loads game data from the tower configuration file.
      *
-     * @param path the path to the main floor configuration file
-     * @throws IllegalArgumentException if the path is invalid or contains invalid data
+     * @param towerJsonPath the path to the tower configuration file
      */
-    public void loadGameData(final String path) {
-        if (!verifyPath(path, DEFAULT_TOWER_HEIGHT)) {
-            throw new IllegalArgumentException("Invalid game data path");
+    public void loadGameDataFromTower(final String towerJsonPath) {
+        final File towerFile = new File(towerJsonPath);
+        this.baseDir = towerFile.getParent();
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(towerJsonPath), StandardCharsets.UTF_8)) {
+            final JsonObject towerObj = JsonParser.parseReader(reader).getAsJsonObject();
+            // Validate height field exists and is valid
+            if (!towerObj.has("height") || towerObj.get("height").getAsInt() <= 0) {
+                LOGGER.error("Invalid or missing tower height in configuration");
+                throw new IllegalArgumentException("Invalid or missing tower height in configuration");
+            }
+            final String relativeFloorsPath = towerObj.get("pathToFloors").getAsString();
+            final String absFloorsPath = Paths.get(baseDir, relativeFloorsPath).toString();
+            final String relativeAttacksPath = towerObj.get("pathToAttacks").getAsString();
+            final String absAttacksPath = Paths.get(baseDir, relativeAttacksPath).toString();
+            final int height = towerObj.get("height").getAsInt();
+            this.towerData = new Tower(
+                towerObj.get("name").getAsString(),
+                towerObj.get("description").getAsString(),
+                new ArrayList<>(),
+                new HashMap<>(),
+                height
+            );
+            loadGameData(absFloorsPath);
+            final Map<String, String> attacksSprite = loadAttacksData(absAttacksPath);
+            this.towerData = new Tower(
+                this.towerData.name(),
+                this.towerData.description(),
+                new ArrayList<>(this.floors),
+                attacksSprite,
+                this.towerData.height()
+            );
+        } catch (final IOException e) {
+            final String message = "Error loading tower file: " + e.getMessage();
+            LOGGER.error(message, e);
+            throw new IllegalArgumentException(message, e);
         }
-        this.floorsPath = path;
-        loadFloors();
+    }
+
+    // NEW: Helper method to load attacks data from JSON file
+    private Map<String, String> loadAttacksData(final String attacksPath) {
+        final Map<String, String> attacksMap = new HashMap<>();
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(attacksPath), StandardCharsets.UTF_8)) {
+            final JsonArray attacksArray = JsonParser.parseReader(reader).getAsJsonArray();
+            for (final JsonElement element : attacksArray) {
+                final JsonObject obj = element.getAsJsonObject();
+                final String id = obj.get(ATTACK_ID_KEY).getAsString();
+                final String effect = obj.get("effectPath").getAsString();
+                // Maintain relative paths (baseDir is tower folder)
+                attacksMap.put(id, effect);
+            }
+        } catch (final IOException e) {
+            LOGGER.error("Error loading attacks data: {}", e.getMessage(), e);
+        }
+        return attacksMap;
+    }
+
+    /**
+     * Loads and returns basic tower information from a tower.json file.
+     * 
+     * @param towerJsonPath the path to the tower.json file
+     * @return a Pair containing the tower name and description
+     * @throws IOException if there's an error reading the file
+     */
+    public Pair<String, String> loadTowerInfo(final String towerJsonPath) throws IOException {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(towerJsonPath), StandardCharsets.UTF_8)) {
+            final JsonObject towerObj = JsonParser.parseReader(reader).getAsJsonObject();
+            final String name = towerObj.get(NAME_KEY).getAsString();
+            final String description = towerObj.get("description").getAsString();
+            return new Pair<>(name, description);
+        }
+    }
+
+    /**
+     * Returns the tower configuration.
+     *
+     * @return the tower record containing name, description, floors and attacks sprite data.
+     */
+    public Tower getTower() {
+        return this.towerData;
     }
 
     private void loadFloors() {
@@ -135,8 +211,10 @@ public final class GameDataManagerImpl {
             final JsonArray floorsArray = JsonParser.parseReader(reader).getAsJsonArray();
             for (final var floorElement : floorsArray) {
                 final JsonObject floorObj = floorElement.getAsJsonObject();
-                final String enemyPath = floorObj.get("enemyPath").getAsString();
-                final String weaponsPath = floorObj.get("weaponsPath").getAsString();
+                final String enemyPathRel = floorObj.get("enemyPath").getAsString();
+                final String enemyPath = Paths.get(baseDir, enemyPathRel).toString();
+                final String weaponsPathRel = floorObj.get("weaponsPath").getAsString();
+                final String weaponsPath = Paths.get(baseDir, weaponsPathRel).toString();
                 final String floorName = floorObj.get("floorName").getAsString();
                 final String spritePath = floorObj.get("spritePath").getAsString();
                 final int spawnWeight = floorObj.get("spawnWeight").getAsInt();
@@ -159,7 +237,8 @@ public final class GameDataManagerImpl {
                 ));
             }
         } catch (final IOException e) {
-            LOGGER.error("Error loading floors: {}", e.getMessage(), e);
+            LOGGER.error("Error loading floors: {}", e.getMessage());
+            throw new IllegalStateException("Failed to load floors", e);
         }
     }
 
@@ -203,11 +282,10 @@ public final class GameDataManagerImpl {
      * Checks the existence and validity of the main floors file and its referenced enemy and weapon files.
      * 
      * @param testPath the path to verify
-     * @param towerHeight the height of the tower in levels
      * @return true if all required files exist and are valid, false otherwise
      */
-    public boolean verifyPath(final String testPath, final int towerHeight) {
-        if (towerHeight < 1) {
+    public boolean verifyPath(final String testPath) {
+        if (this.towerData == null || this.towerData.height() < 1) {
             return false;
         }
         try (InputStreamReader reader = new InputStreamReader(
@@ -218,15 +296,17 @@ public final class GameDataManagerImpl {
             }
 
             final JsonObject floor = floorsArray.get(0).getAsJsonObject();
-            final String enemyPath = floor.get("enemyPath").getAsString();
-            final String weaponsPath = floor.get("weaponsPath").getAsString();
+            final String enemyPathRel = floor.get("enemyPath").getAsString();
+            final String enemyPath = Paths.get(baseDir, enemyPathRel).toString();
+            final String weaponsPathRel = floor.get("weaponsPath").getAsString();
+            final String weaponsPath = Paths.get(baseDir, weaponsPathRel).toString();
 
             if (!verifyEnemyFile(enemyPath) || !verifyWeaponFile(weaponsPath)) {
                 return false;
             }
 
             // Ensure that for each level 1 to towerHeight there is at least one floor covering it
-            for (int level = 1; level <= towerHeight; level++) {
+            for (int level = 1; level <= this.towerData.height(); level++) {
                 boolean covered = false;
                 for (final JsonElement floorElement : floorsArray) {
                     final JsonObject floorObj = floorElement.getAsJsonObject();

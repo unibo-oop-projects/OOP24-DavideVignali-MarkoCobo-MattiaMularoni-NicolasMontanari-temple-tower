@@ -3,24 +3,21 @@
  */
 package it.unibo.templetower;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import it.unibo.templetower.controller.GameDataManagerImpl;
 import it.unibo.templetower.model.EnemyRoom;
-import it.unibo.templetower.model.FloorData;
 import it.unibo.templetower.model.SpawnManagerImpl;
 import it.unibo.templetower.model.Trap;
+import it.unibo.templetower.model.Tower;
 import it.unibo.templetower.util.FloorPrinterUtil;
-
 
 class AppTest {
     private static final Logger LOGGER = Logger.getLogger(AppTest.class.getName());
-    private static final int MAX_FLOORS = 20;
 
     @Test 
     void testAppHasAGreeting() throws ClassNotFoundException {
@@ -30,41 +27,37 @@ class AppTest {
     @Test
     void testVerifyPath() {
         final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
-        final String testPath = "tower/floors/floors-data.json";
-        assertTrue(gameDataManager.verifyPath(testPath, MAX_FLOORS));
+        final String testPath = "tower/tower.json";
+        gameDataManager.loadGameDataFromTower(testPath);
+        final Tower towerData = gameDataManager.getTower();
+        assertNotNull(towerData);
+        assertEquals("Temple Tower", towerData.name());
+        assertFalse(towerData.floors().isEmpty(), "Floor list should not be empty");
     }
 
     /**
-     * Tests the loading and printing of floor data from the game configuration.
-     * This test verifies that:
-     * 1. The GameDataManager can successfully load floor data
-     * 2. The loaded data contains at least one floor
-     * 3. Prints the content of each floor to the console for verification
+     * Tests the loading and printing of tower floor data.
      */
     @Test
     void testLoadAndPrintFloorData() {
         final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
-        final String testPath = "tower/floors/floors-data.json";
-        // Load the game data
-        gameDataManager.loadGameData(testPath);
-        // Get the floors list
-        final List<FloorData> floors = gameDataManager.getFloors();
-        // Verify that floors were loaded
-        assertFalse(floors.isEmpty(), "Floor list should not be empty");
+        final String testTowerPath = "tower/tower.json";
+        gameDataManager.loadGameDataFromTower(testTowerPath);
+        final Tower towerData = gameDataManager.getTower();
+        assertFalse(towerData.floors().isEmpty(), "Floor list should not be empty");
         // Print floor data
-        FloorPrinterUtil.printFloorDetails(floors);
+        FloorPrinterUtil.printFloorDetails(towerData.floors());
     }
 
     @Test
     void testSpawnManager() {
         final int level = 1;
-        // Load game data
         final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
-        final String testPath = "tower/floors/floors-data.json";
-        gameDataManager.loadGameData(testPath);
-        final var floors = gameDataManager.getFloors();
-        // Instantiate SpawnManagerImpl with loaded floor data
-        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
+        final String testTowerPath = "tower/tower.json";
+        gameDataManager.loadGameDataFromTower(testTowerPath);
+        final Tower towerData = gameDataManager.getTower();
+        // Instantiate SpawnManagerImpl with the tower data
+        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(towerData);
         final var generatedFloor = spawnManager.spawnFloor(level);
         // Print generated floor details
         LOGGER.info("\n=== Dettagli del Piano Generato ===");
@@ -87,5 +80,4 @@ class AppTest {
         });
         LOGGER.info("=== Fine Dettagli ===\n");
     }
-
 }
