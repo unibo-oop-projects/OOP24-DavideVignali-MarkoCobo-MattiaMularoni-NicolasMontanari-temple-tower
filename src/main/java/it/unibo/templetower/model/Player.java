@@ -21,11 +21,6 @@ public interface Player {
     void takeDamage(double damage);
 
     /**
-     * 
-     */
-    void chooseMove();
-
-    /**
      * @param room
      * Change the actual room of the player.
      */
@@ -48,6 +43,13 @@ public interface Player {
      */
     int getActualRoom();
 
+    /**
+     * @return the player's current weapon.
+     */
     Weapon getActualWeapon();
+
+    /**
+     * @return the player's current life points.
+     */
     double getLife();
 }

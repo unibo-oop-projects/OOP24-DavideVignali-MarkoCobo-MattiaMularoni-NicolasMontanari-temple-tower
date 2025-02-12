@@ -7,4 +7,4 @@ package it.unibo.templetower.model;
  * @param attackId   the unique identifier for the attack
  * @param effectPath the file path to the attack's effect resources
  */
-public record AttackType(String attackId, String effectPath) {}
+public record AttackType(String attackId, String effectPath) { }
