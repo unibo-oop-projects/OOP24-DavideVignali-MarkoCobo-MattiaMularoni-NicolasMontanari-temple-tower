@@ -15,7 +15,7 @@ import it.unibo.templetower.utils.Pair;
 
 public class GameControllerImpl implements GameController {
     private final List<Room> rooms;
-    private int currentRoomIndex = 0; // Traccia la stanza attuale
+    private int currentRoomIndex; // Traccia la stanza attuale
     private int currentFloorIndex; // traccia il piano attuale
     private Floor currentFloor;
     private final Player player;
@@ -25,7 +25,7 @@ public class GameControllerImpl implements GameController {
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 8;
     private final Weapon startWeapon;
-    SpawnManagerImpl spawnManager;
+    private SpawnManagerImpl spawnManager;
 
     public GameControllerImpl() {
         // Load game data
@@ -34,11 +34,11 @@ public class GameControllerImpl implements GameController {
         gameDataManager.loadGameData(testPath);
         List<FloorData> floors = gameDataManager.getFloors();
         currentFloorIndex = 1;
+        currentRoomIndex = 1;
 
         // Instantiate SpawnManagerImpl with loaded floor data
         spawnManager = new SpawnManagerImpl(floors);
 
-        // TODO al posto dell'1 implementare logica di cambio piano
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
 
         /* test asset manager */
@@ -46,7 +46,7 @@ public class GameControllerImpl implements GameController {
         assetManager.addEnemyAsset(12, "images/enemy.png");
 
         // first weapon
-        startWeapon = new Weapon("GUN", 1, new Pair<String, Double>("Gun", 1.0), testPath);
+        startWeapon = new Weapon("GUN", 1, new Pair<String, Double>("Gun", 30.0), testPath);
 
         rooms = currentFloor.rooms();
         player = new PlayerImpl(startWeapon, Optional.empty());
@@ -66,6 +66,7 @@ public class GameControllerImpl implements GameController {
     public void handleAction(String action) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
 
     @Override
     public void goToNextFloor() {
@@ -106,6 +107,7 @@ public class GameControllerImpl implements GameController {
 
     @Override
     public double getEnemyLifePoints() {
+        System.out.println(rooms.get(currentRoomIndex).getEnemyLife());
         return rooms.get(currentRoomIndex).getEnemyLife();
     }
 
@@ -126,8 +128,8 @@ public class GameControllerImpl implements GameController {
     }
 
     @Override
-    public String getEnemySpritePath(int level) {
-        return assetManager.getEnemyAsset(level);
+    public String getEnemySpritePath() {
+        return this.rooms.get(currentRoomIndex).getEnemySprite();
     }
 
     @Override

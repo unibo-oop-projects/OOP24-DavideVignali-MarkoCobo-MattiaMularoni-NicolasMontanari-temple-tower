@@ -28,6 +28,7 @@ public class PlayerImpl implements Player {
     public void attack(EnemyRoom enemy) {
         if ( enemy != null) {
             enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY());
+            System.out.println("weapon :"+weapon.get(actualWeaponIndex).attack().getY());
         }
     }
 

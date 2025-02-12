@@ -24,8 +24,11 @@ public class CombatView {
     private ProgressBar enemyHealthBar;
     private Button attackButton;
     private Button exitButton;
+    private Label playerHpLabel;
+    private Label enemyHpLabel;
 
     public Scene createScene(SceneManager manager, GameController controller) {
+        
         StackPane root = new StackPane();
         root.getStyleClass().add("root");
 
@@ -79,7 +82,7 @@ public class CombatView {
         playerHealthBar = new ProgressBar(1.0);
         playerHealthBar.getStyleClass().add("health-bar-player");
 
-        enemyHealthBar = new ProgressBar(1.0);
+        enemyHealthBar = new ProgressBar(controller.getEnemyLifePoints()/10);
         enemyHealthBar.getStyleClass().add("health-bar-enemy");
 
         // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
@@ -111,13 +114,13 @@ public class CombatView {
         BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        Label playerHpLabel = new Label("100 HP");
+        playerHpLabel = new Label("100 HP");
         playerHpLabel.getStyleClass().add("label");
         VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
         healthBarsPane.setLeft(playerHealthBox);
 
-        Label enemyHpLabel = new Label("100 HP");
+        enemyHpLabel = new Label("100 HP");
         enemyHpLabel.getStyleClass().add("label");
         VBox enemyHealthBox = new VBox(5, enemyHpLabel, enemyHealthBar);
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -137,14 +140,13 @@ public class CombatView {
             timeline.getKeyFrames().add(kf);
             timeline.setOnFinished(e -> {
                 controller.attackEnemy();
-                double enemyDamage = controller.getEnemyLifePoints();
+
                 // Attacca il player e ottieni il danno inflitto
                 controller.attackPlayer();
-                double playerDamage = controller.getPlayerLife();
 
                 // Aggiorna le barre di salute
-                double playerHealth = playerHealthBar.getProgress() - (playerDamage / 100);
-                double enemyHealth = enemyHealthBar.getProgress() - (enemyDamage / 100);
+                double playerHealth = playerHealthBar.getProgress() - (controller.getPlayerLife() / 100);
+                double enemyHealth = enemyHealthBar.getProgress() - (controller.getEnemyLifePoints() / 100);
 
                 if (playerHealth < 0) playerHealth = 0;
                 if (enemyHealth < 0) enemyHealth = 0;
@@ -152,8 +154,8 @@ public class CombatView {
                 playerHealthBar.setProgress(playerHealth);
                 enemyHealthBar.setProgress(enemyHealth);
 
-                playerHpLabel.setText((int) (playerHealth * 100) + " HP");
-                enemyHpLabel.setText((int) (enemyHealth * 100) + " HP");
+                playerHpLabel.setText(controller.getPlayerLife() + "HP");
+                enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
 
                 if (playerHealth <= 0 || enemyHealth <= 0) {
                     attackButton.setDisable(true);
@@ -173,9 +175,24 @@ public class CombatView {
 
         Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
+        resetCombat(controller);
+        
 
         return scene;
     }
+
+    private void resetCombat(GameController controller) {
+        attackButton.setDisable(false);
+    
+        // Resetta le barre della vita
+        playerHealthBar.setProgress(controller.getPlayerLife() / 100);
+        enemyHealthBar.setProgress(controller.getEnemyLifePoints() / 100);
+    
+        // Aggiorna le etichette della vita
+        playerHpLabel.setText(String.valueOf(controller.getPlayerLife()) + "HP");
+        enemyHpLabel.setText(String.valueOf(controller.getEnemyLifePoints()) + "HP");
+    }
+    
 }
 
 

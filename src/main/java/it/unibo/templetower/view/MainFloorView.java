@@ -1,6 +1,5 @@
 package it.unibo.templetower.view;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -71,12 +69,6 @@ public class MainFloorView {
         
         //Control buttons
         createButtons(controller, manager);
-
-        /* Assetmanager test */
-        InputStream spritetest = getClass().getClassLoader()
-                .getResourceAsStream(controller.getEnemySpritePath(12));
-        ImageView spriteImg = new ImageView(new Image(spritetest));
-        dPane.getChildren().add(spriteImg);
 
         return scene;
     }

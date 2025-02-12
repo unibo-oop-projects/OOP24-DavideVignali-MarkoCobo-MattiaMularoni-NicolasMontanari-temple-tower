@@ -23,7 +23,6 @@ public class SceneManager {
     private void initializeScenes()  {
         scenes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
         scenes.put("main_floor_view", new MainFloorView().createScene(this, controller));
-        scenes.put("combat_view", new CombatView().createScene(this, controller));
         scenes.put("treasure_view", new TreasureView().createScene(this, controller));
         scenes.put("stairs_view", new StairsView().createScene(this, controller));
         try {
@@ -39,7 +38,12 @@ public class SceneManager {
     }
 
     public void switchTo(String sceneName) {
-        Scene scene = scenes.get(sceneName);
+        Scene scene;
+        if(sceneName == "combat_view"){ // ogni volta che entriamo in una enemy room, aggiorna i dati dell'enemy
+            scene = new CombatView().createScene(this, controller);
+        }else{
+            scene = scenes.get(sceneName);
+        }
         String css = this.getClass().getResource("/css/main.css").toExternalForm(); 
         if (scene != null) {
             scene.getStylesheets().add(css);

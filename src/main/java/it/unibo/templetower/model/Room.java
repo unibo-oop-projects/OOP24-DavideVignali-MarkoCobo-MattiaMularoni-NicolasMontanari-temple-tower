@@ -31,6 +31,13 @@ public class Room {
         }
     }
 
+    public Enemy getEnemy(){
+        if (behavior instanceof EnemyRoom enemyRoom) {
+            return enemyRoom.getEnemy();
+        }
+        return null;
+    }
+
     public double getEnemyLife() {
         if (behavior instanceof EnemyRoom enemyRoom) {
             return enemyRoom.getLifePoints();
@@ -40,6 +47,13 @@ public class Room {
 
     public double getLifePlayer(Player player){
         return player.getLife();
+    }
+
+    public String getEnemySprite(){
+        if (behavior instanceof EnemyRoom enemyRoom) {
+            return enemyRoom.getEnemyImagePath();
+        }
+        return null;
     }
 
     public int getId() {
