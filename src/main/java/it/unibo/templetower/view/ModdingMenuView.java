@@ -240,7 +240,7 @@ public final class ModdingMenuView implements SceneActivationListener {
      */
     @Override
     public void onSceneActivated() {
-        if (!hasShownPopup && scene != null) {
+        if (!hasShownPopup) {
             showFirstTimePopup();
             hasShownPopup = true;
         }
@@ -254,12 +254,9 @@ public final class ModdingMenuView implements SceneActivationListener {
      * Shows an informative popup when the modding menu is opened.
      */
     private void showFirstTimePopup() {
-        if (scene == null) {
-            return;
-        }
-
         final Stage popupStage = new Stage(StageStyle.UNDECORATED);
         popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.initOwner(ownerStage);
 
         final VBox popupRoot = new VBox(10);
         popupRoot.getStyleClass().add("popup-root");
