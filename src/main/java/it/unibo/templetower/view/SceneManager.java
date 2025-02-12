@@ -75,6 +75,7 @@ public final class SceneManager {
         }
 
         stage.setScene(scene);
+        stage.centerOnScreen(); // Added centering for the stage
         stage.show();
 
         // Notify view if it implements SceneActivationListener
@@ -84,50 +85,20 @@ public final class SceneManager {
     }
 
     /**
-     * Gets the width of the stage.
-     * @return the current width of the stage
+     * Gets a copy of the primary stage of the application with only necessary properties.
+     * This prevents exposing the internal stage representation.
+     * 
+     * @return a new Stage with copied properties from the internal stage
      */
-    public double getWidth() {
-        return stage.getWidth();
-    }
-
-    /**
-     * Gets the height of the stage.
-     * @return the current height of the stage
-     */
-    public double getHeight() {
-        return stage.getHeight();
-    }
-
-    /**
-     * Gets the X coordinate of the stage.
-     * @return the current X coordinate of the stage
-     */
-    public double getX() {
-        return stage.getX();
-    }
-
-    /**
-     * Gets the Y coordinate of the stage.
-     * @return the current Y coordinate of the stage
-     */
-    public double getY() {
-        return stage.getY();
-    }
-
-    /**
-     * Sets a scene directly on the stage.
-     * This method is package-private and should only be used by views in special cases.
-     * @param scene the scene to set
-     */
-    void setScene(final Scene scene) {
-        stage.setScene(scene);
-    }
-
-    /**
-     * Shows the stage.
-     */
-    void show() {
-        stage.show();
+    public Stage getStage() {
+        final Stage stageProxy = new Stage();
+        stageProxy.setX(stage.getX());
+        stageProxy.setY(stage.getY());
+        stageProxy.setWidth(stage.getWidth());
+        stageProxy.setHeight(stage.getHeight());
+        stageProxy.setTitle(stage.getTitle());
+        stageProxy.setFullScreen(stage.isFullScreen());
+        stageProxy.setMaximized(stage.isMaximized());
+        return stageProxy;
     }
 }
