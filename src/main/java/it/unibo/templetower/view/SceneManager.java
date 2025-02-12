@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Manages the different scenes in the game application.
@@ -45,6 +46,7 @@ public final class SceneManager {
             scenes.put("treasure_view", new TreasureView().createScene(this, controller));
             scenes.put("stairs_view", new StairsView().createScene(this, controller));
             scenes.put("enter_menu", new EnterMenu().createScene(this));
+            scenes.put("settings_menu", new SettingsMenu().createScene(this));
             scenes.put("home", new Home().createScene(this));
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);

@@ -86,7 +86,7 @@ public final class EnterMenu {
             // Add your action here
         });
         settingsButton.setOnAction(e -> {
-            // Add your action here
+            manager.switchTo("settings_menu");
         });
 
         // Add buttons to rightButtons in the correct order

@@ -9,6 +9,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,12 +19,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Home screen view class that manages the initial game screen and background music.
- * This class is not designed for extension.
+ * Home screen view class that manages the initial game screen and background
+ * music. This class is not designed for extension.
  */
 public final class Home {
 
@@ -37,7 +38,8 @@ public final class Home {
      *
      * @param manager The scene manager to handle scene transitions
      * @return Scene object representing the home screen
-     * @throws FileNotFoundException if background image resource cannot be found
+     * @throws FileNotFoundException if background image resource cannot be
+     * found
      */
     public Scene createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
@@ -72,7 +74,25 @@ public final class Home {
             // Non fermiamo più la musica quando cambiamo scena
             manager.switchTo("enter_menu");
         });
-        content.getChildren().add(difficultyButton);
+        // Mute button with image
+        Image image = new Image("images/muto.png");
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(30);
+        imageView.setFitHeight(30);
+
+        final Button muteButton = new Button();  // Create button without text
+        muteButton.setGraphic(imageView);
+        muteButton.setPrefSize(30, 30);  // Set fixed size for square button
+        muteButton.setOnAction(e -> {
+            stopMusic();
+        });
+
+           // Create container for mute button positioned at bottom right
+        final VBox muteContainer = new VBox(muteButton);
+        muteContainer.setAlignment(Pos.BOTTOM_RIGHT);
+
+        // Add both buttons to the content VBox
+        content.getChildren().addAll(difficultyButton, muteContainer);
 
         // Combine background and content
         root.getChildren().addAll(background, content);
