@@ -1,17 +1,19 @@
 package it.unibo.templetower.model;
 
-public class StairsRoom implements RoomBehavior{
+/**
+ * Represents a room with stairs in the temple tower.
+ * This room allows players to move between different levels of the tower.
+ */
+public final class StairsRoom implements RoomBehavior {
 
     @Override
     public void generateContent() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
+        // Empty implementation as stairs room doesn't need content generation
     }
 
     @Override
-    public void interact(Player player, int direction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'interact'");
+    public void interact(final Player player, final int direction) {
+        // Empty implementation as interaction is handled elsewhere
     }
 
 }

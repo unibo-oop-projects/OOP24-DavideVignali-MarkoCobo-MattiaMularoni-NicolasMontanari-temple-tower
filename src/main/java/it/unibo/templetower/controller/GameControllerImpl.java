@@ -13,66 +13,89 @@ import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.AssetManager;
 import it.unibo.templetower.utils.Pair;
 
-public class GameControllerImpl implements GameController {
+/**
+ * Implementation of the GameController interface that manages the game logic.
+ * This class handles player movements, combat, and game state.
+ */
+public final class GameControllerImpl implements GameController {
     private final List<Room> rooms;
-    private int currentRoomIndex = 0; // Traccia la stanza attuale
-    private int currentFloorIndex = 0; // traccia il piano attuale
+    private int currentRoomIndex; // Traccia la stanza attuale
     private final Player player;
     private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
     private static final int PLAYERDIRECTION = 1;
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 8;
+    private static final int DEFAULT_ENEMY_LEVEL = 12;
     private final Weapon startWeapon;
 
+    /**
+     * Constructs a new GameControllerImpl instance.
+     * Initializes the game by loading data, setting up the floor,
+     * and creating the player with initial weapon.
+     */
     public GameControllerImpl() {
         // Load game data
         gameDataManager = new GameDataManagerImpl();
-        String testPath = "tower/floors/floors-data.json";
+        final String testPath = "tower/floors/floors-data.json";
         gameDataManager.loadGameData(testPath);
-        List<FloorData> floors = gameDataManager.getFloors();
+        final List<FloorData> floors = gameDataManager.getFloors();
 
         // Instantiate SpawnManagerImpl with loaded floor data
-        SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
+        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
 
         // TODO al posto dell'1 implementare logica di cambio piano
-        Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
+        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
 
         /* test asset manager */
         assetManager = new AssetManager();
-        assetManager.addEnemyAsset(12, "images/enemy.png");
+        assetManager.addEnemyAsset(DEFAULT_ENEMY_LEVEL, "images/enemy.png");
 
         // first weapon
-        startWeapon = new Weapon("GUN", 1, new Pair<String, Double>("Gun", 1.0), testPath);
+        startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), testPath);
 
         rooms = generatedFloor.rooms();
         player = new PlayerImpl(startWeapon, Optional.empty());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void startGame() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void endGame() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void handleAction(String action) {
+    public void handleAction(final String action) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void goToNextFloor() {
-        currentFloorIndex += 1;
-        gameDataManager.getFloors().get(currentFloorIndex);
+        // TODO implements logic to change floor
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void changeRoom(Integer direction) {
-        int newIndex = currentRoomIndex + direction;
+    public void changeRoom(final Integer direction) {
+        final int newIndex = currentRoomIndex + direction;
 
         if (newIndex >= 0 && newIndex < rooms.size()) {
             currentRoomIndex = newIndex;
@@ -83,50 +106,76 @@ public class GameControllerImpl implements GameController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attackEnemy() {
         rooms.get(currentRoomIndex).interactWithRoom(player, ENEMYDIRECTION);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attackPlayer() {
         rooms.get(currentRoomIndex).interactWithRoom(player, PLAYERDIRECTION);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getPlayerLife() {
-        rooms.get(currentRoomIndex).getLifePlayer(player);
         return player.getLife();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getEnemyLifePoints() {
         return rooms.get(currentRoomIndex).getEnemyLife();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String enterRoom() {
         rooms.get(currentRoomIndex).enter(player);
         return rooms.get(currentRoomIndex).getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPlayerActualRoom() {
         return currentRoomIndex;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfRooms() {
         return rooms.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getEnemySpritePath(int level) {
+    public String getEnemySpritePath(final int level) {
         return assetManager.getEnemyAsset(level);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getEntiSpritePath(String type) {
+    public String getEntiSpritePath(final String type) {
         return assetManager.getGenericEntityAsset(type);
     }
 }
