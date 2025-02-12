@@ -84,11 +84,50 @@ public final class SceneManager {
     }
 
     /**
-     * Gets the primary stage of the application.
-     * 
-     * @return the JavaFX stage used by this scene manager
+     * Gets the width of the stage.
+     * @return the current width of the stage
      */
-    public Stage getStage() {
-        return stage;
+    public double getWidth() {
+        return stage.getWidth();
+    }
+
+    /**
+     * Gets the height of the stage.
+     * @return the current height of the stage
+     */
+    public double getHeight() {
+        return stage.getHeight();
+    }
+
+    /**
+     * Gets the X coordinate of the stage.
+     * @return the current X coordinate of the stage
+     */
+    public double getX() {
+        return stage.getX();
+    }
+
+    /**
+     * Gets the Y coordinate of the stage.
+     * @return the current Y coordinate of the stage
+     */
+    public double getY() {
+        return stage.getY();
+    }
+
+    /**
+     * Sets a scene directly on the stage.
+     * This method is package-private and should only be used by views in special cases.
+     * @param scene the scene to set
+     */
+    void setScene(final Scene scene) {
+        stage.setScene(scene);
+    }
+
+    /**
+     * Shows the stage.
+     */
+    void show() {
+        stage.show();
     }
 }

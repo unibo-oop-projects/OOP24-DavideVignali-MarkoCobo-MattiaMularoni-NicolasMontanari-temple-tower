@@ -18,15 +18,23 @@ import javafx.stage.Modality;
  * This class provides the modding menu interface for the game.
  * Implements MVC pattern as part of the View layer.
  */
-public class ModdingMenuView implements SceneActivationListener {
+public final class ModdingMenuView implements SceneActivationListener {
 
-    private static final String POPUP_MESSAGE = "Using the modding menu will create a folder in the user directory to save towers. If you want to delete it, use the clear button.";
-    private static final double POPUP_WIDTH = 400;
-    private static final double POPUP_HEIGHT = 200;
+    private static final String POPUP_MESSAGE = 
+        "Using the modding menu will create a folder in the user directory to save towers. "
+        + "If you want to delete it, use the clear button.";
+    private static final double POPUP_WIDTH_RATIO = 0.4;
+    private static final double POPUP_HEIGHT_RATIO = 0.2;
+    private static final double PADDING_OFFSET = 40.0;
+    private static final String CSS_RESOURCE_PATH = "/css/modding_menu.css";
+    private static final String BACKGROUND_RESOURCE_PATH = "/images/modding_menu_bg.png";
 
     private boolean hasShownPopup;
     private Scene scene;
-    private Stage ownerStage;
+    private double stageX;
+    private double stageY;
+    private double stageWidth;
+    private double stageHeight;
 
     /**
      * Creates and returns the modding menu scene.
@@ -35,7 +43,15 @@ public class ModdingMenuView implements SceneActivationListener {
      * @return A new Scene object containing the modding menu interface
      */
     public Scene createScene(final SceneManager manager) {
-        this.ownerStage = manager.getStage();
+        if (manager == null) {
+            throw new IllegalArgumentException("SceneManager cannot be null");
+        }
+
+        // Store stage properties
+        this.stageX = manager.getX();
+        this.stageY = manager.getY();
+        this.stageWidth = manager.getWidth();
+        this.stageHeight = manager.getHeight();
 
         // Get primary screen dimensions
         final double screenWidth = Screen.getPrimary().getBounds().getWidth();
@@ -49,8 +65,12 @@ public class ModdingMenuView implements SceneActivationListener {
         final StackPane root = new StackPane();
         root.setAlignment(Pos.CENTER);
 
-        // Add background image
-        final ImageView background = new ImageView(new Image("/images/modding_menu_bg.png"));
+        // Load background image safely
+        final String backgroundUrl = getClass().getResource(BACKGROUND_RESOURCE_PATH).toExternalForm();
+        if (backgroundUrl == null) {
+            throw new IllegalStateException("Background image resource not found: " + BACKGROUND_RESOURCE_PATH);
+        }
+        final ImageView background = new ImageView(new Image(backgroundUrl));
         background.setPreserveRatio(true);
         background.setFitWidth(windowWidth);
         background.setFitHeight(windowHeight);
@@ -66,6 +86,7 @@ public class ModdingMenuView implements SceneActivationListener {
             background.setFitWidth(newWidth);
             background.setFitHeight(newHeight);
         });
+
         root.heightProperty().addListener((obs, old, newVal) -> {
             double newHeight = newVal.doubleValue();
             double newWidth = newHeight * background.getImage().getWidth() / background.getImage().getHeight();
@@ -83,18 +104,26 @@ public class ModdingMenuView implements SceneActivationListener {
         root.getChildren().addAll(background, placeholder);
 
         // Create the scene and store it
-        this.scene = new Scene(root, windowWidth, windowHeight);
-        this.scene.getStylesheets().add(getClass().getResource("/css/modding_menu.css").toExternalForm());
-        
-        // Set this view as the scene's user data for activation callbacks
-        this.scene.setUserData(this);
+        final Scene newScene = new Scene(root, windowWidth, windowHeight);
+        final String cssUrl = getClass().getResource(CSS_RESOURCE_PATH).toExternalForm();
+        if (cssUrl == null) {
+            throw new IllegalStateException("CSS resource not found: " + CSS_RESOURCE_PATH);
+        }
+        newScene.getStylesheets().add(cssUrl);
 
-        return this.scene;
+        // Set this view as the scene's user data for activation callbacks
+        newScene.setUserData(this);
+        this.scene = newScene;
+
+        return new Scene(root, windowWidth, windowHeight);
     }
 
+    /**
+     * Called when the scene is activated.
+     */
     @Override
     public void onSceneActivated() {
-        if (!hasShownPopup) {
+        if (!hasShownPopup && scene != null) {
             showFirstTimePopup();
             hasShownPopup = true;
         }
@@ -106,9 +135,12 @@ public class ModdingMenuView implements SceneActivationListener {
      * The popup is modal and centered on top of the modding menu.
      */
     private void showFirstTimePopup() {
+        if (scene == null) {
+            return;
+        }
+
         final Stage popupStage = new Stage(StageStyle.UNDECORATED);
         popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.initOwner(ownerStage);
 
         final VBox popupRoot = new VBox(10);
         popupRoot.getStyleClass().add("popup-root");
@@ -116,23 +148,29 @@ public class ModdingMenuView implements SceneActivationListener {
         final Label message = new Label(POPUP_MESSAGE);
         message.getStyleClass().add("popup-label");
         message.setWrapText(true);
-        message.setPrefWidth(POPUP_WIDTH - 40); // Account for padding
+        message.setPrefWidth(stageWidth * POPUP_WIDTH_RATIO - PADDING_OFFSET);
 
         final Button closeButton = new Button("Close");
         closeButton.getStyleClass().add("popup-button");
         closeButton.setOnAction(e -> popupStage.close());
 
         popupRoot.getChildren().addAll(message, closeButton);
-        
-        final Scene popupScene = new Scene(popupRoot, POPUP_WIDTH, POPUP_HEIGHT);
-        popupScene.getStylesheets().add(getClass().getResource("/css/modding_menu.css").toExternalForm());
-        
+
+        final Scene popupScene = new Scene(
+            popupRoot, 
+            stageWidth * POPUP_WIDTH_RATIO, 
+            stageHeight * POPUP_HEIGHT_RATIO
+        );
+
+        final String cssUrl = getClass().getResource(CSS_RESOURCE_PATH).toExternalForm();
+        popupScene.getStylesheets().add(cssUrl);
+
         popupStage.setScene(popupScene);
 
         // Center the popup relative to the current scene's window
-        popupStage.setX(ownerStage.getX() + (scene.getWidth() - POPUP_WIDTH) / 2);
-        popupStage.setY(ownerStage.getY() + (scene.getHeight() - POPUP_HEIGHT) / 2);
-        
+        popupStage.setX(stageX + (scene.getWidth() - stageWidth * POPUP_WIDTH_RATIO) / 2);
+        popupStage.setY(stageY + (scene.getHeight() - stageHeight * POPUP_HEIGHT_RATIO) / 2);
+
         popupStage.show();
     }
 }

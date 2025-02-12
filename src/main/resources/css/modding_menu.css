@@ -1,12 +1,12 @@
 /* Styling for the modding menu popup */
 .popup-root {
     -fx-background-color: #2d2d2d;
-    -fx-padding: 2em;
-    -fx-spacing: 1em;
+    -fx-padding: 5%;
+    -fx-spacing: 2%;
     -fx-alignment: center;
     -fx-border-color: #4CAF50;
-    -fx-border-width: 0.2em;
-    -fx-border-radius: 0.5em;
+    -fx-border-width: 0.5%;
+    -fx-border-radius: 1%;
 }
 
 .popup-label {
@@ -14,27 +14,27 @@
     -fx-font-size: 1.2em;
     -fx-wrap-text: true;
     -fx-text-alignment: center;
-    -fx-padding: 1em;
+    -fx-padding: 2%;
 }
 
 .popup-button {
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 0.8em 1.5em;
+    -fx-font-size: 1.2em; /* Increased font size */
+    -fx-padding: 3% 5%; /* Increased padding */
     -fx-cursor: hand;
-    -fx-background-radius: 0.5em;
+    -fx-background-radius: 1%;
 }
 
 .popup-button:hover {
     -fx-background-color: #45a049;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 0.8em, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 2%, 0, 0, 0);
 }
 
 /* Main modding menu styling */
 .modding-menu-label {
     -fx-text-fill: white;
-    -fx-font-size: 24px;
+    -fx-font-size: 1.5em;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(three-pass-box, black, 0.5em, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, black, 2%, 0, 0, 0);
 }
