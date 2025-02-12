@@ -4,19 +4,23 @@
 package it.unibo.templetower;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-
 import it.unibo.templetower.controller.GameDataManagerImpl;
-import it.unibo.templetower.model.*;
+import it.unibo.templetower.model.EnemyRoom;
+import it.unibo.templetower.model.FloorData;
+import it.unibo.templetower.model.SpawnManagerImpl;
+import it.unibo.templetower.model.Trap;
 import it.unibo.templetower.util.FloorPrinterUtil;
 
 
 class AppTest {
+    private static final Logger LOGGER = Logger.getLogger(AppTest.class.getName());
+    private static final int MAX_FLOORS = 20;
 
     @Test 
     void testAppHasAGreeting() throws ClassNotFoundException {
@@ -25,9 +29,9 @@ class AppTest {
 
     @Test
     void testVerifyPath() {
-        GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
-        String testPath = "tower/floors/floors-data.json";
-        assertTrue(gameDataManager.verifyPath(testPath, 20));
+        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final String testPath = "tower/floors/floors-data.json";
+        assertTrue(gameDataManager.verifyPath(testPath, MAX_FLOORS));
     }
 
     /**
@@ -39,56 +43,49 @@ class AppTest {
      */
     @Test
     void testLoadAndPrintFloorData() {
-        GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
-        String testPath = "tower/floors/floors-data.json";
-        
+        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final String testPath = "tower/floors/floors-data.json";
         // Load the game data
         gameDataManager.loadGameData(testPath);
-        
         // Get the floors list
-        List<FloorData> floors = gameDataManager.getFloors();
-        
+        final List<FloorData> floors = gameDataManager.getFloors();
         // Verify that floors were loaded
         assertFalse(floors.isEmpty(), "Floor list should not be empty");
-        
         // Print floor data
         FloorPrinterUtil.printFloorDetails(floors);
     }
 
     @Test
     void testSpawnManager() {
-        int level = 1;
-        
+        final int level = 1;
         // Load game data
-        GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
-        String testPath = "tower/floors/floors-data.json";
+        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final String testPath = "tower/floors/floors-data.json";
         gameDataManager.loadGameData(testPath);
-        var floors = gameDataManager.getFloors();
-        
+        final var floors = gameDataManager.getFloors();
         // Instantiate SpawnManagerImpl with loaded floor data
-        SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
-        var generatedFloor = spawnManager.spawnFloor(level);
-        
+        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
+        final var generatedFloor = spawnManager.spawnFloor(level);
         // Print generated floor details
-        System.out.println("\n=== Dettagli del Piano Generato ===");
-        System.out.println("Nome Piano: " + generatedFloor.floorName());
-        System.out.println("Sprite: " + generatedFloor.spritePath());
-        System.out.println("Visibilità: " + generatedFloor.visibility());
-        System.out.println("\nStanze:");
+        LOGGER.info("\n=== Dettagli del Piano Generato ===");
+        LOGGER.info("Nome Piano: " + generatedFloor.floorName());
+        LOGGER.info("Sprite: " + generatedFloor.spritePath());
+        LOGGER.info("Visibilità: " + generatedFloor.visibility());
+        LOGGER.info("\nStanze:");
         generatedFloor.rooms().forEach(room -> {
-            System.out.println("- Stanza " + room.getId() + ": " 
+            LOGGER.info("- Stanza " + room.getId() + ": " 
                 + (room.getBehavior() == null ? "Vuota" : room.getBehavior().getClass().getSimpleName()));
             if (room.getBehavior() instanceof EnemyRoom) {
-                EnemyRoom er = (EnemyRoom) room.getBehavior();
-                System.out.println("  [EnemyRoom] Nome enemy: " + er.getName());
-                System.out.println("  [EnemyRoom] Danno Attacco: " + er.getAttackDamage());
-                System.out.println("  [EnemyRoom] Punti Vita: " + er.getLifePoints());
+                final EnemyRoom er = (EnemyRoom) room.getBehavior();
+                LOGGER.info("  [EnemyRoom] Nome enemy: " + er.getName());
+                LOGGER.info("  [EnemyRoom] Danno Attacco: " + er.getAttackDamage());
+                LOGGER.info("  [EnemyRoom] Punti Vita: " + er.getLifePoints());
             } else if (room.getBehavior() instanceof Trap) {
-                Trap trap = (Trap) room.getBehavior();
-                System.out.println("  [Trap] Danno: " + trap.getDamage());
+                final Trap trap = (Trap) room.getBehavior();
+                LOGGER.info("  [Trap] Danno: " + trap.getDamage());
             }
         });
-        System.out.println("=== Fine Dettagli ===\n");
+        LOGGER.info("=== Fine Dettagli ===\n");
     }
 
 }

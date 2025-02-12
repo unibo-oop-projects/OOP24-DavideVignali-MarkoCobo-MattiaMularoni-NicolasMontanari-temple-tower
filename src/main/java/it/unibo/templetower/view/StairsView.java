@@ -47,6 +47,17 @@ public class StairsView {
         StackPane root = new StackPane(layout);
 
         btYes.setOnAction(event -> {
+    private static final int SPACING = 20;
+    private static final int SCENE_WIDTH = 800;
+    private static final int SCENE_HEIGHT = 600;
+    /**
+
+     * Creates the scene for the stairs view.
+     *
+     * @param manager the scene manager
+     * @param controller the game controller
+     * @return the created scene
+     */
             controller.goToNextFloor();
             // Rimuove tutto e aggiunge solo il video a tutta la finestra
             root.getChildren().clear();
@@ -63,10 +74,10 @@ public class StairsView {
             mediaPlayer.setOnEndOfMedia(() -> manager.switchTo("main_floor_view"));
         });
 
-        btNo.setOnAction(event -> {
-            manager.switchTo("main_floor_view"); // Torna alla scena precedente
-        });
+        return new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
 
-        return new Scene(root, 800, 600);
+        });
+            manager.switchTo("main_floor_view"); // Torna alla scena precedente
+        btNo.setOnAction(event -> {
     }
 }

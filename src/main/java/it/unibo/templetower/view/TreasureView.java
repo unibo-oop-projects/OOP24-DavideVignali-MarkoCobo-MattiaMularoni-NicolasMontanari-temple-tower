@@ -1,6 +1,8 @@
 package it.unibo.templetower.view;
 
 import it.unibo.templetower.controller.GameController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,10 +31,33 @@ public class TreasureView {
     private Media media;
     private MediaPlayer mediaPlayer;
     private MediaView mediaView;
+/**
+ * View class responsible for displaying the treasure room scene.
+ * This class manages the treasure discovery sequence including
+ * video playback and weapon selection dialog.
+ */
+public final class TreasureView {
 
-    public Scene createScene(SceneManager manager, GameController controller) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TreasureView.class);
+    private static final int BUTTON_FONT_SIZE = 20;
+    private static final int SCENE_WIDTH = 800;
+    private static final int SCENE_HEIGHT = 600;
+    private static final double WEAPON_DAMAGE = 0.8;
+    private static final int DAMAGE_BAR_WIDTH = 200;
+    private static final int BUTTON_SPACING = 20; // Added constant for HBox spacing
+    private static final int IMAGE_SIZE = 100;
+    private static final int PADDING = 10;
+
+    /**
+     * Creates and returns the treasure room scene.
+     * 
+     * @param manager    the scene manager to handle scene transitions
+     * @param controller the game controller to handle game logic
+     * @return          the created Scene object
+     */
+    public Scene createScene(final SceneManager manager, final GameController controller) {
         // Creazione del layout radice (StackPane)
-        StackPane root = new StackPane();
+        final StackPane root = new StackPane();
 
         message = new Label("Do you want to open the chest?");
         message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
@@ -86,11 +111,10 @@ public class TreasureView {
 
         // Azione del bottone "Esci": esce dalla stanza (in questo esempio termina
         // l'applicazione)
+            LOGGER.info("Player chose to exit the room");
         btExt.setOnAction(e -> {
-            System.out.println("Hai scelto di uscire dalla stanza!");
             // Qui puoi richiamare un metodo del SceneManager per passare a un'altra scena
             manager.switchTo("main_floor_view");
-            // Platform.exit();
         });
 
         // Al termine della riproduzione del video, mostra il popup
@@ -100,32 +124,36 @@ public class TreasureView {
             });
         }));
 
-        Scene scene = new Scene(root, 800, 600);
-
+        final Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
 
         return scene;
     }
 
-    private void showWeaponPopup(Runnable onClose) {
-        Dialog<Void> dialog = new Dialog<>();
+    /**
+     * Shows a popup dialog for weapon selection.
+     * 
+     * @param onClose callback to be executed when the dialog is closed
+     */
+    private void showWeaponPopup(final Runnable onClose) {
+        final Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Oggetto Trovato!");
         dialog.setHeaderText("Hai trovato un'arma!");
 
         // Aggiungiamo un ButtonType per permettere la chiusura con la X
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
-        Image image = new Image(getClass().getResource("/images/Gun-PNG-File.png").toExternalForm());
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(100);
-        imageView.setFitHeight(100);
+        final Image image = new Image(getClass().getResource("/images/Gun-PNG-File.png").toExternalForm());
+        final ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(IMAGE_SIZE);
+        imageView.setFitHeight(IMAGE_SIZE);
 
-        ProgressBar damageBar = new ProgressBar(0.8);
-        damageBar.setPrefWidth(200);
-        Label damageLabel = new Label("Danno: 80%");
+        final ProgressBar damageBar = new ProgressBar(WEAPON_DAMAGE);
+        damageBar.setPrefWidth(DAMAGE_BAR_WIDTH);
+        final Label damageLabel = new Label("Danno: 80%");
 
-        HBox weaponInfo = new HBox(10, imageView, damageLabel);
-        VBox content = new VBox(10, weaponInfo, damageBar);
+        final HBox weaponInfo = new HBox(PADDING, imageView, damageLabel);
+        final VBox content = new VBox(PADDING, weaponInfo, damageBar);
 
         Button btTake = new Button("Take");
         Button btLeave = new Button("Leave");
@@ -139,7 +167,7 @@ public class TreasureView {
         });
 
         btLeave.setOnAction(event -> {
-            System.out.println("Hai lasciato l'arma!");
+            LOGGER.info("Player left the weapon");
             dialog.close();
             if (onClose != null) {
                 onClose.run();
