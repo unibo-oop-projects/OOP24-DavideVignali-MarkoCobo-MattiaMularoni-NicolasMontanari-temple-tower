@@ -19,7 +19,7 @@ val javaFXModules = listOf(
 )
 
 // Detect OS architecture
-val osName = System.getProperty("os.name").lowercase()
+val osName = System.getProperty("os.name").toLowerCase()
 val arch = System.getProperty("os.arch")
 val platform = when {
     osName.contains("mac") && arch.contains("aarch64") -> "mac-aarch64"
@@ -58,7 +58,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(23))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
