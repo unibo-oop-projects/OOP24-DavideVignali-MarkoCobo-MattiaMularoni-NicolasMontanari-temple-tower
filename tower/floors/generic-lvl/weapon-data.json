@@ -4,11 +4,22 @@
       "level": 1,
       "attacks": [
         {
-          "attackId": "phisical",
+          "attackId": "physical",
           "damage": 50.0
         }
       ],
       "spritePath": "sprites/sword.png"
+    },
+    {
+      "name": "Rusty Axe",
+      "level": 2,
+      "attacks": [
+        {
+          "attackId": "physical",
+          "damage": 60.0
+        }
+      ],
+      "spritePath": "sprites/axe.png"
     }
 ]
 

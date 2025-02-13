@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Misty Dagger",
+    "level": 5,
+    "attacks": [
+      {
+        "attackId": "dark",
+        "damage": 60.0
+      }
+    ],
+    "spritePath": "sprites/dagger.png"
+  },
+  {
+    "name": "Flame Sword",
+    "level": 6,
+    "attacks": [
+      {
+        "attackId": "fire",
+        "damage": 70.0
+      }
+    ],
+    "spritePath": "sprites/flame-sword.png"
+  }
+]

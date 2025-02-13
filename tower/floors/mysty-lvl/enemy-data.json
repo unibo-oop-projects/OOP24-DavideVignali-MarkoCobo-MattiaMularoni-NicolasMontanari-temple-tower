@@ -1,0 +1,60 @@
+{
+  "enemies": [
+    {
+      "name": "Enchanted Goblin",
+      "health": 150,
+      "level": 7,
+      "attacks": [
+        {
+          "attackId": "physical",
+          "damage": 30.0
+        }
+      ],
+      "damageMultipliers": [],
+      "spritePath": "sprites/enchanted-goblin.jpg"
+    },
+    {
+      "name": "Enchanted Imp",
+      "health": 100,
+      "level": 6,
+      "attacks": [
+        {
+          "attackId": "fire",
+          "damage": 25.0
+        }
+      ],
+      "damageMultipliers": [],
+      "spritePath": "sprites/imp.jpg"
+    },
+    {
+      "name": "Enchanted Skeleton",
+      "health": 120,
+      "level": 8,
+      "attacks": [
+        {
+          "attackId": "physical",
+          "damage": 35.0
+        },
+        {
+          "attackId": "poison",
+          "damage": 20.0
+        }
+      ],
+      "damageMultipliers": [],
+      "spritePath": "sprites/skeleton.jpg"
+    },
+    {
+      "name": "Misty Rat",
+      "health": 40.0,
+      "level": 1,
+      "attacks": [
+        {
+          "attackId": "physical",
+          "damage": 22.0
+        }
+      ],
+      "damageMultipliers": [],
+      "spritePath": "sprites/rat.png"
+    }
+  ]
+}

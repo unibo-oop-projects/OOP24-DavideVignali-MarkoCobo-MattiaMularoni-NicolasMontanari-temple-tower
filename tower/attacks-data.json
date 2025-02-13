@@ -1,19 +1,32 @@
 [
     {
-      "attackId": "phisical",
-      "effectPath": "sprites/phisical-attack.jpg"
+        "attackId": "physical",
+        "name": "Physical Attack",
+        "damage": 40.0,
+        "spritePath": "sprites/physical-attack.jpg"
     },
     {
-      "attackId": "magical",
-      "effectPath": "sprites/magical-attack.jpg"
+        "attackId": "dark",
+        "name": "Dark Attack",
+        "damage": 70.0,
+        "spritePath": "sprites/dark-attack.jpg"
     },
     {
-      "attackId": "fire",
-      "effectPath": "sprites/fire-attack.jpg"
+        "attackId": "magical",
+        "effectPath": "sprites/magical-attack.jpg"
     },
     {
-      "attackId": "poison",
-      "effectPath": "sprites/poison-attack.jpg"
+        "attackId": "fire",
+        "effectPath": "sprites/fire-attack.jpg"
+    },
+    {
+        "attackId": "poison",
+        "effectPath": "sprites/poison-attack.jpg"
+    },
+    {
+        "attackId": "ice",
+        "name": "Ice Attack",
+        "effectPath": "sprites/ice-attack.jpg"
     }
 ]
 

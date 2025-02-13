@@ -1,0 +1,37 @@
+{
+  "weapons": [
+    {
+      "name": "Enchanted Sword",
+      "level": 5,
+      "attacks": [
+        {
+          "attackId": "physical",
+          "damage": 50.0
+        }
+      ],
+      "spritePath": "sprites/enchanted-sword.png"
+    },
+    {
+      "name": "Enchanted Dagger",
+      "level": 4,
+      "attacks": [
+        {
+          "attackId": "dark",
+          "damage": 40.0
+        }
+      ],
+      "spritePath": "sprites/dagger.png"
+    },
+    {
+      "name": "Enchanted Staff",
+      "level": 6,
+      "attacks": [
+        {
+          "attackId": "magical",
+          "damage": 60.0
+        }
+      ],
+      "spritePath": "sprites/staff.png"
+    }
+  ]
+}

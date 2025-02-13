@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Mystic Staff",
+    "level": 4,
+    "attacks": [
+      {
+        "attackId": "magical",
+        "damage": 80.0
+      }
+    ],
+    "spritePath": "sprites/staff.png"
+  },
+  {
+    "name": "Ice Staff",
+    "level": 5,
+    "attacks": [
+      {
+        "attackId": "physical",
+        "damage": 60.0
+      },
+      {
+        "attackId": "ice",
+        "damage": 60.0
+      }
+    ],
+    "spritePath": "sprites/ice-staff.png"
+  }
+]

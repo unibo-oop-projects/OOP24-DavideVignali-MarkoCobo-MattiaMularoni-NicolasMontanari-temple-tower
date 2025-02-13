@@ -2,10 +2,10 @@
     {
       "name": "goblin",
       "health": 100.0,
-      "level": 1,
+      "level": 2,
       "attacks": [
         {
-          "attackId": "phisical",
+          "attackId": "physical",
           "damage": 50.0
         }
       ],
@@ -15,16 +15,16 @@
           "multiplier": 1.2
         },
         {
-          "attackId": "phisical",
+          "attackId": "physical",
           "multiplier": 0.8
         }
       ],
-      "spritePath": "sprites/Goblin.jpg"
+      "spritePath": "sprites/goblin.jpg"
     },
     {
       "name": "wizard",
       "health": 80.0,
-      "level": 2,
+      "level": 3,
       "attacks": [
         {
           "attackId": "magical",
@@ -37,7 +37,7 @@
       ],
       "damageMultipliers": [
         {
-          "attackId": "phisical",
+          "attackId": "physical",
           "multiplier": 1.5
         },
         {
@@ -45,15 +45,15 @@
           "multiplier": 0.5
         }
       ],
-      "spritePath": "sprites/Wizard.jpg"
+      "spritePath": "sprites/wizard.jpg"
     },
     {
       "name": "orc",
       "health": 150.0,
-      "level": 2,
+      "level": 4,
       "attacks": [
         {
-          "attackId": "phisical",
+          "attackId": "physical",
           "damage": 80.0
         },
         {
@@ -62,15 +62,15 @@
         }
       ],
       "damageMultipliers": [],
-      "spritePath": "sprites/Orc.jpg"
+      "spritePath": "sprites/orc.jpg"
     },
     {
       "name": "skeleton",
       "health": 120.0,
-      "level": 1,
+      "level": 2,
       "attacks": [
         {
-          "attackId": "phisical",
+          "attackId": "physical",
           "damage": 60.0
         },
         {
@@ -84,7 +84,20 @@
           "multiplier": 1.1
         }
       ],
-      "spritePath": "sprites/Skeleton.jpg"
+      "spritePath": "sprites/skeleton.jpg"
+    },
+    {
+      "name": "Rat",
+      "health": 30.0,
+      "level": 1,
+      "attacks": [
+        {
+          "attackId": "physical",
+          "damage": 20.0
+        }
+      ],
+      "damageMultipliers": [],
+      "spritePath": "sprites/rat.png"
     }
 ]
 
