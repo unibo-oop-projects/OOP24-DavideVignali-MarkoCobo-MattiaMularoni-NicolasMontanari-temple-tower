@@ -1,17 +1,14 @@
 package it.unibo.templetower.view;
 
-import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.unibo.templetower.controller.MusicController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -84,7 +81,7 @@ public final class Home {
         muteButton.setGraphic(imageView);
         muteButton.setPrefSize(30, 30);  // Set fixed size for square button
         muteButton.setOnAction(e -> {
-            stopMusic();
+            
         });
 
            // Create container for mute button positioned at bottom right
@@ -98,43 +95,11 @@ public final class Home {
         root.getChildren().addAll(background, content);
 
         final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        MusicController.getInstance().startMusic("sounds/musicadisottofondo.wav");
 
-        try {
-            final InputStream audioStream = getClass().getClassLoader()
-                    .getResourceAsStream("sounds/musicadisottofondo.wav");
-            if (audioStream == null) {
-                LOGGER.error("Audio file not found!");
-                return scene;
-            }
-            final AudioInputStream audioInput = AudioSystem.getAudioInputStream(
-                    new BufferedInputStream(audioStream)
-            );
-            audioClip = AudioSystem.getClip();
-            audioClip.open(audioInput);
-            // Set volume
-            final FloatControl gainControl
-                    = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(MUSIC_VOLUME);
-            // Start music immediately
-            audioClip.setFramePosition(0);
-            audioClip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (javax.sound.sampled.LineUnavailableException e) {
-            LOGGER.error("Audio line unavailable: {}", e.getMessage());
-        } catch (javax.sound.sampled.UnsupportedAudioFileException e) {
-            LOGGER.error("Unsupported audio format: {}", e.getMessage());
-        } catch (java.io.IOException e) {
-            LOGGER.error("IO error while loading music: {}", e.getMessage());
-        }
         return scene;
     }
 
-    /**
-     * Stops the background music if it is currently playing.
-     */
-    public void stopMusic() {
-        if (audioClip != null && audioClip.isRunning()) {
-            audioClip.stop();
-        }
-    }
+    
 
 }
