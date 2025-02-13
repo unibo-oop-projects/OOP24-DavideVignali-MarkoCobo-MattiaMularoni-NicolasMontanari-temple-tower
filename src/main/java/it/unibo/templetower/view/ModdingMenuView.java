@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import it.unibo.templetower.controller.ModdingMenuController;
+import it.unibo.templetower.utils.Pair;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -19,12 +22,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Modality;
-import it.unibo.templetower.controller.ModdingMenuController;
-import it.unibo.templetower.utils.Pair;
 
 /**
  * Class responsible for creating and managing the modding menu scene.
@@ -69,7 +70,7 @@ public final class ModdingMenuView implements SceneActivationListener {
      * @param manager The scene manager to handle scene transitions
      * @return A new Scene object containing the modding menu interface
      */
-    public Scene createScene(final SceneManager manager) {
+    public StackPane createScene(final SceneManager manager) {
         this.ownerStage = Objects.requireNonNull(manager.getStage(), "Stage cannot be null");
 
         final Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -117,15 +118,10 @@ public final class ModdingMenuView implements SceneActivationListener {
 
         root.getChildren().addAll(background, content);
 
-        final Scene newScene = new Scene(root, windowWidth, windowHeight);
-        newScene.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());
-        newScene.setUserData(this);
+        root.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());
+        root.setUserData(this);
 
-        ownerStage.setWidth(windowWidth);
-        ownerStage.setHeight(windowHeight);
-        ownerStage.centerOnScreen();
-
-        return newScene;
+        return root;
     }
 
     private Button createStyledButton(final String text, final Runnable action) {
