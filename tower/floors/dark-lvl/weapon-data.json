@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Dark Sword",
+    "level": 14,
+    "attack": [
+      {
+        "attackId": "dark",
+        "damage": 100.0
+      }
+    ],
+    "spritePath": "sprites/dark-sword.png"
+  },
+  {
+    "name": "Shadow Dagger",
+    "level": 15,
+    "attack": [
+      {
+        "attackId": "dark",
+        "damage": 80.0
+      }
+    ],
+    "spritePath": "sprites/shadow-dagger.png"
+  }
+]
