@@ -27,9 +27,6 @@ import javafx.scene.media.MediaView;
  * video playback and weapon selection dialog.
  */
 public final class TreasureView {
-
-    private HBox btContainer;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TreasureView.class);
     private static final int BUTTON_FONT_SIZE = 20;
     private static final double WEAPON_DAMAGE = 0.8;
@@ -123,7 +120,7 @@ public final class TreasureView {
         dialog.setTitle("Oggetto Trovato!");
         dialog.setHeaderText("Hai trovato un'arma!");
 
-        // 🔹 Aggiungiamo un ButtonType per permettere la chiusura con la X
+        // Aggiungiamo un ButtonType per permettere la chiusura con la X
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
         final Image image = new Image(getClass().getResource("/images/Gun-PNG-File.png").toExternalForm());
