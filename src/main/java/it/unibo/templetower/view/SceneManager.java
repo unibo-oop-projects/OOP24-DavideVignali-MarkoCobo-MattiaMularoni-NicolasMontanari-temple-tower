@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
+import it.unibo.templetower.controller.GameDataManagerImpl;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -48,6 +49,7 @@ public final class SceneManager {
             scenes.put("enter_menu", new EnterMenu().createScene(this));
             scenes.put("settings_menu", new SettingsMenu().createScene(this));
             scenes.put("home", new Home().createScene(this));
+            scenes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to initialize scenes", e);
@@ -63,6 +65,10 @@ public final class SceneManager {
      * @throws IllegalArgumentException if the specified scene name is not found
      */
     public void switchTo(final String sceneName) {
+        if ("difficulty_menu".equals(sceneName) && !isTowerLoaded()) {
+            LOGGER.warn("No tower loaded. Please load a tower from the modding menu to proceed.");
+            return; // Do not switch scenes automatically
+        }
         final Scene scene = scenes.get(sceneName);
         if (scene == null) {
             throw new IllegalArgumentException("Scene " + sceneName + " not found");
@@ -76,6 +82,39 @@ public final class SceneManager {
         }
 
         stage.setScene(scene);
+        stage.centerOnScreen(); // Added centering for the stage
         stage.show();
+
+        // Notify view if it implements SceneActivationListener
+        if (scene.getUserData() instanceof SceneActivationListener) {
+            ((SceneActivationListener) scene.getUserData()).onSceneActivated();
+        }
+    }
+
+    /**
+     * Checks if a tower is loaded in the game data manager.
+     *
+     * @return true if a tower is loaded, false otherwise
+     */
+    private boolean isTowerLoaded() {
+        return GameDataManagerImpl.getInstance().getTowerPath().isPresent();
+    }
+
+    /**
+     * Gets a copy of the primary stage of the application with only necessary properties.
+     * This prevents exposing the internal stage representation.
+     * 
+     * @return a new Stage with copied properties from the internal stage
+     */
+    public Stage getStage() {
+        final Stage stageProxy = new Stage();
+        stageProxy.setX(stage.getX());
+        stageProxy.setY(stage.getY());
+        stageProxy.setWidth(stage.getWidth());
+        stageProxy.setHeight(stage.getHeight());
+        stageProxy.setTitle(stage.getTitle());
+        stageProxy.setFullScreen(stage.isFullScreen());
+        stageProxy.setMaximized(stage.isMaximized());
+        return stageProxy;
     }
 }

@@ -1,9 +1,9 @@
 [
     {
         "floorName": "Generic Floor",
-        "spritePath": "tower/sprites/generic-lvl.png",
-        "enemyPath": "tower/floors/generic-lvl/enemy-data.json",
-        "weaponsPath": "tower/floors/generic-lvl/weapon-data.json",
+        "spritePath": "sprites/generic-lvl.png",
+        "enemyPath": "floors/generic-lvl/enemy-data.json",
+        "weaponsPath": "floors/generic-lvl/weapon-data.json",
         "spawnWeight": 1,
         "spawningRange": {
             "minLevel": 1,
@@ -13,9 +13,9 @@
     },
     {
         "floorName": "test Floor",
-        "spritePath": "tower/sprites/generic-lvl.png",
-        "enemyPath": "tower/floors/generic-lvl/enemy-data.json",
-        "weaponsPath": "tower/floors/generic-lvl/weapon-data.json",
+        "spritePath": "sprites/generic-lvl.png",
+        "enemyPath": "floors/generic-lvl/enemy-data.json",
+        "weaponsPath": "floors/generic-lvl/weapon-data.json",
         "spawnWeight": 1,
         "spawningRange": {
             "minLevel": 5,
