@@ -33,6 +33,7 @@ public final class CombatView {
     private static final int HEALTH_BAR_WIDTH = 200;
     private static final int ATTACK_DISTANCE = 30;
     private static final double INITIAL_HEALTH = 1.0;
+    private static final int MAX_HEALTH = 100;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CombatView.class);
 
@@ -46,7 +47,7 @@ public final class CombatView {
      * 
      * @param manager    the scene manager to handle scene transitions
      * @param controller the game controller to handle game logic
-     * @return the created combat scene
+     * @return          the created combat scene
      */
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
@@ -82,10 +83,8 @@ public final class CombatView {
         final HBox charactersBox = new HBox(SPACING_LARGE);
         charactersBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        final ImageView playerImage = new ImageView(
-                new Image(getClass().getResource("/Images/player.png").toExternalForm()));
-        final ImageView enemyImage = new ImageView(
-                new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
+        final ImageView playerImage = new ImageView(new Image(getClass().getResource("/Images/player.png").toExternalForm()));
+        final ImageView enemyImage = new ImageView(new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
 
         playerImage.setFitWidth(CHARACTER_SIZE);
         playerImage.setFitHeight(CHARACTER_SIZE);
@@ -102,7 +101,7 @@ public final class CombatView {
         playerHealthBar = new ProgressBar(INITIAL_HEALTH);
         playerHealthBar.getStyleClass().add("health-bar-player");
 
-        enemyHealthBar = new ProgressBar(controller.getEnemyLifePoints() / 10);
+        enemyHealthBar = new ProgressBar(INITIAL_HEALTH);
         enemyHealthBar.getStyleClass().add("health-bar-enemy");
 
         // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
@@ -134,13 +133,13 @@ public final class CombatView {
         final BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        final Label playerHpLabel = new Label(controller.getPlayerLife() + "HP");
+        final Label playerHpLabel = new Label("100 HP");
         playerHpLabel.getStyleClass().add("label");
         final VBox playerHealthBox = new VBox(SPACING_SMALL, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
         healthBarsPane.setLeft(playerHealthBox);
 
-        final Label enemyHpLabel = new Label(controller.getEnemyLifePoints() + "HP");
+        final Label enemyHpLabel = new Label("100 HP");
         enemyHpLabel.getStyleClass().add("label");
         final VBox enemyHealthBox = new VBox(SPACING_SMALL, enemyHpLabel, enemyHealthBar);
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -160,13 +159,14 @@ public final class CombatView {
             timeline.getKeyFrames().add(kf);
             timeline.setOnFinished(e -> {
                 controller.attackEnemy();
-
+                final double enemyDamage = controller.getEnemyLifePoints();
                 // Attacca il player e ottieni il danno inflitto
                 controller.attackPlayer();
+                final double playerDamage = controller.getPlayerLife();
 
                 // Aggiorna le barre di salute
-                double playerHealth = playerHealthBar.getProgress() - (controller.getPlayerLife() / 100);
-                double enemyHealth = enemyHealthBar.getProgress() - (controller.getEnemyLifePoints() / 100);
+                double playerHealth = playerHealthBar.getProgress() - playerDamage / MAX_HEALTH;
+                double enemyHealth = enemyHealthBar.getProgress() - enemyDamage / MAX_HEALTH;
 
                 if (playerHealth < 0) {
                     playerHealth = 0;
@@ -178,8 +178,8 @@ public final class CombatView {
                 playerHealthBar.setProgress(playerHealth);
                 enemyHealthBar.setProgress(enemyHealth);
 
-                playerHpLabel.setText(controller.getPlayerLife() + "HP");
-                enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
+                playerHpLabel.setText((int) (playerHealth * MAX_HEALTH) + " HP");
+                enemyHpLabel.setText((int) (enemyHealth * MAX_HEALTH) + " HP");
 
                 if (playerHealth <= 0 || enemyHealth <= 0) {
                     attackButton.setDisable(true);
@@ -217,5 +217,8 @@ public final class CombatView {
         playerHpLabel.setText(controller.getPlayerLife() + "HP");
         enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
     }
-
 }
+
+
+
+

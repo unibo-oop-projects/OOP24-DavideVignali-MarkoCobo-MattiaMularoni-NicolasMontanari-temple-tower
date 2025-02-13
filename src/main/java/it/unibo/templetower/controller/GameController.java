@@ -95,11 +95,4 @@ public interface GameController {
      * @return the current life points of the enemy as a double value
      */
     double getEnemyLifePoints();
-
-    /** 
-     * Returns the path of the sprite for the specified entity type.
-     * 
-     * @return a String containing the file path to the entity sprite
-     */
-    String getEnemySpritePath();
 }

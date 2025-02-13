@@ -19,7 +19,7 @@ val javaFXModules = listOf(
 )
 
 // Detect OS architecture
-val osName = System.getProperty("os.name").lowercase()
+val osName = System.getProperty("os.name").toLowerCase()
 val arch = System.getProperty("os.arch")
 val platform = when {
     osName.contains("mac") && arch.contains("aarch64") -> "mac-aarch64"
@@ -51,6 +51,9 @@ dependencies {
     // SLF4J and Logback
     implementation("org.slf4j:slf4j-api:1.7.32")
     implementation("ch.qos.logback:logback-classic:1.2.6")
+
+    // Apache Commons IO
+    implementation("commons-io:commons-io:2.11.0")
 }
 
 java {

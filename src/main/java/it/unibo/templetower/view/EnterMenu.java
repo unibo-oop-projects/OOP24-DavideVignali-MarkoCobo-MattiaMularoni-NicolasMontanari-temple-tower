@@ -76,7 +76,7 @@ public final class EnterMenu {
             // Add your action here
         });
         moddingButton.setOnAction(e -> {
-            // Add your action here
+            manager.switchTo("modding_menu"); // Switch to modding menu scene
         });
         settingsButton.setOnAction(e -> {
             // Add your action here

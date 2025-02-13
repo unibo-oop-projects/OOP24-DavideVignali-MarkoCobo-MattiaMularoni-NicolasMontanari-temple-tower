@@ -1,6 +1,6 @@
 package it.unibo.templetower.view;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
+import it.unibo.templetower.controller.GameDataManagerImpl;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -43,7 +44,6 @@ public final class SceneManager {
         this.controller = new GameControllerImpl();
         this.scene = new Scene(new StackPane(), INITIAL_WIDTH, INITIAL_HEIGHT);
         stage.setScene(scene);
-        stage.setAlwaysOnTop(true);
         initializePanes();
     }
 
@@ -59,19 +59,26 @@ public final class SceneManager {
             panes.put("stairs_view", new StairsView().createScene(this, controller));
             panes.put("enter_menu", new EnterMenu().createScene(this));
             panes.put("home", new Home().createScene(this));
-        } catch (IOException e) {
-            LOGGER.error("Failed to initialize panes: " + e.getMessage());
-            throw new IllegalStateException("Failed to initialize panes", e);
+            panes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
+            throw new IllegalStateException("Failed to initialize scenes", e);
         }
     }
 
     /**
      * Switches the current scene to the specified scene.
+     * This method can be overridden by subclasses to provide custom scene switching behavior.
+     * When overriding, ensure that the scene exists in the scenes map and properly apply CSS styles.
      *
      * @param sceneName the name of the scene to switch to
      * @throws IllegalArgumentException if the specified scene name is not found
      */
     public void switchTo(final String sceneName) {
+        if ("difficulty_menu".equals(sceneName) && !isTowerLoaded()) {
+            LOGGER.warn("No tower loaded. Please load a tower from the modding menu to proceed.");
+            return; // Do not switch scenes automatically
+        }
         Pane pane = panes.get(sceneName);
         if ("combat_view".equals(sceneName)) {
             pane = new CombatView().createScene(this, controller);
@@ -106,5 +113,37 @@ public final class SceneManager {
     private void updateStage(final Pane pane) {
         scene.setRoot(pane);
         stage.show();
+
+        // Notify view if it implements SceneActivationListener
+        if (scene.getUserData() instanceof SceneActivationListener sceneActivationListener) {
+            sceneActivationListener.onSceneActivated();
+        }
+    }
+
+    /**
+     * Checks if a tower is loaded in the game data manager.
+     *
+     * @return true if a tower is loaded, false otherwise
+     */
+    private boolean isTowerLoaded() {
+        return GameDataManagerImpl.getInstance().getTowerPath().isPresent();
+    }
+
+    /**
+     * Gets a copy of the primary stage of the application with only necessary properties.
+     * This prevents exposing the internal stage representation.
+     * 
+     * @return a new Stage with copied properties from the internal stage
+     */
+    public Stage getStage() {
+        final Stage stageProxy = new Stage();
+        stageProxy.setX(stage.getX());
+        stageProxy.setY(stage.getY());
+        stageProxy.setWidth(stage.getWidth());
+        stageProxy.setHeight(stage.getHeight());
+        stageProxy.setTitle(stage.getTitle());
+        stageProxy.setFullScreen(stage.isFullScreen());
+        stageProxy.setMaximized(stage.isMaximized());
+        return stageProxy;
     }
 }
