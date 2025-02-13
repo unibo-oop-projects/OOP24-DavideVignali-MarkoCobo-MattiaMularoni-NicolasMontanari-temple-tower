@@ -23,7 +23,7 @@
         "multiplier": 0.8
       }
     ],
-    "spritePath": "sprites/misty-phantom.jpg"
+    "spritePath": "sprites/misty-phantom.png"
   },
   {
     "name": "Fire Elemental",
@@ -45,7 +45,7 @@
         "multiplier": 0.5
       }
     ],
-    "spritePath": "sprites/fire-elemental.jpg"
+    "spritePath": "sprites/fire-elemental.png"
   },
   {
     "name": "Sewer Rat",

@@ -11,7 +11,7 @@
         }
       ],
       "damageMultipliers": [],
-      "spritePath": "sprites/ancient-warrior.jpg"
+      "spritePath": "sprites/ancient-warrior.png"
     },
     {
       "name": "Ancient Guardian",
@@ -37,7 +37,7 @@
           "multiplier": 0.5
         }
       ],
-      "spritePath": "sprites/ancient-guardian.jpg"
+      "spritePath": "sprites/ancient-guardian.png"
     },
     {
       "name": "Ancient Knight",
@@ -50,7 +50,7 @@
         }
       ],
       "damageMultipliers": [],
-      "spritePath": "sprites/dark-knight.jpg"
+      "spritePath": "sprites/dark-knight.png"
     },
     {
       "name": "Cave Rat",

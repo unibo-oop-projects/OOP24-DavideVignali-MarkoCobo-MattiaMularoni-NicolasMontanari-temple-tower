@@ -9,7 +9,7 @@
                 "damage": 80.0
             }
         ],
-        "spritePath": "tower/sprites/dark-knight.jpg"
+        "spritePath": "tower/sprites/dark-knight.png"
     },
     {
         "name": "Dark Sorcerer",
@@ -35,7 +35,7 @@
                 "multiplier": 0.6
             }
         ],
-        "spritePath": "sprites/dark-sorcerer.jpg"
+        "spritePath": "sprites/dark-sorcerer.png"
     },
     {
       "name": "Shadow Assassin",
@@ -61,7 +61,7 @@
           "multiplier": 0.5
         }
       ],
-      "spritePath": "sprites/shadow-assassin.jpg"
+      "spritePath": "sprites/shadow-assassin.png"
     },
     {
       "name": "Ice Golem",
@@ -74,7 +74,7 @@
         }
       ],
       "damageMultipliers": [],
-      "spritePath": "sprites/ice-golem.jpg"
+      "spritePath": "sprites/ice-golem.png"
     },
     {
       "name": "Dark Rat",

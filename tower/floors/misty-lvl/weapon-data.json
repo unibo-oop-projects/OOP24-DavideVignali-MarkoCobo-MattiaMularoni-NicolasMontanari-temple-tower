@@ -1,7 +1,7 @@
 [
   {
     "name": "Misty Dagger",
-    "level": 5,
+    "level": 9,
     "attacks": [
       {
         "attackId": "dark",
@@ -12,7 +12,7 @@
   },
   {
     "name": "Flame Sword",
-    "level": 6,
+    "level": 10,
     "attacks": [
       {
         "attackId": "fire",

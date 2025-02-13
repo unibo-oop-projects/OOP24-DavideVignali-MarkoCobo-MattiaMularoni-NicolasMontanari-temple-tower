@@ -9,7 +9,7 @@
                 "damage": 60.0
             }
         ],
-        "spritePath": "tower/sprites/orc.jpg"
+        "spritePath": "tower/sprites/orc.png"
     },
     {
         "name": "Mystic Sorcerer",
@@ -21,7 +21,7 @@
                 "damage": 70.0
             }
         ],
-        "spritePath": "sprites/mystic-sorcerer.jpg"
+        "spritePath": "sprites/mystic-sorcerer.png"
     },
     {
       "name": "Plague Rat",
