@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,10 +37,9 @@ public final class Home {
      * @return Scene object representing the home screen
      * @throws FileNotFoundException if background image resource cannot be found
      */
-    public Scene createScene(final SceneManager manager) throws FileNotFoundException {
+    public StackPane createScene(final StageManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
-        final Scene scene = new Scene(root);
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
@@ -96,7 +94,7 @@ public final class Home {
         } catch (java.io.IOException e) {
             LOGGER.error("IO error while loading music: {}", e.getMessage());
         }
-        return scene;
+        return root;
     }
 
     /**

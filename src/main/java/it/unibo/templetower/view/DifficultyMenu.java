@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,10 +24,9 @@ public final class DifficultyMenu {
          * @param controller the game controller
          * @return the created scene
          */
-        public Scene createScene(final SceneManager manager, final GameController controller) {
+        public StackPane createScene(final StageManager manager, final GameController controller) {
                 // Create root container
                 final StackPane root = new StackPane();
-                final Scene scene = new Scene(root);
 
                 // Set up background image
                 final InputStream backgroundStream = getClass().getClassLoader()
@@ -65,7 +63,7 @@ public final class DifficultyMenu {
                 // Combine background and buttons
                 root.getChildren().addAll(background, buttonContainer);
 
-                // Create and return the scene
-                return scene;
+                // Create and return the pane
+                return root;
         }
 }

@@ -12,7 +12,6 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -61,14 +60,12 @@ public class MainFloorView {
      * @param controller The game controller
      * @return The created scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public BorderPane createScene(final StageManager manager, final GameController controller) {
         //Background
         final BorderPane root = new BorderPane();
         dPane = new Pane();
         root.setCenter(dPane);
         root.setId("circle-room-back");
-
-        final Scene scene = new Scene(root);
 
         //Inner and outer circles for create the rooms container
         this.nRooms = controller.getNumberOfRooms();
@@ -76,17 +73,17 @@ public class MainFloorView {
         inner = createCircle("inner-circle-rooms", INNER_RADIUS);
         dPane.getChildren().addAll(outer, inner);
 
-        //Listener for keeping the scene responsive to screen size changes
-        scene.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
-        scene.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
+        //Listener for keeping the pane responsive to screen size changes
+        root.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(root, controller));
+        root.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(root, controller));
 
         //Control buttons
         createButtons(controller, manager);
 
-        return scene;
+        return root;
     }
 
-    private void createButtons(final GameController controller, final SceneManager manager) {
+    private void createButtons(final GameController controller, final StageManager manager) {
         final ToggleButton left = new ToggleButton("<");
         final ToggleButton right = new ToggleButton(">");
         final ToggleButton enter = new ToggleButton("ENTRA");
@@ -117,7 +114,7 @@ public class MainFloorView {
         highlightSector(controller.getPlayerActualRoom());
     }
 
-    private void handleRoomEnter(final GameController controller, final SceneManager manager) {
+    private void handleRoomEnter(final GameController controller, final StageManager manager) {
         highlightSector(controller.getPlayerActualRoom());
         manager.switchTo(controller.enterRoom());
     }
@@ -129,7 +126,7 @@ public class MainFloorView {
     }
 
     //Adapts the scene to the screen size
-    private void adaptScene(final Scene scene, final GameController controller) {
+    private void adaptScene(final Pane scene, final GameController controller) {
         final double centerX = scene.getWidth() / 2;
         final double centerY = scene.getHeight() / 2;
 

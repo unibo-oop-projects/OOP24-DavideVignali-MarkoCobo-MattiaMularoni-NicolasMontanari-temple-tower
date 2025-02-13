@@ -7,7 +7,6 @@ import it.unibo.templetower.controller.GameController;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -45,10 +44,9 @@ public final class TreasureView {
      * @param controller the game controller to handle game logic
      * @return the created Scene object
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final StageManager manager, final GameController controller) {
         // Creazione del layout radice (StackPane)
         final StackPane root = new StackPane();
-        final Scene scene = new Scene(root);
 
         final Label message = new Label("Do you want to open the chest?");
         message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
@@ -116,9 +114,9 @@ public final class TreasureView {
             });
         }));
 
-        scene.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
 
-        return scene;
+        return root;
     }
 
     /**

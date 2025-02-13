@@ -2,7 +2,6 @@ package it.unibo.templetower.view;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -25,7 +24,7 @@ public class StairsView {
      * @param controller the game controller
      * @return the created scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final StageManager manager, final GameController controller) {
         // Creazione della label con il messaggio
         final Label message = new Label("Do you want to go to the next floor?");
         message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
@@ -50,7 +49,6 @@ public class StairsView {
 
         // Contenitore principale per gestire il passaggio alla modalità video
         final StackPane root = new StackPane(layout);
-        final Scene scene = new Scene(root);
 
         btYes.setOnAction(event -> {
 
@@ -74,6 +72,6 @@ public class StairsView {
             manager.switchTo("main_floor_view"); // Torna alla scena precedente
         });
 
-        return scene;
+        return root;
     }
 }

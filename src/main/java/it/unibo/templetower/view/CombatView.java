@@ -1,12 +1,14 @@
 package it.unibo.templetower.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unibo.templetower.controller.GameController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -18,16 +20,12 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents the combat view of the game where battles take place.
  * This class is responsible for creating and managing the combat scene.
  */
 public final class CombatView {
-    private static final int WINDOW_WIDTH = 800;
-    private static final int WINDOW_HEIGHT = 600;
     private static final int SPACING_LARGE = 20;
     private static final int SPACING_SMALL = 5;
     private static final int CHARACTER_SIZE = 150;
@@ -50,7 +48,7 @@ public final class CombatView {
      * @param controller the game controller to handle game logic
      * @return the created combat scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final StageManager manager, final GameController controller) {
         final StackPane root = new StackPane();
         root.getStyleClass().add("root");
 
@@ -75,9 +73,7 @@ public final class CombatView {
             final Label errorLabel = new Label("Background image not found.");
             errorLabel.getStyleClass().add("label");
             root.getChildren().add(errorLabel);
-            final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-            scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
-            return scene;
+            return root;
         }
 
         final VBox contentBox = new VBox(SPACING_LARGE);
@@ -111,7 +107,7 @@ public final class CombatView {
 
         // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
         root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            final double scaleFactor = newWidth.doubleValue() / WINDOW_WIDTH;
+            final double scaleFactor = newWidth.doubleValue() / root.getWidth();
             final double newSize = CHARACTER_SIZE * scaleFactor;
 
             playerImage.setFitWidth(newSize);
@@ -201,11 +197,10 @@ public final class CombatView {
         rootBox.getChildren().addAll(charactersBox, healthBarsPane);
         root.getChildren().add(rootBox);
 
-        final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
         resetCombat(controller);
 
-        return scene;
+        return root;
     }
 
     private void resetCombat(final GameController controller) {

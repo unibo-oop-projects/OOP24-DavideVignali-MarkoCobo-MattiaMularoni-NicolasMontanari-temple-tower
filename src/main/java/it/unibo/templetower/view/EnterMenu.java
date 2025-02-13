@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,10 +27,9 @@ public final class EnterMenu {
      * @return A new Scene object containing the enter menu interface
      * @throws FileNotFoundException if required image resources are not found
      */
-    public Scene createScene(final SceneManager manager) throws FileNotFoundException {
+    public StackPane createScene(final StageManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
-        final Scene scene = new Scene(root);
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
@@ -95,8 +93,8 @@ public final class EnterMenu {
         // Combine background and content
         root.getChildren().addAll(background, mainLayout);
 
-        // Return scene directly without storing in a variable
-        return scene;
+        // Return pane directly without storing in a variable
+        return root;
 
     }
 
