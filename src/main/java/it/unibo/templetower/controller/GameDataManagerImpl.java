@@ -86,7 +86,7 @@ public final class GameDataManagerImpl {
             final Integer level = jsonObject.get("level").getAsInt();
             final String spritePath = jsonObject.get("spritePath").getAsString();
 
-            final JsonArray attacksArray = jsonObject.getAsJsonArray("attacks");
+            final JsonArray attacksArray = jsonObject.getAsJsonArray("attack");
             final JsonObject attackObj = attacksArray.get(0).getAsJsonObject();
             final String attackId = attackObj.get(ATTACK_ID_KEY).getAsString();
             final Double damage = attackObj.get("damage").getAsDouble();

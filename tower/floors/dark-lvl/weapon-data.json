@@ -2,7 +2,7 @@
   {
     "name": "Dark Sword",
     "level": 14,
-    "attacks": [
+    "attack": [
       {
         "attackId": "dark",
         "damage": 100.0
@@ -13,7 +13,7 @@
   {
     "name": "Shadow Dagger",
     "level": 15,
-    "attacks": [
+    "attack": [
       {
         "attackId": "dark",
         "damage": 80.0

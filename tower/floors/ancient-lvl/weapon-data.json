@@ -3,7 +3,7 @@
     {
       "name": "Ancient Axe",
       "level": 18,
-      "attacks": [
+      "attack": [
         {
           "attackId": "physical",
           "damage": 60.0
@@ -14,7 +14,7 @@
     {
       "name": "Ancient Spear",
       "level": 19,
-      "attacks": [
+      "attack": [
         {
           "attackId": "physical",
           "damage": 120.0
@@ -25,7 +25,7 @@
     {
       "name": "Ancient Sword",
       "level": 17,
-      "attacks": [
+      "attack": [
         {
           "attackId": "physical",
           "damage": 90.0

@@ -2,7 +2,7 @@
     {
       "name": "simple sword",
       "level": 1,
-      "attacks": [
+      "attack": [
         {
           "attackId": "physical",
           "damage": 50.0
@@ -13,7 +13,7 @@
     {
       "name": "Rusty Axe",
       "level": 2,
-      "attacks": [
+      "attack": [
         {
           "attackId": "physical",
           "damage": 60.0
