@@ -139,5 +139,6 @@ public final class MusicController {
             musicModel.setIsPlaying(false);
         }
     }
+   
 
 }

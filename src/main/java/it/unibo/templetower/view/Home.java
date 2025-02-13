@@ -63,26 +63,10 @@ public final class Home {
             // Non fermiamo più la musica quando cambiamo scena
             manager.switchTo("enter_menu");
         });
-        // Mute button with image
-        Image image = new Image("images/muto.png");
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(30);
-        imageView.setFitHeight(30);
-
-        final Button muteButton = new Button();  // Create button without text
-        muteButton.setGraphic(imageView);
-        muteButton.setPrefSize(30, 30);  // Set fixed size for square button
-        muteButton.setOnAction(e -> {
-            MusicController.getInstance().stopMusic();
-            
-        });
-
-           // Create container for mute button positioned at bottom right
-        final VBox muteContainer = new VBox(muteButton);
-        muteContainer.setAlignment(Pos.BOTTOM_RIGHT);
+        
 
         // Add both buttons to the content VBox
-        content.getChildren().addAll(difficultyButton, muteContainer);
+        content.getChildren().addAll(difficultyButton);
 
         // Combine background and content
         root.getChildren().addAll(background, content);

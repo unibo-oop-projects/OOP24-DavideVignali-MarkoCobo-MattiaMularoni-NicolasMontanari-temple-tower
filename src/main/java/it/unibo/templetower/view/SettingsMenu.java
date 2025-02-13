@@ -3,11 +3,13 @@ package it.unibo.templetower.view;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import it.unibo.templetower.controller.MusicController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -50,9 +52,54 @@ public class SettingsMenu {
             manager.switchTo("enter_menu");
         });
         content.getChildren().add(difficultyButton);
+
+        // Mute button with image
+        Image image = new Image("images/muto.png");
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(30);
+        imageView.setFitHeight(30);
+
+        final Button muteButton = new Button();  // Create button without text
+        muteButton.setGraphic(imageView);
+        muteButton.setPrefSize(30, 30);  // Set fixed size for square button
+        muteButton.setOnAction(e -> {
+            MusicController.getInstance().stopMusic();
+            
+        });
+
+           // Create container for mute button positioned at bottom right
+        final VBox muteContainer = new VBox(muteButton);
+        muteContainer.setAlignment(Pos.BOTTOM_RIGHT);
+
+        Image image1 = new Image("images/alzavol.png");
+        ImageView imageView1 = new ImageView(image1);
+        imageView1.setFitWidth(30);
+        imageView1.setFitHeight(30);
+
+        Image image2 = new Image("images/abbassavol.png");
+        ImageView imageView2 = new ImageView(image2);
+        imageView2.setFitWidth(30);
+        imageView2.setFitHeight(30);
+
+        final Button raiseButton = new Button();  // Create button without text
+        raiseButton.setGraphic(imageView1);
+        raiseButton.setPrefSize(30, 30);  // Set fixed size for square button
+        raiseButton.setOnAction(e -> {
+            
+        });
+
+        final Button lowerButton = new Button();  // Create button without text
+        lowerButton.setGraphic(imageView2);
+        lowerButton.setPrefSize(30, 30);  // Set fixed size for square button
+        lowerButton.setOnAction(e -> {
+           
+        });
+        final HBox volumeContainer = new HBox(10);
+        volumeContainer.getChildren().addAll(raiseButton, lowerButton);
+        volumeContainer.setAlignment(Pos.CENTER);
         
         // Combine background and content
-        root.getChildren().addAll(background, content);
+        root.getChildren().addAll(background, content, muteContainer, volumeContainer);
 
         final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
