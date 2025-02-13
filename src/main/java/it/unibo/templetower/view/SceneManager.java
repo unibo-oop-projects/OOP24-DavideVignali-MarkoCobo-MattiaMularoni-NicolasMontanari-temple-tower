@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
+import it.unibo.templetower.controller.GameDataManagerImpl;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -62,6 +63,10 @@ public final class SceneManager {
      * @throws IllegalArgumentException if the specified scene name is not found
      */
     public void switchTo(final String sceneName) {
+        if ("difficulty_menu".equals(sceneName) && !isTowerLoaded()) {
+            LOGGER.warn("No tower loaded. Please load a tower from the modding menu to proceed.");
+            return; // Do not switch scenes automatically
+        }
         final Scene scene = scenes.get(sceneName);
         if (scene == null) {
             throw new IllegalArgumentException("Scene " + sceneName + " not found");
@@ -82,6 +87,15 @@ public final class SceneManager {
         if (scene.getUserData() instanceof SceneActivationListener) {
             ((SceneActivationListener) scene.getUserData()).onSceneActivated();
         }
+    }
+
+    /**
+     * Checks if a tower is loaded in the game data manager.
+     *
+     * @return true if a tower is loaded, false otherwise
+     */
+    private boolean isTowerLoaded() {
+        return GameDataManagerImpl.getInstance().getTowerPath().isPresent();
     }
 
     /**

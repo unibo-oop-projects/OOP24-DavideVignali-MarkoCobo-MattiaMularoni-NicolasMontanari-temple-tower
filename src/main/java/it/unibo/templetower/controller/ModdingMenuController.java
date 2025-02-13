@@ -115,4 +115,40 @@ public class ModdingMenuController {
     public int getTowerHeight(final String towerDirName) {
         return model.getTowerHeight(towerDirName);
     }
+
+    /**
+     * Deletes a specific tower.
+     *
+     * @param towerName the name of the tower to delete
+     * @return Optional error message if deletion fails, empty Optional if successful
+     */
+    public Optional<String> deleteTower(final String towerName) {
+        try {
+            if (!model.deleteTower(towerName)) {
+                return Optional.of("Tower not found or could not be deleted");
+            }
+            return Optional.empty();
+        } catch (IOException e) {
+            return Optional.of("Error deleting tower: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Sets the currently selected tower for gameplay by its directory name.
+     * Instead of loading the tower data, it just stores the path for later use.
+     *
+     * @param towerDirName the name of the tower directory to select
+     * @return Optional containing error message if tower is invalid, empty if successful
+     */
+    public Optional<String> selectTower(final String towerDirName) {
+        return model.selectTower(towerDirName);
+    }
+
+    /**
+     * Clears the currently selected tower.
+     * This will cause the game to use the default tower configuration.
+     */
+    public void clearSelectedTower() {
+        model.clearSelectedTower();
+    }
 }

@@ -37,7 +37,7 @@ public class ModdingMenuModel {
     private static final String TOWER_CONFIG_FILENAME = "tower.json";
     private final List<String> importedTowers;
     private final Map<String, Pair<String, String>> towerInfo = new HashMap<>();
-    private final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+    private final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
 
     /**
      * Constructs a new ModdingMenuModel and initializes the user towers directory.
@@ -324,6 +324,24 @@ public class ModdingMenuModel {
     }
 
     /**
+     * Deletes a specific tower folder given its name.
+     *
+     * @param towerName the name of the tower to delete
+     * @return true if deletion was successful, false otherwise
+     * @throws IOException if an error occurs during deletion
+     */
+    public boolean deleteTower(final String towerName) throws IOException {
+        final Path towerPath = Paths.get(USER_TOWERS_DIR, towerName);
+        if (!Files.exists(towerPath)) {
+            return false;
+        }
+        FileUtils.deleteDirectory(towerPath.toFile());
+        importedTowers.remove(towerName);
+        towerInfo.remove(towerName);
+        return true;
+    }
+
+    /**
      * Gets the tower information (name and description) for a given tower directory name.
      *
      * @param towerDirName the name of the tower directory
@@ -341,7 +359,7 @@ public class ModdingMenuModel {
      */
     public int getTowerHeight(final String towerDirName) {
         final Path towerPath = Paths.get(USER_TOWERS_DIR, towerDirName, TOWER_CONFIG_FILENAME);
-        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
         try {
             gameDataManager.loadGameDataFromTower(towerPath.toString());
             return gameDataManager.getTower().height();
@@ -350,5 +368,38 @@ public class ModdingMenuModel {
             LOGGER.error(msg, e);
             throw new IllegalArgumentException(msg, e);
         }
+    }
+
+    /**
+     * Selects a tower for gameplay by setting its path in the GameDataManager.
+     * Only validates the tower configuration but doesn't keep it loaded.
+     *
+     * @param towerDirName the name of the tower directory to select
+     * @return Optional containing error message if tower is invalid, empty if successful
+     */
+    public Optional<String> selectTower(final String towerDirName) {
+        final Path towerPath = Paths.get(USER_TOWERS_DIR, towerDirName, TOWER_CONFIG_FILENAME);
+        if (!Files.exists(towerPath)) {
+            return Optional.of("Tower configuration file not found");
+        }
+
+        try {
+            // Validate the tower configuration
+            final GameDataManagerImpl tempManager = GameDataManagerImpl.getInstance();
+            tempManager.loadGameDataFromTower(towerPath.toString());
+            // If validation succeeds, set the path in the actual manager
+            gameDataManager.setTowerPath(towerPath.toString());
+            return Optional.empty();
+        } catch (IllegalArgumentException e) {
+            return Optional.of("Invalid tower configuration: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Clears the currently selected tower path from the GameDataManager.
+     * This will cause the game to use the default tower configuration.
+     */
+    public void clearSelectedTower() {
+        gameDataManager.setTowerPath(null);
     }
 }

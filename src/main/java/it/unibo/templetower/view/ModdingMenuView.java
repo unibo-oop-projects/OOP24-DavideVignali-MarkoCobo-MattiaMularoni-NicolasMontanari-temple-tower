@@ -42,12 +42,14 @@ public final class ModdingMenuView implements SceneActivationListener {
     private static final double SPACING = 10;
     private static final double BUTTON_WIDTH = 200;
     private static final String MODDING_MENU_CSS = "/css/modding_menu.css";
+    private static final String POPUP_BUTTON_STYLE = "popup-button";
 
     private boolean hasShownPopup;
     private Stage ownerStage;
-    private ListView<String> towerList;
+    private ListView<HBox> towerList; // Changed from ListView<String> to ListView<HBox>
     private final List<String> importedTowers;
     private final ModdingMenuController controller;
+    private String selectedTowerName; // Track currently selected tower
 
     /**
      * Creates a new ModdingMenuView with initialized fields.
@@ -55,9 +57,10 @@ public final class ModdingMenuView implements SceneActivationListener {
     public ModdingMenuView() {
         this.hasShownPopup = false;
         this.ownerStage = null;
-        this.towerList = new ListView<>();
+        this.towerList = new ListView<>(); // Now initialized as ListView<HBox>
         this.importedTowers = new ArrayList<>();
         this.controller = new ModdingMenuController();
+        this.selectedTowerName = null;
     }
 
     /**
@@ -101,14 +104,13 @@ public final class ModdingMenuView implements SceneActivationListener {
         // Create buttons
         final Button importFolderButton = createStyledButton("Import Folder", this::handleImportFolder);
         final Button importZipButton = createStyledButton("Import ZIP", this::handleImportZip);
-        final Button newTowerButton = createStyledButton("Create New Tower", this::handleCreateNewTower);
         final Button clearButton = createStyledButton("Clear", this::handleClearAction);
         final Button exitButton = createStyledButton("Exit", () -> manager.switchTo("enter_menu"));
 
         // Buttons container
         final HBox buttonContainer = new HBox(SPACING);
         buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.getChildren().addAll(importFolderButton, importZipButton, newTowerButton, clearButton);
+        buttonContainer.getChildren().addAll(importFolderButton, importZipButton, clearButton);
 
         // Add all components to content
         content.getChildren().addAll(title, towerList, buttonContainer, exitButton);
@@ -172,27 +174,136 @@ public final class ModdingMenuView implements SceneActivationListener {
         }
     }
 
-    private void handleCreateNewTower() {
-        // TODO: Implement new tower creation logic
-    }
-
     private void updateTowerList() {
         towerList.getItems().clear();
         for (final String towerDirName : importedTowers) {
             final Optional<Pair<String, String>> towerInfo = controller.getTowerInfo(towerDirName);
+            final HBox itemContainer = new HBox(10);
+            itemContainer.setAlignment(Pos.CENTER_LEFT);
+            final Label towerLabel = new Label();
+            HBox.setHgrow(towerLabel, Priority.ALWAYS);
+            towerLabel.setMaxWidth(Double.MAX_VALUE);
             if (towerInfo.isPresent()) {
                 final Pair<String, String> info = towerInfo.get();
                 try {
                     final int height = controller.getTowerHeight(towerDirName);
-                    final String displayText = info.getX() + " (Height: " + height + ") - " + info.getY();
-                    towerList.getItems().add(displayText);
-                } catch (IllegalArgumentException e) {
-                    towerList.getItems().add(towerDirName + " (Invalid tower: " + e.getMessage() + ")");
+                    towerLabel.setText(info.getX() + " (Height: " + height + ") - " + info.getY());
+                } catch (IllegalArgumentException ex) {
+                    towerLabel.setText(towerDirName + " (Invalid tower: " + ex.getMessage() + ")");
                 }
             } else {
-                towerList.getItems().add(towerDirName + " (Invalid tower)");
+                towerLabel.setText(towerDirName + " (Invalid tower)");
             }
+            final HBox buttonsContainer = new HBox(5);
+            buttonsContainer.setAlignment(Pos.CENTER_RIGHT);
+            final Button selectButton = new Button(towerDirName.equals(selectedTowerName) ? "Selected" : "Select");
+            selectButton.getStyleClass().addAll("select-button",
+                towerDirName.equals(selectedTowerName) ? "selected-button" : "");
+            selectButton.setOnAction(e -> handleSelectTower(towerDirName));
+            final Button deleteButton = new Button("X");
+            deleteButton.getStyleClass().add("delete-button");
+            deleteButton.setOnAction(e -> handleDeleteTower(towerDirName));
+            buttonsContainer.getChildren().addAll(selectButton, deleteButton);
+            itemContainer.getChildren().addAll(towerLabel, buttonsContainer);
+            if (towerDirName.equals(selectedTowerName)) {
+                itemContainer.getStyleClass().add("selected-tower-item");
+            }
+            towerList.getItems().add(itemContainer);
         }
+    }
+
+    /**
+     * Handles the selection of a tower for gameplay.
+     * Shows confirmation dialog and updates the game data manager with the selected tower.
+     *
+     * @param towerName the name of the tower to select
+     */
+    private void handleSelectTower(final String towerName) {
+        final Optional<String> error = controller.selectTower(towerName);
+        if (error.isPresent()) {
+            showErrorDialog("Tower Selection Error", error.get());
+        } else {
+            selectedTowerName = towerName; // Update selected tower
+            showSuccessDialog("Tower Selected", "Tower '" + towerName + "' has been selected for gameplay.");
+            updateTowerList(); // Refresh list to show selection
+        }
+    }
+
+    /**
+     * Handles the deletion of a specific tower.
+     * Shows a confirmation dialog before deleting.
+     *
+     * @param towerName the name of the tower to delete
+     */
+    private void handleDeleteTower(final String towerName) {
+        final Button yesButton = new Button("Yes");
+        yesButton.getStyleClass().add(POPUP_BUTTON_STYLE);
+
+        final Button noButton = new Button("No");
+        noButton.getStyleClass().add(POPUP_BUTTON_STYLE);
+
+        final Stage popupStage = createConfirmationPopup(
+            "Are you sure you want to delete the tower: " + towerName + "?",
+            yesButton,
+            noButton
+        );
+
+        yesButton.setOnAction(e -> {
+            final Optional<String> error = controller.deleteTower(towerName);
+            if (error.isPresent()) {
+                showErrorDialog("Delete Error", error.get());
+            } else {
+                if (towerName.equals(selectedTowerName)) {
+                    selectedTowerName = null;
+                    controller.clearSelectedTower();
+                }
+                showSuccessDialog("Delete Successful", "Tower deleted successfully.");
+                importedTowers.clear();
+                importedTowers.addAll(controller.getImportedTowers());
+                updateTowerList();
+            }
+            popupStage.close();
+        });
+
+        noButton.setOnAction(e -> popupStage.close());
+        popupStage.showAndWait();
+    }
+
+    /**
+     * Handles the clear action by showing a confirmation popup.
+     * In the MVC pattern, the view manages the popup while the controller will later be called to perform deletion.
+     * Currently, both Yes and No buttons close the popup.
+     */
+    private void handleClearAction() {
+        final Button yesButton = new Button("Yes");
+        yesButton.getStyleClass().add(POPUP_BUTTON_STYLE);
+
+        final Button noButton = new Button("No");
+        noButton.getStyleClass().add(POPUP_BUTTON_STYLE);
+
+        final Stage popupStage = createConfirmationPopup(
+            "Are you sure you want to delete the entire folder?",
+            yesButton,
+            noButton
+        );
+
+        yesButton.setOnAction(e -> {
+            final Optional<String> error = this.controller.clearTowersDirectory();
+            if (error.isPresent()) {
+                showErrorDialog("Clear Error", error.get());
+            } else {
+                selectedTowerName = null;
+                controller.clearSelectedTower();
+                showSuccessDialog("Clear Successful", "All towers removed successfully.");
+                this.importedTowers.clear();
+                this.importedTowers.addAll(this.controller.getImportedTowers());
+                updateTowerList();
+            }
+            popupStage.close();
+        });
+
+        noButton.setOnAction(e -> popupStage.close());
+        popupStage.showAndWait();
     }
 
     private void showErrorDialog(final String title, final String content) {
@@ -273,7 +384,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         message.setWrapText(true);
         message.setPrefWidth(POPUP_WIDTH - POPUP_PADDING);
         final Button closeButton = new Button("Close");
-        closeButton.getStyleClass().add("popup-button");
+        closeButton.getStyleClass().add(POPUP_BUTTON_STYLE);
         closeButton.setOnAction(e -> popupStage.close());
         popupRoot.getChildren().addAll(message, closeButton);
         final Scene popupScene = new Scene(popupRoot, POPUP_WIDTH, POPUP_HEIGHT);
@@ -283,46 +394,31 @@ public final class ModdingMenuView implements SceneActivationListener {
         popupStage.show();
     }
 
-    /**
-     * Handles the clear action by showing a confirmation popup.
-     * In the MVC pattern, the view manages the popup while the controller will later be called to perform deletion.
-     * Currently, both Yes and No buttons close the popup.
-     */
-    private void handleClearAction() {
+    // Add this helper method for creating popups
+    private Stage createConfirmationPopup(final String message, final Button... buttons) {
         final Stage popupStage = new Stage(StageStyle.UNDECORATED);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.initOwner(ownerStage);
+
         final VBox popupRoot = new VBox(10);
         popupRoot.getStyleClass().add("popup-root");
-        final Label message = new Label("Are you sure you want to delete the entire folder?");
-        message.getStyleClass().add("popup-label");
-        message.setWrapText(true);
-        message.setPrefWidth(POPUP_WIDTH - POPUP_PADDING);
+
+        final Label messageLabel = new Label(message);
+        messageLabel.getStyleClass().add("popup-label");
+        messageLabel.setWrapText(true);
+        messageLabel.setPrefWidth(POPUP_WIDTH - POPUP_PADDING);
+
         final HBox buttonContainer = new HBox(10);
         buttonContainer.setAlignment(Pos.CENTER);
-        final Button yesButton = new Button("Yes");
-        yesButton.getStyleClass().add("popup-button");
-        yesButton.setOnAction(e -> {
-            final Optional<String> error = this.controller.clearTowersDirectory();
-            if (error.isPresent()) {
-                showErrorDialog("Clear Error", error.get());
-            } else {
-                showSuccessDialog("Clear Successful", "All towers removed successfully.");
-                this.importedTowers.clear();
-                this.importedTowers.addAll(this.controller.getImportedTowers());
-                updateTowerList();
-            }
-            popupStage.close();
-        });
-        final Button noButton = new Button("No");
-        noButton.getStyleClass().add("popup-button");
-        noButton.setOnAction(e -> popupStage.close());
-        buttonContainer.getChildren().addAll(yesButton, noButton);
-        popupRoot.getChildren().addAll(message, buttonContainer);
+        buttonContainer.getChildren().addAll(buttons);
+
+        popupRoot.getChildren().addAll(messageLabel, buttonContainer);
+
         final Scene popupScene = new Scene(popupRoot, POPUP_WIDTH, POPUP_HEIGHT);
         popupScene.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());
         popupStage.setScene(popupScene);
         popupStage.centerOnScreen();
-        popupStage.showAndWait();
+
+        return popupStage;
     }
 }

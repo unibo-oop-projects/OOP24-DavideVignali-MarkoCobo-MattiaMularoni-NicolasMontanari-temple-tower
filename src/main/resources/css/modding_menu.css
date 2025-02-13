@@ -80,10 +80,19 @@
     background-color: #1a1a1a;
     -fx-background-color: #1a1a1a;
     -fx-text-fill: white;
-    padding: 1em;
-    -fx-padding: 1em;
+    padding: 0.5em 1em;
+    -fx-padding: 0.5em 1em;
     font-size: 1.1em;
     -fx-font-size: 1.1em;
+}
+
+.tower-list .list-cell .label {
+    color: white;
+    -fx-text-fill: white;
+    -fx-pref-width: 500px;
+    max-width: 100%;
+    -fx-max-width: infinity;
+    -fx-hgrow: always;
 }
 
 .tower-list .list-cell:hover {
@@ -94,6 +103,16 @@
 .tower-list .list-cell:selected {
     background-color: #4CAF50;
     -fx-background-color: #4CAF50;
+}
+
+/* Selected tower styling */
+.selected-tower-item {
+    background-color: rgba(52, 152, 219, 0.2);
+    -fx-background-color: rgba(52, 152, 219, 0.2);
+    border-left: 4px solid #3498db;
+    -fx-border-width: 0 0 0 4px;
+    border-color: #3498db;
+    -fx-border-color: #3498db;
 }
 
 /* Modding button styling */
@@ -161,4 +180,73 @@
 
 .alert .dialog-pane {
     -fx-background-color: #2d2d2d;
+}
+
+/* Delete button styling */
+.delete-button {
+    background-color: #e74c3c;
+    -fx-background-color: #e74c3c;
+    color: white;
+    -fx-text-fill: white;
+    font-size: 0.9em;
+    -fx-font-size: 0.9em;
+    padding: 0.3em 0.6em;
+    -fx-padding: 0.3em 0.6em;
+    cursor: pointer;
+    -fx-cursor: hand;
+    border-radius: 3px;
+    -fx-background-radius: 3px;
+    min-width: 25px;
+    -fx-min-width: 25px;
+    max-width: 25px;
+    -fx-max-width: 25px;
+    min-height: 25px;
+    -fx-min-height: 25px;
+    max-height: 25px;
+    -fx-max-height: 25px;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+    -fx-background-color: #c0392b;
+}
+
+/* Select button styling */
+.select-button {
+    background-color: #3498db;
+    -fx-background-color: #3498db;
+    color: white;
+    -fx-text-fill: white;
+    font-size: 0.9em;
+    -fx-font-size: 0.9em;
+    padding: 0.3em 0.6em;
+    -fx-padding: 0.3em 0.6em;
+    cursor: pointer;
+    -fx-cursor: hand;
+    border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.select-button:hover {
+    background-color: #2980b9;
+    -fx-background-color: #2980b9;
+}
+
+.select-button.selected-button {
+    background-color: #27ae60;
+    -fx-background-color: #27ae60;
+    cursor: default;
+    -fx-cursor: default;
+}
+
+.select-button.selected-button:hover {
+    background-color: #27ae60;
+    -fx-background-color: #27ae60;
+    -fx-effect: none;
+}
+
+/* Adjust spacing for buttons container in list cells */
+.tower-list .list-cell .button {
+    margin: 0 2px;
+    -fx-margin: 0 2px;
 }

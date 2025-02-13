@@ -43,13 +43,9 @@ public final class GameDataManagerImpl {
     private final Gson gson;
     private String baseDir;
     private Tower towerData;
+    private String selectedTowerPath;
 
-    /**
-     * Creates a new GameDataManagerImpl instance with an empty floors list and configured Gson instance.
-     * The Gson instance is configured with custom deserializers for Enemy and Weapon classes to properly
-     * handle the attack data structures from JSON.
-     */
-    public GameDataManagerImpl() {
+    private GameDataManagerImpl() {
         this.floors = new ArrayList<>();
 
         // Create custom deserializer for Enemy class
@@ -103,6 +99,19 @@ public final class GameDataManagerImpl {
             .registerTypeAdapter(Enemy.class, enemyDeserializer)
             .registerTypeAdapter(Weapon.class, weaponDeserializer)
             .create();
+    }
+
+    private static final class InstanceHolder {
+        private static final GameDataManagerImpl INSTANCE = new GameDataManagerImpl();
+    }
+
+    /**
+     * Gets the singleton instance of GameDataManagerImpl.
+     * Using initialization-on-demand holder idiom for thread-safe lazy initialization
+     * @return the singleton instance
+     */
+    public static GameDataManagerImpl getInstance() {
+        return InstanceHolder.INSTANCE;
     }
 
     /**
@@ -198,12 +207,40 @@ public final class GameDataManagerImpl {
     }
 
     /**
-     * Returns the tower configuration.
+     * Returns the tower configuration. If not loaded, loads it from the selected path.
      *
      * @return the tower record containing name, description, floors and attacks sprite data.
+     * @throws IllegalStateException if no tower path is selected
      */
     public Tower getTower() {
+        if (this.towerData == null) {
+            final String path = this.selectedTowerPath;
+            if (path == null) {
+                throw new IllegalStateException("No tower selected");
+            }
+            loadGameDataFromTower(path);
+        }
         return this.towerData;
+    }
+
+    /**
+     * Sets the path to the currently selected tower for gameplay.
+     * This saves memory by not loading the tower until needed.
+     *
+     * @param towerPath the path to the tower.json file
+     */
+    public void setTowerPath(final String towerPath) {
+        this.selectedTowerPath = towerPath;
+        this.towerData = null;
+    }
+
+    /**
+     * Gets the path to the currently selected tower for gameplay.
+     *
+     * @return Optional containing the selected tower path, or empty if none is selected
+     */
+    public Optional<String> getTowerPath() {
+        return Optional.ofNullable(this.selectedTowerPath);
     }
 
     private void loadFloors() {

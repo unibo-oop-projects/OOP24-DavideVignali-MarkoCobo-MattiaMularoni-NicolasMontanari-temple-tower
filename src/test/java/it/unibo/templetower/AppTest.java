@@ -26,7 +26,7 @@ class AppTest {
 
     @Test
     void testVerifyPath() {
-        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
         final String testPath = "tower/tower.json";
         gameDataManager.loadGameDataFromTower(testPath);
         final Tower towerData = gameDataManager.getTower();
@@ -40,7 +40,7 @@ class AppTest {
      */
     @Test
     void testLoadAndPrintFloorData() {
-        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
         final String testTowerPath = "tower/tower.json";
         gameDataManager.loadGameDataFromTower(testTowerPath);
         final Tower towerData = gameDataManager.getTower();
@@ -52,7 +52,7 @@ class AppTest {
     @Test
     void testSpawnManager() {
         final int level = 1;
-        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
         final String testTowerPath = "tower/tower.json";
         gameDataManager.loadGameDataFromTower(testTowerPath);
         final Tower towerData = gameDataManager.getTower();
