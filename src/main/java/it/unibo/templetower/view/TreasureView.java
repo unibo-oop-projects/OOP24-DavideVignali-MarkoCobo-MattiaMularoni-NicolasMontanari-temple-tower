@@ -1,8 +1,9 @@
 package it.unibo.templetower.view;
 
-import it.unibo.templetower.controller.GameController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.unibo.templetower.controller.GameController;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,12 +28,11 @@ import javafx.scene.media.MediaView;
  * video playback and weapon selection dialog.
  */
 public final class TreasureView {
+
     private HBox btContainer;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TreasureView.class);
     private static final int BUTTON_FONT_SIZE = 20;
-    private static final int SCENE_WIDTH = 800;
-    private static final int SCENE_HEIGHT = 600;
     private static final double WEAPON_DAMAGE = 0.8;
     private static final int DAMAGE_BAR_WIDTH = 200;
     private static final int IMAGE_SIZE = 100;
@@ -48,6 +48,7 @@ public final class TreasureView {
     public Scene createScene(final SceneManager manager, final GameController controller) {
         // Creazione del layout radice (StackPane)
         final StackPane root = new StackPane();
+        final Scene scene = new Scene(root);
 
         final Label message = new Label("Do you want to open the chest?");
         message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
@@ -110,11 +111,11 @@ public final class TreasureView {
         // Al termine della riproduzione del video, mostra il popup
         mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
             showWeaponPopup(() -> { // Mostra il popup e aspetta la sua chiusura
-                manager.switchTo("main_floor_view"); // Dopo la chiusura del popup, torna alla main floor view
+                // Dopo la chiusura del popup, torna alla main floor view
+                manager.switchTo("main_floor_view");
             });
         }));
 
-        final Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
 
         return scene;

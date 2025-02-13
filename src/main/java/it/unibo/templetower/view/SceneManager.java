@@ -1,17 +1,20 @@
 package it.unibo.templetower.view;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Manages the different scenes in the game application.
@@ -20,9 +23,14 @@ import org.slf4j.LoggerFactory;
  */
 public final class SceneManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(SceneManager.class);
-    private final Stage stage;
-    private final Map<String, Scene> scenes = new HashMap<>();
+    private static final double INITIAL_HEIGHT = Screen.getPrimary().getBounds().getHeight();
+    private static final double INITIAL_WIDTH = Screen.getPrimary().getBounds().getWidth();
+    private static final String CSS_PATH = "/css/main.css";
+
     private final GameController controller;
+    private final Map<String, Scene> scenes = new HashMap<>();
+    private final Stage stage;
+    private Scene currentScene;
 
     /**
      * Creates a new SceneManager.
@@ -32,6 +40,7 @@ public final class SceneManager {
     public SceneManager(final Stage stage) {
         this.stage = Objects.requireNonNull(stage, "Stage cannot be null");
         this.controller = new GameControllerImpl();
+        this.currentScene = new Scene(new StackPane(), INITIAL_WIDTH, INITIAL_HEIGHT);
         initializeScenes();
     }
 
@@ -39,10 +48,6 @@ public final class SceneManager {
      * Initializes all game scenes.
      */
     private void initializeScenes() {
-        scenes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
-        scenes.put("main_floor_view", new MainFloorView().createScene(this, controller));
-        scenes.put("treasure_view", new TreasureView().createScene(this, controller));
-        scenes.put("stairs_view", new StairsView().createScene(this, controller));
         try {
             scenes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
             scenes.put("main_floor_view", new MainFloorView().createScene(this, controller));
@@ -51,46 +56,55 @@ public final class SceneManager {
             scenes.put("stairs_view", new StairsView().createScene(this, controller));
             scenes.put("enter_menu", new EnterMenu().createScene(this));
             scenes.put("home", new Home().createScene(this));
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
+        } catch (IOException e) {
+            LOGGER.error("Failed to initialize scenes: " + e.getMessage());
             throw new IllegalStateException("Failed to initialize scenes", e);
         }
     }
 
     /**
      * Switches the current scene to the specified scene.
-     * This method can be overridden by subclasses to provide custom scene switching
-     * behavior.
-     * When overriding, ensure that the scene exists in the scenes map and properly
-     * apply CSS styles.
      *
      * @param sceneName the name of the scene to switch to
      * @throws IllegalArgumentException if the specified scene name is not found
      */
     public void switchTo(final String sceneName) {
-        final Scene scene;
-        if ("combat_view".equals(sceneName)) { // ogni volta che entriamo in una enemy room, aggiorna i dati dell'enemy
+        Scene scene = scenes.get(sceneName);
+        if ("combat_view".equals(sceneName)) {
             scene = new CombatView().createScene(this, controller);
-        } else {
-            scene = scenes.get(sceneName);
         }
-        final String css = this.getClass().getResource("/css/main.css").toExternalForm();
-        if (scene != null) {
-            scene.getStylesheets().add(css);
-            stage.setScene(scene);
-            stage.show();
-        } else {
+        if (scene == null) {
             throw new IllegalArgumentException("Scene " + sceneName + " not found");
         }
+        applyStylesheet(scene);
+        updateStage(scene);
+    }
 
-        final URL cssResource = SceneManager.class.getResource("/css/main.css");
-        if (cssResource == null) {
-            LOGGER.warn("CSS file not found: /css/main.css");
-        } else {
+    /**
+     * Applies the CSS stylesheet to the scene.
+     *
+     * @param scene the scene to which the stylesheet should be applied
+     */
+    private void applyStylesheet(final Scene scene) {
+        final URL cssResource = getClass().getResource(CSS_PATH);
+        if (cssResource != null) {
             scene.getStylesheets().add(cssResource.toExternalForm());
+        } else {
+            LOGGER.warn("CSS file not found at path: " + CSS_PATH);
         }
+    }
 
+    /**
+     * Applies the screen size of the previous scene and sets
+     * the new scene on stage.
+     *
+     * @param scene the new scene to be set
+     */
+    private void updateStage(final Scene scene) {
         stage.setScene(scene);
+        stage.setWidth(currentScene.getWidth());
+        stage.setHeight(currentScene.getHeight());
+        currentScene = scene;
         stage.show();
     }
 }

@@ -18,9 +18,6 @@ import javafx.scene.layout.VBox;
  * This class provides the initial menu interface for the game.
  */
 public final class EnterMenu {
-
-    private static final int WINDOW_WIDTH = 400;
-    private static final int WINDOW_HEIGHT = 300;
     private static final int RIGHT_PADDING = 20;
     private static final int BUTTON_SPACING = 10;
 
@@ -34,6 +31,7 @@ public final class EnterMenu {
     public Scene createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
+        final Scene scene = new Scene(root);
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
@@ -45,9 +43,6 @@ public final class EnterMenu {
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        background.setFitWidth(WINDOW_WIDTH);
-        background.setFitHeight(WINDOW_HEIGHT);
-
         // Make background responsive to window resizing
         root.widthProperty().addListener((obs, old, newVal)
                 -> background.setFitWidth(newVal.doubleValue()));
@@ -101,7 +96,7 @@ public final class EnterMenu {
         root.getChildren().addAll(background, mainLayout);
 
         // Return scene directly without storing in a variable
-        return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        return scene;
 
     }
 

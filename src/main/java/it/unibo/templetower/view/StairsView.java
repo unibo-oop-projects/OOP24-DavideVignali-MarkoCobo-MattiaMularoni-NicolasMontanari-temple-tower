@@ -16,8 +16,6 @@ import javafx.scene.media.MediaView;
  */
 public class StairsView {
     private static final int SPACING = 20;
-    private static final int SCENE_WIDTH = 800;
-    private static final int SCENE_HEIGHT = 600;
 
     /**
      * 
@@ -52,6 +50,7 @@ public class StairsView {
 
         // Contenitore principale per gestire il passaggio alla modalità video
         final StackPane root = new StackPane(layout);
+        final Scene scene = new Scene(root);
 
         btYes.setOnAction(event -> {
 
@@ -75,6 +74,6 @@ public class StairsView {
             manager.switchTo("main_floor_view"); // Torna alla scena precedente
         });
 
-        return new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+        return scene;
     }
 }

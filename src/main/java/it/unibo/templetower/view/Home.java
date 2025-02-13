@@ -9,6 +9,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,17 +19,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Home screen view class that manages the initial game screen and background music.
+ * Home screen view class that manages the initial game screen and background
+ * music.
  * This class is not designed for extension.
  */
 public final class Home {
-
-    private static final int WINDOW_WIDTH = 400;
-    private static final int WINDOW_HEIGHT = 300;
     private static final float MUSIC_VOLUME = -10.0f;
     private static final Logger LOGGER = LoggerFactory.getLogger(Home.class);
 
@@ -42,6 +41,7 @@ public final class Home {
     public Scene createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
+        final Scene scene = new Scene(root);
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
@@ -53,14 +53,10 @@ public final class Home {
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        background.setFitWidth(WINDOW_WIDTH);
-        background.setFitHeight(WINDOW_HEIGHT);
 
         // Make background responsive to window resizing
-        root.widthProperty().addListener((obs, old, newVal)
-                -> background.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, old, newVal)
-                -> background.setFitHeight(newVal.doubleValue()));
+        root.widthProperty().addListener((obs, old, newVal) -> background.setFitWidth(newVal.doubleValue()));
+        root.heightProperty().addListener((obs, old, newVal) -> background.setFitHeight(newVal.doubleValue()));
 
         // Create content layout
         final VBox content = new VBox(10);
@@ -77,23 +73,18 @@ public final class Home {
         // Combine background and content
         root.getChildren().addAll(background, content);
 
-        final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
         try {
             final InputStream audioStream = getClass().getClassLoader()
                     .getResourceAsStream("sounds/musicadisottofondo.wav");
             if (audioStream == null) {
                 LOGGER.error("Audio file not found!");
-                return scene;
             }
             final AudioInputStream audioInput = AudioSystem.getAudioInputStream(
-                    new BufferedInputStream(audioStream)
-            );
+                    new BufferedInputStream(audioStream));
             audioClip = AudioSystem.getClip();
             audioClip.open(audioInput);
             // Set volume
-            final FloatControl gainControl
-                    = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
+            final FloatControl gainControl = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(MUSIC_VOLUME);
             // Start music immediately
             audioClip.setFramePosition(0);
