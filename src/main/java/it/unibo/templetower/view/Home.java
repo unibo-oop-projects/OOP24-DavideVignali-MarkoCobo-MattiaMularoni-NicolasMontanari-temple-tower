@@ -3,11 +3,6 @@ package it.unibo.templetower.view;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import javax.sound.sampled.Clip;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import it.unibo.templetower.controller.MusicController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,10 +20,7 @@ public final class Home {
 
     private static final int WINDOW_WIDTH = 400;
     private static final int WINDOW_HEIGHT = 300;
-    private static final float MUSIC_VOLUME = -10.0f;
-    private static final Logger LOGGER = LoggerFactory.getLogger(Home.class);
 
-    private Clip audioClip;
 
     /**
      * Creates and returns the home scene with background image and menu button.
@@ -63,7 +55,7 @@ public final class Home {
 
         // Create content layout
         final VBox content = new VBox(10);
-        content.setAlignment(Pos.CENTER);
+        content.setAlignment(Pos.BOTTOM_CENTER);
 
         // Add difficulty menu button
         final Button difficultyButton = new Button("Go to Enter Menu");
@@ -81,6 +73,7 @@ public final class Home {
         muteButton.setGraphic(imageView);
         muteButton.setPrefSize(30, 30);  // Set fixed size for square button
         muteButton.setOnAction(e -> {
+            MusicController.getInstance().stopMusic();
             
         });
 

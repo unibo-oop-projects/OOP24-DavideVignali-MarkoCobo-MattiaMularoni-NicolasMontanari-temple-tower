@@ -14,8 +14,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * Class responsible for creating and managing the enter menu scene.
- * This class provides the initial menu interface for the game.
+ * Class responsible for creating and managing the enter menu scene. This class
+ * provides the initial menu interface for the game.
  */
 public final class EnterMenu {
 
@@ -88,6 +88,8 @@ public final class EnterMenu {
         settingsButton.setOnAction(e -> {
             manager.switchTo("settings_menu");
         });
+
+        
 
         // Add buttons to rightButtons in the correct order
         rightButtons.getChildren().addAll(personalizationButton, leaderBoardButton, moddingButton, settingsButton);

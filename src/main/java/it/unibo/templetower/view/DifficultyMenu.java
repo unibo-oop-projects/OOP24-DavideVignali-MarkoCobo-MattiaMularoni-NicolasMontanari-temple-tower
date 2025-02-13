@@ -57,7 +57,8 @@ public final class DifficultyMenu {
         final Button hardButton = new Button("DIFFICILE");
 
         // Set button actions
-        easyButton.setOnAction(e -> manager.switchTo("main_floor_view"));
+        easyButton.setOnAction(e -> 
+        manager.switchTo("main_floor_view"));
         mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
         hardButton.setOnAction(e -> manager.switchTo("main_floor_view"));
 
@@ -67,6 +68,7 @@ public final class DifficultyMenu {
                 mediumButton,
                 hardButton
         );
+       
 
         // Combine background and buttons
         root.getChildren().addAll(background, buttonContainer);
