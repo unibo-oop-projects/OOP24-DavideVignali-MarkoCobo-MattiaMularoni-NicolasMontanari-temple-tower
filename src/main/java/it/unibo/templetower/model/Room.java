@@ -122,4 +122,41 @@ public final class Room {
     public RoomBehavior getBehavior() {
         return behavior;
     }
+
+    /**
+     * Retrieves the damage value of the trap if the behavior is an instance of Trap.
+     * 
+     * @return the trap damage value, or -1 if the behavior is not a Trap
+     */
+    public double getTrapDamage() {
+        if (behavior instanceof Trap trap) {
+            return trap.getDamage();
+        }
+        return -1;
+    }
+
+    /**
+     * Retrieves the treasure element in the room if the behavior is an instance of TreasureRoom.
+     * 
+     * @return the treasure element, or 0 if the behavior is not a TreasureRoom
+     */
+    public int getElementTreasure() {
+        if (behavior instanceof TreasureRoom treasureRoom) {
+            return treasureRoom.getElement();
+        }
+        return 0;
+    }
+
+    /**
+     * Retrieves the weapon in the room if the behavior is an instance of TreasureRoom.
+     * 
+     * @return the weapon, or null if the behavior is not a TreasureRoom
+     */
+    public Weapon getWeapon() {
+        if (behavior instanceof TreasureRoom treasureRoom) {
+            return treasureRoom.getWeapon();
+        }
+        return null;
+    }
+
 }

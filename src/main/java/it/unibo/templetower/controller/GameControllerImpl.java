@@ -30,7 +30,7 @@ public final class GameControllerImpl implements GameController {
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 8;
     private static final int DEFAULT_ENEMY_LEVEL = 12;
-    private static final Double DAMAGE = 30.0;
+    private static final Double DAMAGE = 80.0;
     private final Weapon startWeapon;
     private final SpawnManagerImpl spawnManager;
 
@@ -116,6 +116,26 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
+     * Retrieves the current player.
+     * 
+     * @return the player
+     */
+    @Override
+    public List<Weapon> getPlayerWeapons() {
+        return player.getAllWeapons();
+    }
+
+    @Override
+    public void addPlayerWeapon(final Weapon newWeapon, final int index) {
+        player.addWeapon(newWeapon, index);
+    }
+
+    @Override
+    public void changeWeaponIndex(final int index) {
+        player.changeWeapon(index);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -188,9 +208,53 @@ public final class GameControllerImpl implements GameController {
         return assetManager.getGenericEntityAsset(type);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getEnemySpritePath(final int level) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getEnemySpritePath'");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void gameOver() {
+        final GameDataManagerImpl gameDataManager = new GameDataManagerImpl();
+        final String testPath = "tower/floors/floors-data.json";
+        gameDataManager.loadGameData(testPath);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void resetPlayerLife() {
+        player.resetLife();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void playerTakeDamage() {
+        player.takeDamage(rooms.get(currentRoomIndex).getTrapDamage());
+    }
+
+    @Override
+    public void removeWeapon(final int index) {
+        //player.addWeapon(rooms.get(currentRoomIndex).getWeapon(), index);
+    }
+
+    @Override
+    public int getElementTreasure() {
+        return this.rooms.get(currentRoomIndex).getElementTreasure();
+    }
+
+    @Override
+    public Weapon getTreasureWeapon() {
+        return this.rooms.get(currentRoomIndex).getWeapon();
     }
 }

@@ -93,4 +93,10 @@ public final class EnemyRoom implements RoomBehavior {
     public String getName() {
         return this.enemy.name();
     }
+
+    @Override
+    public int getElement() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getElement'");
+    }
 }

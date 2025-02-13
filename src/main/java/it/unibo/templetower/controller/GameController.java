@@ -1,5 +1,9 @@
 package it.unibo.templetower.controller;
 
+import java.util.List;
+
+import it.unibo.templetower.model.Weapon;
+
 /**
  * Defines the core functionalities required to manage the game logic, 
  * including room navigation, game state management, and player actions.
@@ -102,4 +106,64 @@ public interface GameController {
      * @return a String containing the file path to the entity sprite
      */
     String getEnemySpritePath();
+
+    /** 
+     * When the player health is 0 reset the game.
+     * 
+     */
+    void gameOver();
+
+    /**
+     * Simulates the damage taken by the player.
+     */
+    void playerTakeDamage();
+
+    /**
+     * Resets the player's life points to the initial value.
+     */
+    void resetPlayerLife();
+
+    /**
+     * Removes a weapon from the player's inventory.
+     * 
+     * @param index the index of the weapon to be removed
+     */
+    void removeWeapon(int index);
+
+    /**
+     * Add a weapon from the player's inventory.
+     * 
+     * @param newWeapon
+     * @param index the index of the weapon to be removed
+     */
+    void addPlayerWeapon(Weapon newWeapon, int index);
+
+    /**
+     * Change a weapon from the player's inventory.
+     * 
+     * @param index the index of the weapon to be removed
+     */
+    void changeWeaponIndex(int index);
+
+    /**
+     * Retrieves the treasure element in the current room.
+     * 
+     * @return the treasure element in the room
+     */
+    int getElementTreasure();
+
+    /**
+     * Retrieves the treasure weapon in the current room.
+     * 
+     * @return the treasure weapon
+     */
+    Weapon getTreasureWeapon();
+
+    /**
+     * Retrieves the current player.
+     * 
+     * @return the player
+     */
+    List<Weapon> getPlayerWeapons();
+
 }

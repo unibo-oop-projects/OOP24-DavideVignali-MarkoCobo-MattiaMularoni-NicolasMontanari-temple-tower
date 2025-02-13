@@ -16,7 +16,7 @@ public final class PlayerImpl implements Player {
     private final List<Weapon> weapon;
     private double life;
     private Optional<Room> actualRoom;
-    private int experience;
+    private final int experience;
     private int actualWeaponIndex;
 
     /**
@@ -33,6 +33,7 @@ public final class PlayerImpl implements Player {
             this.actualRoom = Optional.of(actualRoom.get());
         }
         weapon.add(startweapon);
+
         this.life = 100;
         this.experience = 0;
         this.actualWeaponIndex = 0;
@@ -57,20 +58,20 @@ public final class PlayerImpl implements Player {
      * 
      * @param newWeapon the weapon to add
      */
-    public void addWeapon(final Weapon newWeapon) {
-        this.weapon.add(newWeapon);
-        if (this.weapon.size() == 4) {
-            this.weapon.remove(0);
+    @Override
+    public void addWeapon(final Weapon newWeapon, final int index) {
+        if (weapon.size() < 3) {
+            this.weapon.add(newWeapon);
+        } else {
+            this.weapon.remove(index);
+            this.weapon.add(newWeapon);
         }
     }
 
     @Override
-    public void changeWeapon(final Weapon weapon) {
+    public void changeWeapon(final int index) {
         LOGGER.info("Player changed weapon");
-        this.actualWeaponIndex += 1;
-        if (this.actualWeaponIndex == 3) {
-            this.actualWeaponIndex = 0;
-        }
+        this.actualWeaponIndex = index;
     }
 
     @Override
@@ -94,6 +95,11 @@ public final class PlayerImpl implements Player {
         return this.weapon.get(actualWeaponIndex);
     }
 
+    @Override
+    public List<Weapon> getAllWeapons() {
+        return new ArrayList<>(this.weapon);
+    }
+
     /**
      * Gets the player's current life points.
      * 
@@ -107,7 +113,7 @@ public final class PlayerImpl implements Player {
     @Override
     public void increaseExperience(final int xp) {
         LOGGER.info("Player increased experience");
-        this.experience += xp;
+        this.life += xp;
     }
 
     @Override
@@ -117,5 +123,10 @@ public final class PlayerImpl implements Player {
         } else {
             return actualRoom.get().getId();
         }
+    }
+
+    @Override
+    public void resetLife() {
+        this.life = 100;
     }
 }

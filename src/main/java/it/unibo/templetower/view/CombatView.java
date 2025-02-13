@@ -3,11 +3,15 @@ package it.unibo.templetower.view;
 import it.unibo.templetower.controller.GameController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -28,6 +32,9 @@ import org.slf4j.LoggerFactory;
 public final class CombatView {
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
+    private static final int DIALOG_WIDTH = 250;
+    private static final int DIALOG_HEIGHT = 80;
+    private static final int VBOX = 50;
     private static final int SPACING_LARGE = 20;
     private static final int SPACING_SMALL = 5;
     private static final int CHARACTER_SIZE = 150;
@@ -42,6 +49,7 @@ public final class CombatView {
     private ProgressBar enemyHealthBar;
     private Button attackButton;
     private Button exitButton;
+    private Boolean kill = true;
 
     /**
      * Creates and returns the combat scene with all necessary UI elements.
@@ -106,7 +114,7 @@ public final class CombatView {
         playerHealthBar = new ProgressBar(INITIAL_HEALTH);
         playerHealthBar.getStyleClass().add("health-bar-player");
 
-        enemyHealthBar = new ProgressBar(controller.getEnemyLifePoints() / 10);
+        enemyHealthBar = new ProgressBar(controller.getEnemyLifePoints() / 100);
         enemyHealthBar.getStyleClass().add("health-bar-enemy");
 
         // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
@@ -150,47 +158,72 @@ public final class CombatView {
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
-        exitButton.setOnAction(e -> {
+        exitButton.setOnAction(_ -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
             manager.switchTo("main_floor_view");
         });
 
-        attackButton.setOnAction(event -> {
+        attackButton.setOnAction(_ -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
+
             final Timeline timeline = new Timeline();
             final double distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - ATTACK_DISTANCE;
             final KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
             final KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
             timeline.getKeyFrames().add(kf);
-            timeline.setOnFinished(e -> {
+
+            timeline.setOnFinished(_ -> {
                 controller.attackEnemy();
 
-                // Attacca il player e ottieni il danno inflitto
-                controller.attackPlayer();
+                // Ritardo per garantire che i valori della vita vengano aggiornati
+                // correttamente
+                final PauseTransition pause = new PauseTransition(Duration.millis(200));
+                pause.setOnFinished(_ -> {
+                    Platform.runLater(() -> {
+                        if (controller.getEnemyLifePoints() <= 0) {
+                            enemyHpLabel.setText("0HP");
+                            attackButton.setDisable(true);
+                            controller.resetPlayerLife();
+                            enemyHealthBar.setProgress(0 / 100.0);
+                            kill = false; // Il nemico è morto, quindi non deve più attaccare
+                        } else if (kill) { // Il nemico può attaccare solo se è ancora vivo
+                            controller.attackPlayer();
 
-                // Aggiorna le barre di salute
-                double playerHealth = playerHealthBar.getProgress() - (controller.getPlayerLife() / 100);
-                double enemyHealth = enemyHealthBar.getProgress() - (controller.getEnemyLifePoints() / 100);
+                            // Ritardo per aggiornare la UI dopo l'attacco del nemico
+                            final PauseTransition pause2 = new PauseTransition(Duration.millis(100));
+                            pause2.setOnFinished(_ -> {
+                                playerHealthBar.setProgress(controller.getPlayerLife() / 100.0);
+                                playerHpLabel.setText(controller.getPlayerLife() + "HP");
 
-                if (playerHealth < 0) {
-                    playerHealth = 0;
-                }
-                if (enemyHealth < 0) {
-                    enemyHealth = 0;
-                }
+                                if (controller.getPlayerLife() <= 0) {
+                                    attackButton.setDisable(true);
+                                    playerHpLabel.setText("0HP");
+                                    controller.gameOver();
+                                    popUp(() -> manager.switchTo("home"));
+                                }
+                            });
+                            pause2.play();
+                        }
 
-                playerHealthBar.setProgress(playerHealth);
-                enemyHealthBar.setProgress(enemyHealth);
+                        // Aggiorna le barre della salute e le etichette
+                        playerHealthBar.setProgress(controller.getPlayerLife() / 100.0);
+                        enemyHealthBar.setProgress(controller.getEnemyLifePoints() / 100.0);
 
-                playerHpLabel.setText(controller.getPlayerLife() + "HP");
-                enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
+                        playerHpLabel.setText(controller.getPlayerLife() + "HP");
+                        enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
 
-                if (playerHealth <= 0 || enemyHealth <= 0) {
-                    attackButton.setDisable(true);
-                }
+                        // Se il giocatore è morto, blocca il bottone e resetta la vita
+                        if (controller.getPlayerLife() <= 0 || controller.getEnemyLifePoints() <= 0) {
+                            attackButton.setDisable(true);
+                            controller.resetPlayerLife();
+                        }
 
-                playerImage.setTranslateX(0);
+                        playerImage.setTranslateX(0);
+                    });
+                });
+                pause.play();
             });
+
             timeline.play();
         });
 
@@ -198,7 +231,20 @@ public final class CombatView {
         buttonBox.setAlignment(Pos.BOTTOM_CENTER);
         healthBarsPane.setBottom(buttonBox);
 
-        rootBox.getChildren().addAll(charactersBox, healthBarsPane);
+        final VBox topBox = new VBox();
+        topBox.setAlignment(Pos.TOP_RIGHT);
+
+        final Button changeWeapon = new Button("CHANGE WEAPON");
+        changeWeapon.getStyleClass().add("button");
+        final HBox highBox = new HBox(changeWeapon);
+        highBox.setAlignment(Pos.TOP_RIGHT);
+        topBox.getChildren().add(highBox);
+
+        changeWeapon.setOnAction(_ -> {
+            manager.switchTo("select_weapon_view");
+        });
+
+        rootBox.getChildren().addAll(charactersBox, healthBarsPane, topBox);
         root.getChildren().add(rootBox);
 
         final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -210,6 +256,7 @@ public final class CombatView {
 
     private void resetCombat(final GameController controller) {
         attackButton.setDisable(false);
+        kill = true;
 
         // Resetta le barre della vita
         playerHealthBar.setProgress(controller.getPlayerLife() / 100);
@@ -221,6 +268,65 @@ public final class CombatView {
         // Aggiorna le etichette della vita
         playerHpLabel.setText(controller.getPlayerLife() + "HP");
         enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
+    }
+
+    /**
+     * Shows a popup dialog for the end of the game.
+     * 
+     * @param onClose callback to be executed when the dialog is closed.
+     */
+    private void popUp(final Runnable onClose) {
+        final Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("GAME OVER");
+        dialog.setHeaderText(null); // Rimuove il titolo predefinito
+
+        // Imposta la dimensione della finestra
+        dialog.getDialogPane().setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        // Testo grande per il messaggio di sconfitta
+        final Label loseLabel = new Label("YOU LOSE THE GAME");
+        loseLabel.setStyle("-fx-font-size: 50px; -fx-font-weight: bold; -fx-text-fill: red;");
+
+        // Aggiungiamo un ButtonType fittizio per abilitare la chiusura con la X
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+        // Bottone "Leave"
+        final Button btLeave = new Button("Leave");
+        btLeave.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+        btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT); // Aumenta le dimensioni del bottone
+
+        // Azione del bottone per chiudere la finestra
+        btLeave.setOnAction(_ -> {
+            LOGGER.info("Restart the game");
+            dialog.setResult(null); // Imposta un risultato per chiudere la dialog
+            dialog.close();
+            if (onClose != null) {
+                onClose.run();
+            }
+        });
+
+        // Contenitore per il bottone
+        final HBox btContainer = new HBox(btLeave);
+        btContainer.setAlignment(Pos.CENTER);
+
+        // Contenitore principale con testo e bottone
+        final VBox layout = new VBox(VBOX, loseLabel, btContainer);
+        layout.setAlignment(Pos.CENTER);
+
+        // Imposta il contenuto della finestra
+        dialog.getDialogPane().setContent(layout);
+
+        // Permette la chiusura con la X
+        dialog.setOnCloseRequest(_ -> {
+            LOGGER.info("Popup closed with X");
+            dialog.setResult(null);
+            if (onClose != null) {
+                onClose.run();
+            }
+        });
+
+        // Mostra la finestra di dialogo
+        dialog.showAndWait();
     }
 
 }

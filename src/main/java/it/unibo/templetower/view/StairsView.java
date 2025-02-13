@@ -18,6 +18,7 @@ public class StairsView {
     private static final int SPACING = 20;
     private static final int SCENE_WIDTH = 800;
     private static final int SCENE_HEIGHT = 600;
+    private static final double VELOCITY = 3.0;
 
     /**
      * 
@@ -44,6 +45,7 @@ public class StairsView {
         final String videoPath = StairsView.class.getResource("/video/treasure.mp4").toExternalForm();
         final Media media = new Media(videoPath);
         final MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setRate(VELOCITY);
         final MediaView mediaView = new MediaView(mediaPlayer);
 
         // Layout iniziale con messaggio e pulsanti
@@ -53,7 +55,7 @@ public class StairsView {
         // Contenitore principale per gestire il passaggio alla modalità video
         final StackPane root = new StackPane(layout);
 
-        btYes.setOnAction(event -> {
+        btYes.setOnAction(_ -> {
 
             controller.goToNextFloor();
             // Rimuove tutto e aggiunge solo il video a tutta la finestra
@@ -71,7 +73,7 @@ public class StairsView {
             mediaPlayer.setOnEndOfMedia(() -> manager.switchTo("main_floor_view"));
         });
 
-        btNo.setOnAction(event -> {
+        btNo.setOnAction(_ -> {
             manager.switchTo("main_floor_view"); // Torna alla scena precedente
         });
 

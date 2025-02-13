@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -26,7 +25,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
-import java.io.InputStream;
 import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +41,6 @@ public class MainFloorView {
     private static final double INNER_RADIUS = OUTER_RADIUS * 0.5;
     private static final double INNER_CIRCLE_RATIO = 5.0;
     private static final double BUTTON_VERTICAL_POSITION = 1.1;
-    private static final int ENEMY_SPRITE_ID = 12;
     private static final double FADE_DURATION = 0.8;
     private static final double FADE_MIN_OPACITY = 0.3;
     private static final double ANGLE_OFFSET = 26.5;

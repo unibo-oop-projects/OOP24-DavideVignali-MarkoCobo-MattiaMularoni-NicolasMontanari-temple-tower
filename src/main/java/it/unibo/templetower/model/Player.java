@@ -1,5 +1,7 @@
 package it.unibo.templetower.model;
 
+import java.util.List;
+
 /**
  * Represents the Player in the game.
  */
@@ -10,9 +12,9 @@ public interface Player {
     void attack(EnemyRoom enemy);
 
     /**
-     * @param weapon
+     * @param index
      */
-    void changeWeapon(Weapon weapon);
+    void changeWeapon(int index);
 
     /**
      * @param damage
@@ -52,4 +54,25 @@ public interface Player {
      * @return the player's current life points.
      */
     double getLife();
+
+    /**
+     * Resets the player's life to 100 after a battle.
+     */
+    void resetLife();
+
+    /**
+     * Adds the specified weapon to the player's weapon list.
+     * 
+     * @param newWeapon the weapon to be added
+     * @param index the position at which the weapon will be added in the list
+     */
+    void addWeapon(Weapon newWeapon, int index);
+
+    /**
+     * Retrieves all weapons in the player's inventory.
+     * 
+     * @return a list of all weapons
+     */
+    List<Weapon> getAllWeapons();
+
 }

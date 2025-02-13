@@ -17,4 +17,9 @@ public interface RoomBehavior {
      */
     void interact(Player player, int direction);
 
+    /**
+     * @return the element in the Treasure
+     */
+    int getElement();
+
 }

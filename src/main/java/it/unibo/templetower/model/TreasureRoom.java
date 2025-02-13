@@ -18,6 +18,7 @@ public final class TreasureRoom implements RoomBehavior {
     private static final double EPSILON = 1e-6;
     private static final double ENEMY_BASE_HEALTH = 20.0;
     private static final double ENEMY_ATTACK_DAMAGE = 10.0;
+    private int indexElement; 
     private final Random random = new Random();
 
     //possible outcomes of the treasure
@@ -113,10 +114,25 @@ public final class TreasureRoom implements RoomBehavior {
         if (this.enemy.isPresent()) {
             player.takeDamage(this.enemy.get().attacks().get(0).getY());
         } else if (this.weapon.isPresent()) {
-            player.changeWeapon(this.weapon.get());
+            //player.changeWeapon(this.weapon.get());
+            indexElement = 1;
         } else if (this.xps.isPresent()) {
             player.increaseExperience(this.xps.get());
+            indexElement = 2;
         }
+    }
+
+    @Override
+    public int getElement() {
+        return indexElement;
+    }
+
+    /**
+     * 
+     * @return the weapon in the treasure
+     */
+    public Weapon getWeapon() {
+        return this.weapon.get();
     }
 
     /**
