@@ -1,6 +1,7 @@
 [
     {
-      "name": "simple sword",
+      "name": "goblin",
+      "health": 100.0,
       "level": 1,
       "attacks": [
         {
@@ -8,8 +9,6 @@
           "damage": 50.0
         }
       ],
-      "spritePath": "sprites/sword.png"
+      "spritePath": "tower/sprites/Goblin.jpg"
     }
 ]
-
-
