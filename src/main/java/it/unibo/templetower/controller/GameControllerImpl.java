@@ -24,6 +24,7 @@ public final class GameControllerImpl implements GameController {
     private static final int DEFAULT_ENEMY_LEVEL = 12;
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private final Weapon startWeapon;
+    private final SpawnManagerImpl spawnManager;
 
     /**
      * Constructs a new GameControllerImpl instance.
@@ -66,7 +67,10 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void goToNextFloor() {
-        // TODO implements logic to change floor
+        currentFloorIndex += 1;
+        rooms.clear();
+        currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
+        rooms.addAll(currentFloor.rooms());
     }
 
     /**
@@ -145,8 +149,8 @@ public final class GameControllerImpl implements GameController {
      * {@inheritDoc}
      */
     @Override
-    public String getEnemySpritePath(final int level) {
-        return assetManager.getEnemyAsset(level);
+    public String getEnemySpritePath() {
+        return this.rooms.get(currentRoomIndex).getEnemySprite();
     }
 
     /**
@@ -155,5 +159,11 @@ public final class GameControllerImpl implements GameController {
     @Override
     public String getEntiSpritePath(final String type) {
         return assetManager.getGenericEntityAsset(type);
+    }
+
+    @Override
+    public String getEnemySpritePath(final int level) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEnemySpritePath'");
     }
 }

@@ -1,5 +1,7 @@
 package it.unibo.templetower.model;
 
+import java.util.Random;
+
 /**
  * Represents a room in the game that contains an enemy.
  * The enemy room contains an enemy that the player must defeat to progress.
@@ -7,9 +9,11 @@ package it.unibo.templetower.model;
 public final class EnemyRoom implements RoomBehavior {
     private final Enemy enemy;
     private Double lifePoints;
+    private final Random random = new Random();
 
     /**
      * Constructs an enemy room with the specified enemy.
+     * 
      * @param enemy the enemy to be placed in this room
      */
     public EnemyRoom(final Enemy enemy) {
@@ -19,6 +23,7 @@ public final class EnemyRoom implements RoomBehavior {
 
     /**
      * Reduces the enemy's life points by the specified damage amount.
+     * 
      * @param damage the amount of damage to be dealt to the enemy
      */
     public void takeDamage(final Double damage) {
@@ -36,29 +41,44 @@ public final class EnemyRoom implements RoomBehavior {
     /**
      * {@inheritDoc}
      * Handles player interaction with the enemy room.
-     * @param player the player interacting with the room
-     * @param direction the direction of interaction (1 for attack, other for defense)
+     * 
+     * @param player    the player interacting with the room
+     * @param direction the direction of interaction (1 for attack, other for
+     *                  defense)
      */
     @Override
     public void interact(final Player player, final int direction) {
         if (direction == 1) {
             player.attack(this);
         } else {
-            //TODO manage the enemy attack
-            player.takeDamage(this.enemy.attacks().get(0).getY());
+            player.takeDamage(this.enemy.attacks().get(random.nextInt(this.enemy.attacks().size())).getY());
         }
     }
 
     /**
-     * Gets the attack damage of the enemy in this room.
-     * @return the attack damage value
+     * {@inheritDoc}
      */
-    public double getAttackDamage() {
+    public String getEnemyImagePath() {
+        return this.enemy.spritePath();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Enemy getEnemy() {
+        return this.enemy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Double getAttackDamage() {
         return this.enemy.attacks().get(0).getY();
     }
 
     /**
      * Gets the current life points of the enemy.
+     * 
      * @return the enemy's life points
      */
     public Double getLifePoints() {
@@ -67,6 +87,7 @@ public final class EnemyRoom implements RoomBehavior {
 
     /**
      * Gets the name of the enemy in this room.
+     * 
      * @return the enemy's name
      */
     public String getName() {
