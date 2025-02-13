@@ -48,7 +48,7 @@ public final class CombatView {
      * @param controller the game controller to handle game logic
      * @return the created combat scene
      */
-    public StackPane createScene(final StageManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
         root.getStyleClass().add("root");
 

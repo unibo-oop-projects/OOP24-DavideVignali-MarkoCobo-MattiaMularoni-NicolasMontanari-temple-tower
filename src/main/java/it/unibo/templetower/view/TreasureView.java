@@ -44,7 +44,7 @@ public final class TreasureView {
      * @param controller the game controller to handle game logic
      * @return the created Scene object
      */
-    public StackPane createScene(final StageManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         // Creazione del layout radice (StackPane)
         final StackPane root = new StackPane();
 

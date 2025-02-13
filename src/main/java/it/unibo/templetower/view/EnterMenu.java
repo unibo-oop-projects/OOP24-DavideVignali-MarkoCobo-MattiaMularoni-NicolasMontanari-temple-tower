@@ -27,7 +27,7 @@ public final class EnterMenu {
      * @return A new Scene object containing the enter menu interface
      * @throws FileNotFoundException if required image resources are not found
      */
-    public StackPane createScene(final StageManager manager) throws FileNotFoundException {
+    public StackPane createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
 

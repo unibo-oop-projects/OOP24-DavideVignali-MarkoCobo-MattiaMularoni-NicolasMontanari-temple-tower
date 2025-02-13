@@ -37,7 +37,7 @@ public final class Home {
      * @return Scene object representing the home screen
      * @throws FileNotFoundException if background image resource cannot be found
      */
-    public StackPane createScene(final StageManager manager) throws FileNotFoundException {
+    public StackPane createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
 

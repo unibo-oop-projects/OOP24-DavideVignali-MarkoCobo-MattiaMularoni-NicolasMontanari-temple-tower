@@ -24,7 +24,7 @@ public class StairsView {
      * @param controller the game controller
      * @return the created scene
      */
-    public StackPane createScene(final StageManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         // Creazione della label con il messaggio
         final Label message = new Label("Do you want to go to the next floor?");
         message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");

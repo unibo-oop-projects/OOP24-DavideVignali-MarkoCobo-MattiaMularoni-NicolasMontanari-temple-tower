@@ -22,8 +22,8 @@ import javafx.stage.Stage;
  * This class is responsible for creating, storing, and switching between
  * different game panes.
  */
-public final class StageManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StageManager.class);
+public final class SceneManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SceneManager.class);
     private static final double INITIAL_HEIGHT = Screen.getPrimary().getBounds().getHeight();
     private static final double INITIAL_WIDTH = Screen.getPrimary().getBounds().getWidth();
     private static final String CSS_PATH = "/css/main.css";
@@ -38,7 +38,7 @@ public final class StageManager {
      *
      * @param stage the primary stage of the JavaFX application
      */
-    public StageManager(final Stage stage) {
+    public SceneManager(final Stage stage) {
         this.stage = Objects.requireNonNull(stage, "Stage cannot be null");
         this.controller = new GameControllerImpl();
         this.scene = new Scene(new StackPane(), INITIAL_WIDTH, INITIAL_HEIGHT);

@@ -24,7 +24,7 @@ public final class DifficultyMenu {
          * @param controller the game controller
          * @return the created scene
          */
-        public StackPane createScene(final StageManager manager, final GameController controller) {
+        public StackPane createScene(final SceneManager manager, final GameController controller) {
                 // Create root container
                 final StackPane root = new StackPane();
 

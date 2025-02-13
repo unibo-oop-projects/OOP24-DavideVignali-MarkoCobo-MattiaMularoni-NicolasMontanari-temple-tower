@@ -60,7 +60,7 @@ public class MainFloorView {
      * @param controller The game controller
      * @return The created scene
      */
-    public BorderPane createScene(final StageManager manager, final GameController controller) {
+    public BorderPane createScene(final SceneManager manager, final GameController controller) {
         //Background
         final BorderPane root = new BorderPane();
         dPane = new Pane();
@@ -86,7 +86,7 @@ public class MainFloorView {
         return root;
     }
 
-    private void createButtons(final GameController controller, final StageManager manager) {
+    private void createButtons(final GameController controller, final SceneManager manager) {
         final ToggleButton left = new ToggleButton("<");
         final ToggleButton right = new ToggleButton(">");
         final ToggleButton enter = new ToggleButton("ENTRA");
@@ -117,7 +117,7 @@ public class MainFloorView {
         highlightSector(controller.getPlayerActualRoom());
     }
 
-    private void handleRoomEnter(final GameController controller, final StageManager manager) {
+    private void handleRoomEnter(final GameController controller, final SceneManager manager) {
         highlightSector(controller.getPlayerActualRoom());
         manager.switchTo(controller.enterRoom());
     }

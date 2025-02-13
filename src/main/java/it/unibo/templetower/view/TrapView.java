@@ -16,7 +16,7 @@ public class TrapView {
      * @param controller the game controller
      * @return the created scene
      */
-    public StackPane createScene(final StageManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         // Contenitore principale per gestire il passaggio alla modalità video
         return new StackPane();
     }
