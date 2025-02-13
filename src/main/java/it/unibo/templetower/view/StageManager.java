@@ -104,8 +104,6 @@ public final class StageManager {
      * @param pane the new scene to be set
      */
     private void updateStage(final Pane pane) {
-        stage.setWidth(scene.getWidth());
-        stage.setHeight(scene.getHeight());
         scene.setRoot(pane);
         stage.show();
     }

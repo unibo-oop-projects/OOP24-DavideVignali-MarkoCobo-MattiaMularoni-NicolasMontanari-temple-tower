@@ -80,6 +80,9 @@ public class MainFloorView {
         //Control buttons
         createButtons(controller, manager);
 
+        root.sceneProperty().addListener(
+                (obs, oldVal, newVal) -> Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom())));
+
         return root;
     }
 
@@ -197,14 +200,16 @@ public class MainFloorView {
         // Highlight the selected sector
         final Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
+            LOGGER.info("Sector found, applying highlight.");
             selectedSector.setFill(HIGHLIGHT_COLOR);
-
             final FadeTransition fade = new FadeTransition(Duration.seconds(FADE_DURATION), selectedSector);
             fade.setFromValue(1.0);
             fade.setToValue(FADE_MIN_OPACITY);
             fade.setCycleCount(Animation.INDEFINITE);
             fade.setAutoReverse(true);
             fade.play();
+        } else {
+            LOGGER.warn("No sector found for room: " + roomIndex);
         }
     }
 
