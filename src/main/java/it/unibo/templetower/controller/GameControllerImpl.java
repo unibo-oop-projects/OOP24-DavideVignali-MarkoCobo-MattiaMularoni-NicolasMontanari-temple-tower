@@ -3,9 +3,13 @@ package it.unibo.templetower.controller;
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList; // added missing import
+
+import it.unibo.templetower.model.Floor;
 import it.unibo.templetower.model.Player;
 import it.unibo.templetower.model.PlayerImpl;
 import it.unibo.templetower.model.Room;
+import it.unibo.templetower.model.SpawnManagerImpl;
+import it.unibo.templetower.model.Tower;
 import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.AssetManager;
 import it.unibo.templetower.utils.Pair;
@@ -33,8 +37,21 @@ public final class GameControllerImpl implements GameController {
         assetManager = new AssetManager();
         assetManager.addEnemyAsset(DEFAULT_ENEMY_LEVEL, "images/enemy.png");
         startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
-        rooms = new ArrayList<>();
+        
+        // Initialize game data manager and load tower data
+        GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final String towerPath = "tower/tower.json";
+        gameDataManager.loadGameDataFromTower(towerPath);
+        final Tower towerData = gameDataManager.getTower();
+        
+        // Spawn the floor and initialize rooms
+        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(towerData);
+        final Floor generatedFloor = spawnManager.spawnFloor(1, 7); // Assuming 7 rooms per floor
+        rooms = generatedFloor.rooms();
+        
+        // Initialize player
         player = new PlayerImpl(startWeapon, Optional.empty());
+        currentRoomIndex = 0;
     }
 
     /**
