@@ -1,19 +1,16 @@
 package it.unibo.templetower.view;
 
 import it.unibo.templetower.controller.GameController;
-import javafx.scene.Scene;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.geometry.Pos;
 
 /**
  * {@inheritDoc}.
  */
 public class TrapView {
-    private static final int SCENE_WIDTH = 800;
-    private static final int SCENE_HEIGHT = 600;
     private static final int SPACING = 20;
 
     /**
@@ -23,7 +20,7 @@ public class TrapView {
      * @param controller the game controller
      * @return the created scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
 
         // Creazione del testo di avviso
@@ -46,6 +43,6 @@ public class TrapView {
         layout.setAlignment(Pos.CENTER);
 
         root.getChildren().add(layout);
-        return new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+        return root;
     }
 }
