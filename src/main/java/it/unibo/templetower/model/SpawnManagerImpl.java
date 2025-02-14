@@ -19,7 +19,6 @@ public class SpawnManagerImpl {
     private static final int BUDGET_MULTIPLIER = 5;
     private static final double TREASURE_HEALTH_CHANCE = 0.5;
     private static final double TREASURE_WEAPON_CHANCE = 0.1;
-    private static final double TREASURE_COIN_CHANCE = 0.4;
 
     private final List<FloorData> floors;
     private final Random random;
@@ -83,8 +82,8 @@ public class SpawnManagerImpl {
                     final Optional<Weapon> randomWeapon = weapons.isEmpty() 
                         ? Optional.empty() 
                         : Optional.of(weapons.get(random.nextInt(weapons.size())));
-                    generatedRooms.add(new Room(new TreasureRoom(level, randomWeapon, 
-                        TREASURE_HEALTH_CHANCE, TREASURE_WEAPON_CHANCE, TREASURE_COIN_CHANCE), "treasure_view", i));
+                    generatedRooms.add(new Room(new TreasureRoom(randomWeapon, 
+                        TREASURE_HEALTH_CHANCE, TREASURE_WEAPON_CHANCE), "treasure_view", i));
                 } else {
                     generatedRooms.add(new Room(new Trap(1), "trap_view", i));
                 }
