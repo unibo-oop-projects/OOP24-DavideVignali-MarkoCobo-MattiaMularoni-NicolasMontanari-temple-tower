@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -48,10 +47,9 @@ public class SettingsMenu {
         // Add difficulty menu button
         final Button difficultyButton = new Button("Return to Enter Menu");
         difficultyButton.setOnAction(e -> {
-            
+
             manager.switchTo("enter_menu");
         });
-        content.getChildren().add(difficultyButton);
 
         // Mute button with image
         Image image = new Image("images/muto.png");
@@ -64,12 +62,8 @@ public class SettingsMenu {
         muteButton.setPrefSize(30, 30);  // Set fixed size for square button
         muteButton.setOnAction(e -> {
             MusicController.getInstance().stopMusic();
-            
-        });
 
-           // Create container for mute button positioned at bottom right
-        final VBox muteContainer = new VBox(muteButton);
-        muteContainer.setAlignment(Pos.BOTTOM_RIGHT);
+        });
 
         Image image1 = new Image("images/alzavol.png");
         ImageView imageView1 = new ImageView(image1);
@@ -85,21 +79,20 @@ public class SettingsMenu {
         raiseButton.setGraphic(imageView1);
         raiseButton.setPrefSize(30, 30);  // Set fixed size for square button
         raiseButton.setOnAction(e -> {
-            
+
         });
 
         final Button lowerButton = new Button();  // Create button without text
         lowerButton.setGraphic(imageView2);
         lowerButton.setPrefSize(30, 30);  // Set fixed size for square button
         lowerButton.setOnAction(e -> {
-           
+
         });
-        final HBox volumeContainer = new HBox(10);
-        volumeContainer.getChildren().addAll(raiseButton, lowerButton);
-        volumeContainer.setAlignment(Pos.CENTER);
-        
+
+        content.getChildren().addAll(raiseButton, lowerButton, muteButton, difficultyButton);
+
         // Combine background and content
-        root.getChildren().addAll(background, content, muteContainer, volumeContainer);
+        root.getChildren().addAll(background, content);
 
         final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
