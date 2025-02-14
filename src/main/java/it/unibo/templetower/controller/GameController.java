@@ -61,14 +61,6 @@ public interface GameController {
     int getNumberOfRooms();
 
     /** 
-     * Returns the path of the sprite of the enemy for the specified level.
-     * 
-     * @param level the level number for which to get the enemy sprite
-     * @return a String containing the file path to the enemy sprite
-     */
-    String getEnemySpritePath(int level);
-
-    /** 
      * Returns the path of the sprite for the specified entity type.
      * 
      * @param type the type of entity for which to get the sprite
@@ -101,11 +93,11 @@ public interface GameController {
     double getEnemyLifePoints();
 
     /** 
-     * Returns the path of the sprite for the specified entity type.
      * 
-     * @return a String containing the file path to the entity sprite
+     * @param index of room
+     * @return the room image path for displaying in the view
      */
-    String getEnemySpritePath();
+    String getRoomImagePath(int index);
 
     /** 
      * When the player health is 0 reset the game.
@@ -166,4 +158,9 @@ public interface GameController {
      */
     List<Weapon> getPlayerWeapons();
 
+    /**
+     * 
+     * @return if the room can be displayed or hidden
+     */
+    Boolean isRoomToDisplay();
 }
