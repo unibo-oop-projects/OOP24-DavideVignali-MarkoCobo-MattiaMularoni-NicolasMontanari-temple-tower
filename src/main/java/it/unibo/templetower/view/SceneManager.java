@@ -115,7 +115,7 @@ public final class SceneManager {
         stage.show();
 
         // Notify view if it implements SceneActivationListener
-        if (scene.getUserData() instanceof SceneActivationListener sceneActivationListener) {
+        if (pane.getUserData() instanceof SceneActivationListener sceneActivationListener) {
             sceneActivationListener.onSceneActivated();
         }
     }
