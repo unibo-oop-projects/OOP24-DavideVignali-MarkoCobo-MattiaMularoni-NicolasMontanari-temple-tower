@@ -1,0 +1,31 @@
+{
+  "weapons": [
+    {
+      "name": "Ancient Axe",
+      "level": 18,
+      "attack": {
+        "attackId": "physical",
+        "damage": 60.0
+      },
+      "spritePath": "sprites/axe.png"
+    },
+    {
+      "name": "Ancient Spear",
+      "level": 19,
+      "attack": {
+        "attackId": "physical",
+        "damage": 120.0
+      },
+      "spritePath": "sprites/spear.png"
+    },
+    {
+      "name": "Ancient Sword",
+      "level": 17,
+      "attack": {
+        "attackId": "physical",
+        "damage": 90.0
+      },
+      "spritePath": "sprites/sword.png"
+    }
+  ]
+}
