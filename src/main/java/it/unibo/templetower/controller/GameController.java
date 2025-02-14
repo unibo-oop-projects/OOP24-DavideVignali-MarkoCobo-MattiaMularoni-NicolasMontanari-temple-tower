@@ -60,14 +60,6 @@ public interface GameController {
      */
     int getNumberOfRooms();
 
-    /** 
-     * Returns the path of the sprite for the specified entity type.
-     * 
-     * @param type the type of entity for which to get the sprite
-     * @return a String containing the file path to the entity sprite
-     */
-    String getEntiSpritePath(String type);
-
     /**
      * Performs an attack action from the player towards the enemy.
      */

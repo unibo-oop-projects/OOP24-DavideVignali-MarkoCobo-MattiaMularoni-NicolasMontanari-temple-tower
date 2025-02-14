@@ -195,14 +195,6 @@ public final class GameControllerImpl implements GameController {
      * {@inheritDoc}
      */
     @Override
-    public String getEntiSpritePath(final String type) {
-        return assetManager.getGenericEntityAsset(type);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void gameOver() {
         //TODO
     }
