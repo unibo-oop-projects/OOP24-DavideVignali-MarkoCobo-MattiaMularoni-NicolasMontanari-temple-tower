@@ -58,6 +58,7 @@ public final class SceneManager {
             panes.put("treasure_view", new TreasureView().createScene(this, controller));
             panes.put("stairs_view", new StairsView().createScene(this, controller));
             panes.put("enter_menu", new EnterMenu().createScene(this));
+            panes.put("settings_menu", new SettingsMenu().createScene(this));
             panes.put("home", new Home().createScene(this));
             panes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
             panes.put("change_weapon_view", new ChangeWeaponView().createScene(this, controller));
