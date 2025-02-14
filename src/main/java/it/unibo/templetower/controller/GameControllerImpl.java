@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import it.unibo.templetower.model.Floor;
-import it.unibo.templetower.model.FloorData;
 import it.unibo.templetower.model.Player;
 import it.unibo.templetower.model.PlayerImpl;
 import it.unibo.templetower.model.Room;
 import it.unibo.templetower.model.SpawnManagerImpl;
+import it.unibo.templetower.model.Tower;
 import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.AssetManager;
 import it.unibo.templetower.utils.Pair;
@@ -19,43 +19,37 @@ import it.unibo.templetower.utils.Pair;
  */
 public final class GameControllerImpl implements GameController {
     private final List<Room> rooms;
-    private int currentRoomIndex; // Traccia la stanza attuale
+    private int currentRoomIndex;
     private final Player player;
-    private final GameDataManagerImpl gameDataManager;
     private final AssetManager assetManager;
     private static final int PLAYERDIRECTION = 1;
     private static final int ENEMYDIRECTION = 0;
-    private static final int ROOMS_NUMBER = 8;
     private static final int DEFAULT_ENEMY_LEVEL = 12;
+    private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private final Weapon startWeapon;
 
     /**
      * Constructs a new GameControllerImpl instance.
-     * Initializes the game by loading data, setting up the floor,
-     * and creating the player with initial weapon.
+     * Initializes the game by setting up the floor and creating the player with an initial weapon.
      */
     public GameControllerImpl() {
-        // Load game data
-        gameDataManager = new GameDataManagerImpl();
-        final String testPath = "tower/floors/floors-data.json";
-        gameDataManager.loadGameData(testPath);
-        final List<FloorData> floors = gameDataManager.getFloors();
-
-        // Instantiate SpawnManagerImpl with loaded floor data
-        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(floors);
-
-        // TODO al posto dell'1 implementare logica di cambio piano
-        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
-
-        /* test asset manager */
         assetManager = new AssetManager();
         assetManager.addEnemyAsset(DEFAULT_ENEMY_LEVEL, "images/enemy.png");
+        startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
 
-        // first weapon
-        startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), testPath);
-
+        // Initialize game data manager and load tower data
+        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final String towerPath = "tower/tower.json";
+        gameDataManager.loadGameDataFromTower(towerPath);
+        final Tower towerData = gameDataManager.getTower();
+        // Spawn the floor and initialize rooms
+        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(towerData);
+        final Floor generatedFloor = spawnManager.spawnFloor(1, 7); // Assuming 7 rooms per floor
         rooms = generatedFloor.rooms();
+
+        // Initialize player
         player = new PlayerImpl(startWeapon, Optional.empty());
+        currentRoomIndex = 0;
     }
 
     /**
@@ -96,13 +90,12 @@ public final class GameControllerImpl implements GameController {
     @Override
     public void changeRoom(final Integer direction) {
         final int newIndex = currentRoomIndex + direction;
-
         if (newIndex >= 0 && newIndex < rooms.size()) {
             currentRoomIndex = newIndex;
         } else if (newIndex < 0) {
-            currentRoomIndex = rooms.size() - 1; // Torna all'ultima stanza
+            currentRoomIndex = rooms.size() - 1;
         } else {
-            currentRoomIndex = 0; // Torna alla prima stanza
+            currentRoomIndex = 0;
         }
     }
 
