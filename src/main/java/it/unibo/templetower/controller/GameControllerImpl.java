@@ -28,7 +28,7 @@ public final class GameControllerImpl implements GameController {
     private final AssetManager assetManager;
     private static final int PLAYERDIRECTION = 1;
     private static final int ENEMYDIRECTION = 0;
-    private static final int ROOMS_NUMBER = 8;
+    private static final int ROOMS_NUMBER = 7;
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private final Weapon startWeapon;
     private final SpawnManagerImpl spawnManager;
@@ -55,7 +55,7 @@ public final class GameControllerImpl implements GameController {
         final Tower towerData = gameDataManager.getTower();
         // Spawn the floor and initialize rooms
         spawnManager = new SpawnManagerImpl(towerData);
-        final Floor generatedFloor = spawnManager.spawnFloor(1, 7); // Assuming 7 rooms per floor
+        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER); // Assuming 7 rooms per floor
         currentFloor = generatedFloor;
         rooms = generatedFloor.rooms();
 
@@ -94,6 +94,7 @@ public final class GameControllerImpl implements GameController {
     @Override
     public void goToNextFloor() {
         currentFloorIndex += 1;
+        currentRoomIndex = 0;
         rooms.clear();
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
         rooms.addAll(currentFloor.rooms());
