@@ -70,7 +70,6 @@ public class SettingsMenu {
         muteButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         muteButton.setOnAction(e -> {
             MusicController.getInstance().stopMusic();
-
         });
 
         final Image image1 = new Image("images/alzavol.png");

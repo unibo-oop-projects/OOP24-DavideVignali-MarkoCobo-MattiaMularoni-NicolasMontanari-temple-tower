@@ -118,6 +118,17 @@ public final class MusicController {
     }
 
     /**
+     * Restarts the currently playing music track, if any.
+     */
+    public void restartMusic() {
+        if (musicModel.isPlaying() && currentClip == null) {
+            musicModel.setIsPlaying(true);
+            LOGGER.info("Music restarted successfully");
+        }
+
+    }
+
+    /**
      * Stops the currently playing music track, if any.
      */
     public void stopMusic() {
