@@ -15,55 +15,56 @@ import javafx.scene.layout.VBox;
  * game difficulty.
  */
 public final class DifficultyMenu {
-        private static final int BUTTON_SPACING = 10;
 
-        /**
-         * Creates the scene for the difficulty menu.
-         *
-         * @param manager    the scene manager
-         * @param controller the game controller
-         * @return the created scene
-         */
-        public StackPane createScene(final SceneManager manager, final GameController controller) {
-                // Create root container
-                final StackPane root = new StackPane();
+    private static final int BUTTON_SPACING = 10;
+    private static final String MAIN_ID = "main_floor_view";
 
-                // Set up background image
-                final InputStream backgroundStream = getClass().getClassLoader()
-                                .getResourceAsStream("images/menu.png");
-                final ImageView background = new ImageView(new Image(backgroundStream));
+    /**
+     * Creates the scene for the difficulty menu.
+     *
+     * @param manager the scene manager
+     * @param controller the game controller
+     * @return the created scene
+     */
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
+        // Create root container
+        final StackPane root = new StackPane();
 
-                // Configure background properties
-                background.setPreserveRatio(false);
+        // Set up background image
+        final InputStream backgroundStream = getClass().getClassLoader()
+                .getResourceAsStream("images/menu.png");
+        final ImageView background = new ImageView(new Image(backgroundStream));
 
-                // Make background responsive to window resizing
-                root.widthProperty().addListener((obs, old, newVal) -> background.setFitWidth(newVal.doubleValue()));
-                root.heightProperty().addListener((obs, old, newVal) -> background.setFitHeight(newVal.doubleValue()));
+        // Configure background properties
+        background.setPreserveRatio(false);
 
-                // Create difficulty buttons layout
-                final VBox buttonContainer = new VBox(BUTTON_SPACING);
-                buttonContainer.setAlignment(Pos.CENTER);
+        // Make background responsive to window resizing
+        root.widthProperty().addListener((obs, old, newVal) -> background.setFitWidth(newVal.doubleValue()));
+        root.heightProperty().addListener((obs, old, newVal) -> background.setFitHeight(newVal.doubleValue()));
 
-                // Create difficulty buttons
-                final Button easyButton = new Button("FACILE");
-                final Button mediumButton = new Button("INTERMEDIO");
-                final Button hardButton = new Button("DIFFICILE");
+        // Create difficulty buttons layout
+        final VBox buttonContainer = new VBox(BUTTON_SPACING);
+        buttonContainer.setAlignment(Pos.CENTER);
 
-                // Set button actions
-                easyButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-                mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-                hardButton.setOnAction(e -> manager.switchTo("main_floor_view"));
+        // Create difficulty buttons
+        final Button easyButton = new Button("FACILE");
+        final Button mediumButton = new Button("INTERMEDIO");
+        final Button hardButton = new Button("DIFFICILE");
 
-                // Add buttons to container
-                buttonContainer.getChildren().addAll(
-                                easyButton,
-                                mediumButton,
-                                hardButton);
+        // Set button actions
+        easyButton.setOnAction(e -> manager.switchTo(MAIN_ID));
+        mediumButton.setOnAction(e -> manager.switchTo(MAIN_ID));
+        hardButton.setOnAction(e -> manager.switchTo(MAIN_ID));
 
-                // Combine background and buttons
-                root.getChildren().addAll(background, buttonContainer);
+        // Add buttons to container
+        buttonContainer.getChildren().addAll(
+                easyButton,
+                mediumButton,
+                hardButton
+        );
+        root.getChildren().addAll(background, buttonContainer);
 
-                // Create and return the pane
-                return root;
-        }
+        // Create and return the pane
+        return root;
+    }
 }

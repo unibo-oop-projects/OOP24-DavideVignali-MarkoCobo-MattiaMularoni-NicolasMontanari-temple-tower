@@ -225,6 +225,7 @@ public final class GameControllerImpl implements GameController {
 
     @Override
     public int getElementTreasure() {
+        this.rooms.get(currentRoomIndex).interactWithRoom(player, ENEMYDIRECTION);
         return this.rooms.get(currentRoomIndex).getElementTreasure();
     }
 

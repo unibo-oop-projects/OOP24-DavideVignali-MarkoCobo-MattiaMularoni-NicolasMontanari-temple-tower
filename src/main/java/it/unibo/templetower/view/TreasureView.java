@@ -109,6 +109,7 @@ public final class TreasureView {
         
         // Al termine della riproduzione del video, mostra il popup
         mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
+            LOGGER.info("AAAAAAAAAAAAAAAAA: " + controller.getElementTreasure());
             if (controller.getElementTreasure() == 1) {
                 showWeaponPopup(controller, manager, () -> { // Mostra il popup e aspetta la sua chiusura
                     manager.switchTo(MAIN_VIEW); // Dopo la chiusura del popup, torna alla main floor view

@@ -58,10 +58,12 @@ public final class SceneManager {
             panes.put("treasure_view", new TreasureView().createScene(this, controller));
             panes.put("stairs_view", new StairsView().createScene(this, controller));
             panes.put("enter_menu", new EnterMenu().createScene(this));
+            panes.put("settings_menu", new SettingsMenu().createScene(this));
             panes.put("home", new Home().createScene(this));
             panes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
             panes.put("change_weapon_view", new ChangeWeaponView().createScene(this, controller));
             panes.put("select_weapon_view", new SelectWeaponView().createScene(this, controller));
+            panes.put("trap_view", new TrapView().createScene(this, controller));
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to initialize scenes", e);
@@ -117,7 +119,7 @@ public final class SceneManager {
         stage.show();
 
         // Notify view if it implements SceneActivationListener
-        if (scene.getUserData() instanceof SceneActivationListener sceneActivationListener) {
+        if (pane.getUserData() instanceof SceneActivationListener sceneActivationListener) {
             sceneActivationListener.onSceneActivated();
         }
     }
