@@ -62,6 +62,7 @@ public final class DifficultyMenu {
                 mediumButton,
                 hardButton
         );
+        root.getChildren().addAll(background, buttonContainer);
 
         // Create and return the pane
         return root;
