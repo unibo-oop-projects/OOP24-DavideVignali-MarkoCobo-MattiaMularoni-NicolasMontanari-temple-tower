@@ -38,6 +38,7 @@ public final class TreasureView {
     private static final int VBOX = 50;
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
+    private static final double VELOCITY = 3.0;
     private static final String MAIN_VIEW = "main_floor_view";
 
     /**
@@ -80,6 +81,7 @@ public final class TreasureView {
         final String videoPath = getClass().getResource("/video/treasure.mp4").toExternalForm();
         final Media media = new Media(videoPath);
         final MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setRate(VELOCITY);
         final MediaView mediaView = new MediaView(mediaPlayer);
 
         // Associa le dimensioni del video alla scena
@@ -104,6 +106,7 @@ public final class TreasureView {
             manager.switchTo(MAIN_VIEW);
         });
 
+        
         // Al termine della riproduzione del video, mostra il popup
         mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
             if (controller.getElementTreasure() == 1) {
@@ -131,6 +134,7 @@ public final class TreasureView {
      * @param manager
      */
     private void showWeaponPopup(final GameController controller, final SceneManager manager, final Runnable onClose) {
+        LOGGER.info("WEAPON pop");
         final Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Oggetto Trovato!");
         dialog.setHeaderText("Hai trovato un'arma!");
@@ -182,9 +186,11 @@ public final class TreasureView {
         dialog.getDialogPane().setContent(layout);
 
         DialogUtil.showDialog(dialog, "Hai trovato un'arma!", onClose);
+        dialog.showingProperty();
     }
 
     private void showXpPopup(final Runnable onClose) {
+        LOGGER.info("XP");
         final Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("YOU TAKE XP");
         dialog.setHeaderText(null); // Rimuove il titolo predefinito
@@ -214,6 +220,7 @@ public final class TreasureView {
         dialog.getDialogPane().setContent(layout);
 
         DialogUtil.showDialog(dialog, "YOU WON XP", onClose);
+        dialog.showingProperty();
     }
 
 }

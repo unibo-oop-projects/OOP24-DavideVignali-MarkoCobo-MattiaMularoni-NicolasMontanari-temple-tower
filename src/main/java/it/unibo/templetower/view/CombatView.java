@@ -95,7 +95,7 @@ public final class CombatView {
         exitButton = new Button("Exit");
         exitButton.getStyleClass().add("button");
 
-        playerHealthBar = new ProgressBar(INITIAL_HEALTH);
+        playerHealthBar = new ProgressBar(controller.getPlayerLife() / 100);
         playerHealthBar.getStyleClass().add("health-bar-player");
 
         enemyHealthBar = new ProgressBar(controller.getEnemyLifePoints() / 100);
@@ -121,13 +121,13 @@ public final class CombatView {
         final BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        final Label playerHpLabel = new Label("100 HP");
+        final Label playerHpLabel = new Label((controller.getPlayerLife() + "HP"));
         playerHpLabel.getStyleClass().add("label");
         final VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
         healthBarsPane.setLeft(playerHealthBox);
 
-        final Label enemyHpLabel = new Label("100 HP");
+        final Label enemyHpLabel = new Label(controller.getEnemyLifePoints() + "HP");
         enemyHpLabel.getStyleClass().add("label");
         final VBox enemyHealthBox = new VBox(5, enemyHpLabel, enemyHealthBar);
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
