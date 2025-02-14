@@ -2,6 +2,7 @@ package it.unibo.templetower.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 import it.unibo.templetower.model.Floor;
 import it.unibo.templetower.model.Player;
@@ -28,7 +29,6 @@ public final class GameControllerImpl implements GameController {
     private static final int PLAYERDIRECTION = 1;
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 8;
-    private static final int DEFAULT_ENEMY_LEVEL = 12;
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private final Weapon startWeapon;
     private final SpawnManagerImpl spawnManager;
@@ -41,7 +41,11 @@ public final class GameControllerImpl implements GameController {
     public GameControllerImpl() {
         currentFloorIndex = 1;
         assetManager = new AssetManager();
-        assetManager.addEnemyAsset(DEFAULT_ENEMY_LEVEL, "images/enemy.png");
+        assetManager.addGenericEntityAsset("combat_view", "Images/enemy.png");
+        assetManager.addGenericEntityAsset("treasure_view", "Images/treasure.png");
+        assetManager.addGenericEntityAsset("trap_view", "Images/trap.png");
+        assetManager.addGenericEntityAsset("stairs_view", "Images/stairs.png");
+        assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
         startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
 
         // Initialize game data manager and load tower data
@@ -52,6 +56,7 @@ public final class GameControllerImpl implements GameController {
         // Spawn the floor and initialize rooms
         spawnManager = new SpawnManagerImpl(towerData);
         final Floor generatedFloor = spawnManager.spawnFloor(1, 7); // Assuming 7 rooms per floor
+        currentFloor = generatedFloor;
         rooms = generatedFloor.rooms();
 
         // Initialize player
@@ -190,14 +195,6 @@ public final class GameControllerImpl implements GameController {
      * {@inheritDoc}
      */
     @Override
-    public String getEntiSpritePath(final String type) {
-        return assetManager.getGenericEntityAsset(type);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void gameOver() {
         //TODO
     }
@@ -234,14 +231,13 @@ public final class GameControllerImpl implements GameController {
     }
 
     @Override
-    public String getEnemySpritePath(final int level) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEnemySpritePath'");
+    public String getRoomImagePath(final int index) {
+        return assetManager.getGenericEntityAsset(rooms.get(index).getName());
     }
 
     @Override
-    public String getEnemySpritePath() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEnemySpritePath'");
+    public Boolean isRoomToDisplay() {
+        final double roll = ThreadLocalRandom.current().nextDouble(1);
+        return roll >= this.currentFloor.visibility();
     }
 }
