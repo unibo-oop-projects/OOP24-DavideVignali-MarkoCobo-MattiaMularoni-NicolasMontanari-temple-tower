@@ -60,7 +60,7 @@ public final class MusicController {
 
         try {
             // Prova prima con il path completo
-            String resourcePath = "sounds/" + musicFile;
+           final String resourcePath = "sounds/" + musicFile;
             LOGGER.info("Trying to load resource from: {}", resourcePath);
 
             InputStream audioStream = getClass().getClassLoader()
@@ -80,7 +80,7 @@ public final class MusicController {
             }
 
             LOGGER.info("Audio file found, creating AudioInputStream");
-            AudioInputStream audioInput = AudioSystem.getAudioInputStream(
+           final AudioInputStream audioInput = AudioSystem.getAudioInputStream(
                     new BufferedInputStream(audioStream)
             );
 
@@ -90,7 +90,7 @@ public final class MusicController {
 
             LOGGER.info("Setting up volume control");
             if (currentClip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-                FloatControl gainControl
+              final  FloatControl gainControl
                         = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(DEFAULT_VOLUME);
                 LOGGER.info("Volume control set successfully");
@@ -114,8 +114,6 @@ public final class MusicController {
             LOGGER.error("Unsupported audio format: {}", e.getMessage(), e);
         } catch (IOException e) {
             LOGGER.error("IO error while loading audio: {}", e.getMessage(), e);
-        } catch (Exception e) {
-            LOGGER.error("Unexpected error while starting music: {}", e.getMessage(), e);
         }
     }
 
@@ -133,12 +131,16 @@ public final class MusicController {
         }
     }
 
+    /**
+     * Starts a new music track, stopping any currently playing music.
+     *
+     * @param musicFile the name of the music file to play, located in the audio resources folder
+     */
     public void startNewMusic(final String musicFile) {
         if (musicModel.isPlaying() && currentClip != null) {
             currentClip.stop();
             musicModel.setIsPlaying(false);
         }
     }
-   
 
 }

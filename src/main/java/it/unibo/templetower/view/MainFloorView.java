@@ -1,19 +1,20 @@
 package it.unibo.templetower.view;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -26,9 +27,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
-import java.net.URL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** 
  * This scene represents a floor of the game, where the player can move between rooms.
@@ -36,13 +34,10 @@ import org.slf4j.LoggerFactory;
  * Subclasses should override createScene to customize the floor appearance.
  */
 public class MainFloorView {
-    private static final double HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
-    private static final double WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
-    private static final double OUTER_RADIUS = HEIGHT / 3;
+    private static final double OUTER_RADIUS = Screen.getPrimary().getVisualBounds().getHeight() / 3;
     private static final double INNER_RADIUS = OUTER_RADIUS * 0.5;
     private static final double INNER_CIRCLE_RATIO = 5.0;
     private static final double BUTTON_VERTICAL_POSITION = 1.1;
-    private static final int ENEMY_SPRITE_ID = 12;
     private static final double FADE_DURATION = 0.8;
     private static final double FADE_MIN_OPACITY = 0.3;
     private static final double ANGLE_OFFSET = 26.5;
@@ -55,9 +50,6 @@ public class MainFloorView {
     private Pane dPane;
     private Circle outer;
     private Circle inner;
-    private ToggleButton left;
-    private ToggleButton right;
-    private ToggleButton enter;
     private HBox buttons;
     private int nRooms;
     private final Map<Integer, Arc> sectorMap = new HashMap<>();
@@ -68,14 +60,12 @@ public class MainFloorView {
      * @param controller The game controller
      * @return The created scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public BorderPane createScene(final SceneManager manager, final GameController controller) {
         //Background
         final BorderPane root = new BorderPane();
         dPane = new Pane();
         root.setCenter(dPane);
         root.setId("circle-room-back");
-
-        final Scene scene = new Scene(root, WIDTH, HEIGHT);
 
         //Inner and outer circles for create the rooms container
         this.nRooms = controller.getNumberOfRooms();
@@ -83,26 +73,23 @@ public class MainFloorView {
         inner = createCircle("inner-circle-rooms", INNER_RADIUS);
         dPane.getChildren().addAll(outer, inner);
 
-        //Listener for keeping the scene responsive to screen size changes
-        scene.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
-        scene.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(scene, controller));
+        //Listener for keeping the pane responsive to screen size changes
+        root.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(root, controller));
+        root.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(root, controller));
 
         //Control buttons
         createButtons(controller, manager);
 
-        /* Assetmanager test */
-        final ClassLoader loader = getClass().getClassLoader();
-        final InputStream spritetest = loader.getResourceAsStream(controller.getEnemySpritePath(ENEMY_SPRITE_ID));
-        final ImageView spriteImg = new ImageView(new Image(spritetest));
-        dPane.getChildren().add(spriteImg);
+        root.sceneProperty().addListener(
+                (obs, oldVal, newVal) -> Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom())));
 
-        return scene;
+        return root;
     }
 
     private void createButtons(final GameController controller, final SceneManager manager) {
-        left = new ToggleButton("<");
-        right = new ToggleButton(">");
-        enter = new ToggleButton("ENTRA");
+        final ToggleButton left = new ToggleButton("<");
+        final ToggleButton right = new ToggleButton(">");
+        final ToggleButton enter = new ToggleButton("ENTRA");
         buttons = new HBox(left, enter, right);
         buttons.getStyleClass().add("buttons");
         buttons.setAlignment(Pos.BOTTOM_CENTER);
@@ -142,7 +129,7 @@ public class MainFloorView {
     }
 
     //Adapts the scene to the screen size
-    private void adaptScene(final Scene scene, final GameController controller) {
+    private void adaptScene(final Pane scene, final GameController controller) {
         final double centerX = scene.getWidth() / 2;
         final double centerY = scene.getHeight() / 2;
 
@@ -164,20 +151,21 @@ public class MainFloorView {
         for (int i = 0; i < controller.getNumberOfRooms(); i++) {
             createRoomAndSector(i, centerX, centerY, roomRadius);
         }
+        applyInnerCircleTexture();
+        Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom()));
+    }
 
+    private void applyInnerCircleTexture() {
         try {
             final URL imageUrl = MainFloorView.class.getResource("/Images/inner_circle_background.png");
             if (imageUrl != null) {
-                final Image im = new Image(imageUrl.toExternalForm(), false);
-                inner.setFill(new ImagePattern(im));
+                inner.setFill(new ImagePattern(new Image(imageUrl.toExternalForm(), false)));
             }
         } catch (IllegalArgumentException e) {
-            LOGGER.error("Failed to load inner circle background image", e);
+            LOGGER.error("Failed to load inner circle background image" + e);
         }
-
         inner.setEffect(new DropShadow(SHADOW_SPREAD, 0d, SHADOW_Y_OFFSET, Color.DARKSEAGREEN));
         inner.toFront();
-        Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom()));
     }
 
     private void updateCirclePositionAndRadius(final Circle circle, final double centerX,
@@ -212,14 +200,16 @@ public class MainFloorView {
         // Highlight the selected sector
         final Arc selectedSector = sectorMap.get(roomIndex);
         if (selectedSector != null) {
+            LOGGER.info("Sector found, applying highlight.");
             selectedSector.setFill(HIGHLIGHT_COLOR);
-
             final FadeTransition fade = new FadeTransition(Duration.seconds(FADE_DURATION), selectedSector);
             fade.setFromValue(1.0);
             fade.setToValue(FADE_MIN_OPACITY);
             fade.setCycleCount(Animation.INDEFINITE);
             fade.setAutoReverse(true);
             fade.play();
+        } else {
+            LOGGER.warn("No sector found for room: " + roomIndex);
         }
     }
 
@@ -251,37 +241,5 @@ public class MainFloorView {
         final Line line = new Line(startX, startY, endX, endY);
         line.setStroke(Color.WHITE);
         return line;
-    }
-
-    /**
-     * Gets the left navigation button.
-     * @return The left ToggleButton instance
-     */
-    protected ToggleButton getLeftButton() {
-        return left;
-    }
-
-    /**
-     * Gets the right navigation button.
-     * @return The right ToggleButton instance
-     */
-    protected ToggleButton getRightButton() {
-        return right;
-    }
-
-    /**
-     * Gets the enter button used to access rooms.
-     * @return The enter ToggleButton instance
-     */
-    protected ToggleButton getEnterButton() {
-        return enter;
-    }
-
-    /**
-     * Gets the container holding all navigation buttons.
-     * @return The HBox containing the navigation buttons
-     */
-    protected HBox getButtons() {
-        return buttons;
     }
 }

@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import it.unibo.templetower.controller.MusicController;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,8 +17,6 @@ import javafx.scene.layout.VBox;
  */
 public final class Home {
 
-    private static final int WINDOW_WIDTH = 400;
-    private static final int WINDOW_HEIGHT = 300;
 
 
     /**
@@ -30,7 +27,7 @@ public final class Home {
      * @throws FileNotFoundException if background image resource cannot be
      * found
      */
-    public Scene createScene(final SceneManager manager) throws FileNotFoundException {
+    public StackPane createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
 
@@ -44,14 +41,10 @@ public final class Home {
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        background.setFitWidth(WINDOW_WIDTH);
-        background.setFitHeight(WINDOW_HEIGHT);
 
         // Make background responsive to window resizing
-        root.widthProperty().addListener((obs, old, newVal)
-                -> background.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, old, newVal)
-                -> background.setFitHeight(newVal.doubleValue()));
+        root.widthProperty().addListener((obs, old, newVal) -> background.setFitWidth(newVal.doubleValue()));
+        root.heightProperty().addListener((obs, old, newVal) -> background.setFitHeight(newVal.doubleValue()));
 
         // Create content layout
         final VBox content = new VBox(10);
@@ -63,7 +56,7 @@ public final class Home {
             // Non fermiamo più la musica quando cambiamo scena
             manager.switchTo("enter_menu");
         });
-        
+
 
         // Add both buttons to the content VBox
         content.getChildren().addAll(difficultyButton);
@@ -71,12 +64,12 @@ public final class Home {
         // Combine background and content
         root.getChildren().addAll(background, content);
 
-        final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+
         MusicController.getInstance().startMusic("sounds/musicadisottofondo.wav");
 
-        return scene;
+        return root;
     }
 
-    
+
 
 }

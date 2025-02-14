@@ -1,12 +1,12 @@
 package it.unibo.templetower.view;
 
-import it.unibo.templetower.controller.GameController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.unibo.templetower.controller.GameController;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -27,11 +27,8 @@ import javafx.scene.media.MediaView;
  * video playback and weapon selection dialog.
  */
 public final class TreasureView {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TreasureView.class);
     private static final int BUTTON_FONT_SIZE = 20;
-    private static final int SCENE_WIDTH = 800;
-    private static final int SCENE_HEIGHT = 600;
     private static final double WEAPON_DAMAGE = 0.8;
     private static final int DAMAGE_BAR_WIDTH = 200;
     private static final int BUTTON_SPACING = 20; // Added constant for HBox spacing
@@ -45,7 +42,7 @@ public final class TreasureView {
      * @param controller the game controller to handle game logic
      * @return          the created Scene object
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         // Creazione del layout radice (StackPane)
         final StackPane root = new StackPane();
 
@@ -108,10 +105,9 @@ public final class TreasureView {
             });
         }));
 
-        final Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
 
-        return scene;
+        return root;
     }
 
     /**
@@ -124,7 +120,7 @@ public final class TreasureView {
         dialog.setTitle("Oggetto Trovato!");
         dialog.setHeaderText("Hai trovato un'arma!");
 
-        // 🔹 Aggiungiamo un ButtonType per permettere la chiusura con la X
+        // Aggiungiamo un ButtonType per permettere la chiusura con la X
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
         final Image image = new Image(getClass().getResource("/images/Gun-PNG-File.png").toExternalForm());

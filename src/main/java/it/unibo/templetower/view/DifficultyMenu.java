@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,13 +11,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * The DifficultyMenu class represents the menu where the player can select the game difficulty.
+ * The DifficultyMenu class represents the menu where the player can select the
+ * game difficulty.
  */
 public final class DifficultyMenu {
 
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
     private static final int BUTTON_SPACING = 10;
+    private static final String MAIN_ID = "main_floor_view";
 
     /**
      * Creates the scene for the difficulty menu.
@@ -27,7 +26,7 @@ public final class DifficultyMenu {
      * @param controller the game controller
      * @return the created scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         // Create root container
         final StackPane root = new StackPane();
 
@@ -38,14 +37,10 @@ public final class DifficultyMenu {
 
         // Configure background properties
         background.setPreserveRatio(false);
-        background.setFitWidth(WIDTH);
-        background.setFitHeight(HEIGHT);
 
         // Make background responsive to window resizing
-        root.widthProperty().addListener((obs, old, newVal)
-                -> background.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, old, newVal)
-                -> background.setFitHeight(newVal.doubleValue()));
+        root.widthProperty().addListener((obs, old, newVal) -> background.setFitWidth(newVal.doubleValue()));
+        root.heightProperty().addListener((obs, old, newVal) -> background.setFitHeight(newVal.doubleValue()));
 
         // Create difficulty buttons layout
         final VBox buttonContainer = new VBox(BUTTON_SPACING);
@@ -57,10 +52,9 @@ public final class DifficultyMenu {
         final Button hardButton = new Button("DIFFICILE");
 
         // Set button actions
-        easyButton.setOnAction(e -> 
-        manager.switchTo("main_floor_view"));
-        mediumButton.setOnAction(e -> manager.switchTo("main_floor_view"));
-        hardButton.setOnAction(e -> manager.switchTo("main_floor_view"));
+        easyButton.setOnAction(e -> manager.switchTo(MAIN_ID));
+        mediumButton.setOnAction(e -> manager.switchTo(MAIN_ID));
+        hardButton.setOnAction(e -> manager.switchTo(MAIN_ID));
 
         // Add buttons to container
         buttonContainer.getChildren().addAll(
@@ -68,12 +62,8 @@ public final class DifficultyMenu {
                 mediumButton,
                 hardButton
         );
-       
 
-        // Combine background and buttons
-        root.getChildren().addAll(background, buttonContainer);
-
-        // Create and return the scene
-        return new Scene(root, WIDTH, HEIGHT);
+        // Create and return the pane
+        return root;
     }
 }

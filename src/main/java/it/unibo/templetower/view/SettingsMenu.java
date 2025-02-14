@@ -5,19 +5,29 @@ import java.io.InputStream;
 
 import it.unibo.templetower.controller.MusicController;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+/**
+ * Class responsible for creating and managing the settings menu scene. This class
+ * provides the settings menu interface for the game.
+ */
 
 public class SettingsMenu {
 
-    private static final int WINDOW_WIDTH = 400;
-    private static final int WINDOW_HEIGHT = 300;
+    static final int BUTTON_HEIGHT = 30;
+    static final int BUTTON_WIDTH = 30;
 
-    public Scene createScene(SceneManager manager) throws FileNotFoundException {
+     /**
+     * Creates and returns the settings menu scene.
+     *
+     * @param manager The scene manager to handle scene transitions
+     * @return Scene object representing the settings menu
+     * @throws FileNotFoundException if background image resource cannot be found
+     */
+    public StackPane createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
 
@@ -31,8 +41,6 @@ public class SettingsMenu {
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        background.setFitWidth(WINDOW_WIDTH);
-        background.setFitHeight(WINDOW_HEIGHT);
 
         // Make background responsive to window resizing
         root.widthProperty().addListener((obs, old, newVal)
@@ -52,39 +60,39 @@ public class SettingsMenu {
         });
 
         // Mute button with image
-        Image image = new Image("images/muto.png");
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(30);
-        imageView.setFitHeight(30);
+       final Image image = new Image("images/muto.png");
+        final ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(BUTTON_WIDTH);
+        imageView.setFitHeight(BUTTON_HEIGHT);
 
         final Button muteButton = new Button();  // Create button without text
         muteButton.setGraphic(imageView);
-        muteButton.setPrefSize(30, 30);  // Set fixed size for square button
+        muteButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         muteButton.setOnAction(e -> {
             MusicController.getInstance().stopMusic();
 
         });
 
-        Image image1 = new Image("images/alzavol.png");
-        ImageView imageView1 = new ImageView(image1);
-        imageView1.setFitWidth(30);
-        imageView1.setFitHeight(30);
+        final Image image1 = new Image("images/alzavol.png");
+        final ImageView imageView1 = new ImageView(image1);
+        imageView1.setFitWidth(BUTTON_WIDTH);
+        imageView1.setFitHeight(BUTTON_HEIGHT);
 
-        Image image2 = new Image("images/abbassavol.png");
-        ImageView imageView2 = new ImageView(image2);
-        imageView2.setFitWidth(30);
-        imageView2.setFitHeight(30);
+        final Image image2 = new Image("images/abbassavol.png");
+        final ImageView imageView2 = new ImageView(image2);
+        imageView2.setFitWidth(BUTTON_WIDTH);
+        imageView2.setFitHeight(BUTTON_HEIGHT);
 
         final Button raiseButton = new Button();  // Create button without text
         raiseButton.setGraphic(imageView1);
-        raiseButton.setPrefSize(30, 30);  // Set fixed size for square button
+        raiseButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         raiseButton.setOnAction(e -> {
 
         });
 
         final Button lowerButton = new Button();  // Create button without text
         lowerButton.setGraphic(imageView2);
-        lowerButton.setPrefSize(30, 30);  // Set fixed size for square button
+        lowerButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         lowerButton.setOnAction(e -> {
 
         });
@@ -94,8 +102,8 @@ public class SettingsMenu {
         // Combine background and content
         root.getChildren().addAll(background, content);
 
-        final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        return scene;
+
+        return root;
     }
 }

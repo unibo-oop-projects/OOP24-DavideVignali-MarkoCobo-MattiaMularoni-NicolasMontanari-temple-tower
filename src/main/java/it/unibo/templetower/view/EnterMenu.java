@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,9 +17,6 @@ import javafx.scene.layout.VBox;
  * provides the initial menu interface for the game.
  */
 public final class EnterMenu {
-
-    private static final int WINDOW_WIDTH = 400;
-    private static final int WINDOW_HEIGHT = 300;
     private static final int RIGHT_PADDING = 20;
     private static final int BUTTON_SPACING = 10;
 
@@ -31,7 +27,7 @@ public final class EnterMenu {
      * @return A new Scene object containing the enter menu interface
      * @throws FileNotFoundException if required image resources are not found
      */
-    public Scene createScene(final SceneManager manager) throws FileNotFoundException {
+    public StackPane createScene(final SceneManager manager) throws FileNotFoundException {
         // Create root container
         final StackPane root = new StackPane();
 
@@ -45,9 +41,6 @@ public final class EnterMenu {
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        background.setFitWidth(WINDOW_WIDTH);
-        background.setFitHeight(WINDOW_HEIGHT);
-
         // Make background responsive to window resizing
         root.widthProperty().addListener((obs, old, newVal)
                 -> background.setFitWidth(newVal.doubleValue()));
@@ -89,7 +82,7 @@ public final class EnterMenu {
             manager.switchTo("settings_menu");
         });
 
-        
+
 
         // Add buttons to rightButtons in the correct order
         rightButtons.getChildren().addAll(personalizationButton, leaderBoardButton, moddingButton, settingsButton);
@@ -102,8 +95,8 @@ public final class EnterMenu {
         // Combine background and content
         root.getChildren().addAll(background, mainLayout);
 
-        // Return scene directly without storing in a variable
-        return new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        // Return pane directly without storing in a variable
+        return root;
 
     }
 
