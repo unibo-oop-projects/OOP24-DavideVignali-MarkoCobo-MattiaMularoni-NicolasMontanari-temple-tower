@@ -87,6 +87,7 @@ public class SettingsMenu {
         raiseButton.setGraphic(imageView1);
         raiseButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         raiseButton.setOnAction(e -> {
+            MusicController.getInstance().raiseVol();
 
         });
 
@@ -94,6 +95,7 @@ public class SettingsMenu {
         lowerButton.setGraphic(imageView2);
         lowerButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         lowerButton.setOnAction(e -> {
+            MusicController.getInstance().lowerVol();
 
         });
 
