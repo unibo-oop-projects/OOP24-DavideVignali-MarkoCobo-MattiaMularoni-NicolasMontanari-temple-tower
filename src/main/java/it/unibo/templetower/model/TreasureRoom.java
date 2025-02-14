@@ -113,6 +113,7 @@ public final class TreasureRoom implements RoomBehavior {
     public void interact(final Player player, final int direction) {
         if (this.enemy.isPresent()) {
             player.takeDamage(this.enemy.get().attacks().get(0).getY());
+            indexElement = 1;
         } else if (this.weapon.isPresent()) {
             //player.changeWeapon(this.weapon.get());
             indexElement = 1;

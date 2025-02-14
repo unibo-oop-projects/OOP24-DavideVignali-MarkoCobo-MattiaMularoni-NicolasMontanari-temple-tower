@@ -2,7 +2,6 @@ package it.unibo.templetower.view;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -16,8 +15,6 @@ import javafx.scene.media.MediaView;
  */
 public class StairsView {
     private static final int SPACING = 20;
-    private static final int SCENE_WIDTH = 800;
-    private static final int SCENE_HEIGHT = 600;
     private static final double VELOCITY = 3.0;
 
     /**
@@ -28,7 +25,7 @@ public class StairsView {
      * @param controller the game controller
      * @return the created scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         // Creazione della label con il messaggio
         final Label message = new Label("Do you want to go to the next floor?");
         message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
@@ -77,6 +74,6 @@ public class StairsView {
             manager.switchTo("main_floor_view"); // Torna alla scena precedente
         });
 
-        return new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+        return root;
     }
 }

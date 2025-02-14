@@ -1,5 +1,8 @@
 package it.unibo.templetower.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unibo.templetower.controller.GameController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -8,7 +11,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -18,12 +20,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents the combat view of the game where battles take place.
@@ -35,12 +34,9 @@ public final class CombatView {
     private static final int DIALOG_WIDTH = 250;
     private static final int DIALOG_HEIGHT = 80;
     private static final int VBOX = 50;
-    private static final int SPACING_LARGE = 20;
-    private static final int SPACING_SMALL = 5;
     private static final int CHARACTER_SIZE = 150;
     private static final int BUTTON_WIDTH = 150;
     private static final int HEALTH_BAR_WIDTH = 200;
-    private static final int ATTACK_DISTANCE = 30;
     private static final double INITIAL_HEALTH = 1.0;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CombatView.class);
@@ -56,9 +52,9 @@ public final class CombatView {
      * 
      * @param manager    the scene manager to handle scene transitions
      * @param controller the game controller to handle game logic
-     * @return the created combat scene
+     * @return          the created combat scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
         root.getStyleClass().add("root");
 
@@ -67,15 +63,8 @@ public final class CombatView {
             final Image backgroundImage = new Image(getClass().getResource("/Images/combat_room.jpg").toExternalForm());
             backgroundView.setImage(backgroundImage);
             backgroundView.setPreserveRatio(false);
-            backgroundView.setFitWidth(Region.USE_COMPUTED_SIZE);
-            backgroundView.setFitHeight(Region.USE_COMPUTED_SIZE);
-
-            root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-                backgroundView.setFitWidth(newWidth.doubleValue());
-            });
-            root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-                backgroundView.setFitHeight(newHeight.doubleValue());
-            });
+            backgroundView.fitWidthProperty().bind(root.widthProperty());
+            backgroundView.fitHeightProperty().bind(root.heightProperty());
 
             root.getChildren().add(backgroundView);
         } catch (IllegalArgumentException e) {
@@ -83,28 +72,23 @@ public final class CombatView {
             final Label errorLabel = new Label("Background image not found.");
             errorLabel.getStyleClass().add("label");
             root.getChildren().add(errorLabel);
-            final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-            scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
-            return scene;
+            return root;
         }
 
-        final VBox contentBox = new VBox(SPACING_LARGE);
+        final VBox contentBox = new VBox(20);
         contentBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        final HBox charactersBox = new HBox(SPACING_LARGE);
+        final HBox charactersBox = new HBox(20);
         charactersBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        final ImageView playerImage = new ImageView(
-                new Image(getClass().getResource("/Images/player.png").toExternalForm()));
-        final ImageView enemyImage = new ImageView(
-                new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
+        final ImageView playerImage = new ImageView(new Image(getClass().getResource("/Images/player.png").toExternalForm()));
+        final ImageView enemyImage = new ImageView(new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
 
         playerImage.setFitWidth(CHARACTER_SIZE);
         playerImage.setFitHeight(CHARACTER_SIZE);
         enemyImage.setFitWidth(CHARACTER_SIZE);
         enemyImage.setFitHeight(CHARACTER_SIZE);
 
-        // **Inizializziamo i pulsanti PRIMA del listener**
         attackButton = new Button("Attack!");
         attackButton.getStyleClass().add("button");
 
@@ -117,25 +101,16 @@ public final class CombatView {
         enemyHealthBar = new ProgressBar(controller.getEnemyLifePoints() / 100);
         enemyHealthBar.getStyleClass().add("health-bar-enemy");
 
-        // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
         root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
             final double scaleFactor = newWidth.doubleValue() / WINDOW_WIDTH;
-            final double newSize = CHARACTER_SIZE * scaleFactor;
-
-            playerImage.setFitWidth(newSize);
-            playerImage.setFitHeight(newSize);
-            enemyImage.setFitWidth(newSize);
-            enemyImage.setFitHeight(newSize);
-
-            // Ridimensiona i bottoni e le progress bar
-            final double newButtonWidth = BUTTON_WIDTH * scaleFactor;
-            final double newProgressBarWidth = HEALTH_BAR_WIDTH * scaleFactor;
-
-            attackButton.setPrefWidth(newButtonWidth);
-            exitButton.setPrefWidth(newButtonWidth);
-
-            playerHealthBar.setPrefWidth(newProgressBarWidth);
-            enemyHealthBar.setPrefWidth(newProgressBarWidth);
+            playerImage.setFitWidth(CHARACTER_SIZE * scaleFactor);
+            playerImage.setFitHeight(CHARACTER_SIZE * scaleFactor);
+            enemyImage.setFitWidth(CHARACTER_SIZE * scaleFactor);
+            enemyImage.setFitHeight(CHARACTER_SIZE * scaleFactor);
+            attackButton.setPrefWidth(BUTTON_WIDTH * scaleFactor);
+            exitButton.setPrefWidth(BUTTON_WIDTH * scaleFactor);
+            playerHealthBar.setPrefWidth(HEALTH_BAR_WIDTH * scaleFactor);
+            enemyHealthBar.setPrefWidth(HEALTH_BAR_WIDTH * scaleFactor);
         });
 
         charactersBox.getChildren().addAll(playerImage, enemyImage);
@@ -146,15 +121,15 @@ public final class CombatView {
         final BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        final Label playerHpLabel = new Label(controller.getPlayerLife() + "HP");
+        final Label playerHpLabel = new Label("100 HP");
         playerHpLabel.getStyleClass().add("label");
-        final VBox playerHealthBox = new VBox(SPACING_SMALL, playerHpLabel, playerHealthBar);
+        final VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
         healthBarsPane.setLeft(playerHealthBox);
 
-        final Label enemyHpLabel = new Label(controller.getEnemyLifePoints() + "HP");
+        final Label enemyHpLabel = new Label("100 HP");
         enemyHpLabel.getStyleClass().add("label");
-        final VBox enemyHealthBox = new VBox(SPACING_SMALL, enemyHpLabel, enemyHealthBar);
+        final VBox enemyHealthBox = new VBox(5, enemyHpLabel, enemyHealthBar);
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
@@ -167,7 +142,7 @@ public final class CombatView {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
 
             final Timeline timeline = new Timeline();
-            final double distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - ATTACK_DISTANCE;
+            final double distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - 30;
             final KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
             final KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
             timeline.getKeyFrames().add(kf);
@@ -175,8 +150,6 @@ public final class CombatView {
             timeline.setOnFinished(_ -> {
                 controller.attackEnemy();
 
-                // Ritardo per garantire che i valori della vita vengano aggiornati
-                // correttamente
                 final PauseTransition pause = new PauseTransition(Duration.millis(200));
                 pause.setOnFinished(_ -> {
                     Platform.runLater(() -> {
@@ -185,11 +158,10 @@ public final class CombatView {
                             attackButton.setDisable(true);
                             controller.resetPlayerLife();
                             enemyHealthBar.setProgress(0 / 100.0);
-                            kill = false; // Il nemico è morto, quindi non deve più attaccare
-                        } else if (kill) { // Il nemico può attaccare solo se è ancora vivo
+                            kill = false;
+                        } else if (kill) {
                             controller.attackPlayer();
 
-                            // Ritardo per aggiornare la UI dopo l'attacco del nemico
                             final PauseTransition pause2 = new PauseTransition(Duration.millis(100));
                             pause2.setOnFinished(_ -> {
                                 playerHealthBar.setProgress(controller.getPlayerLife() / 100.0);
@@ -205,14 +177,12 @@ public final class CombatView {
                             pause2.play();
                         }
 
-                        // Aggiorna le barre della salute e le etichette
                         playerHealthBar.setProgress(controller.getPlayerLife() / 100.0);
                         enemyHealthBar.setProgress(controller.getEnemyLifePoints() / 100.0);
 
                         playerHpLabel.setText(controller.getPlayerLife() + "HP");
                         enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
 
-                        // Se il giocatore è morto, blocca il bottone e resetta la vita
                         if (controller.getPlayerLife() <= 0 || controller.getEnemyLifePoints() <= 0) {
                             attackButton.setDisable(true);
                             controller.resetPlayerLife();
@@ -227,7 +197,7 @@ public final class CombatView {
             timeline.play();
         });
 
-        final HBox buttonBox = new HBox(SPACING_LARGE, attackButton, exitButton);
+        final HBox buttonBox = new HBox(20, attackButton, exitButton);
         buttonBox.setAlignment(Pos.BOTTOM_CENTER);
         healthBarsPane.setBottom(buttonBox);
 
@@ -247,11 +217,10 @@ public final class CombatView {
         rootBox.getChildren().addAll(charactersBox, healthBarsPane, topBox);
         root.getChildren().add(rootBox);
 
-        final Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
         resetCombat(controller);
 
-        return scene;
+        return root;
     }
 
     private void resetCombat(final GameController controller) {
@@ -330,3 +299,7 @@ public final class CombatView {
     }
 
 }
+
+
+
+

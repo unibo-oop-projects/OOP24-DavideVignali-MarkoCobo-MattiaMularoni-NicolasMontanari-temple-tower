@@ -2,7 +2,6 @@ package it.unibo.templetower.view;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -12,8 +11,6 @@ import javafx.scene.layout.VBox;
  * {@inheritDoc}.
  */
 public class SelectWeaponView {
-    private static final int SCENE_WIDTH = 800;
-    private static final int SCENE_HEIGHT = 600;
     private static final int VBOX_SPACING = 20;
 
     /**
@@ -23,7 +20,7 @@ public class SelectWeaponView {
      * @param controller
      * @return the created change weapon scene
      */
-    public Scene createScene(final SceneManager manager, final GameController controller) {
+    public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
         final VBox vbox = new VBox(VBOX_SPACING); // VBox with 20px spacing
         vbox.setAlignment(Pos.CENTER);
@@ -76,6 +73,6 @@ public class SelectWeaponView {
 
         root.getChildren().add(vbox);
 
-        return new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+        return root;
     }
 }
