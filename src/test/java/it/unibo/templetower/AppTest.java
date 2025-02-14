@@ -4,6 +4,8 @@
 package it.unibo.templetower;
 
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.ConsoleHandler;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,7 +21,19 @@ import it.unibo.templetower.util.FloorPrinterUtil;
 class AppTest {
     private static final Logger LOGGER = Logger.getLogger(AppTest.class.getName());
 
-    @Test 
+    static {
+        LOGGER.setUseParentHandlers(false);
+        final ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new SimpleFormatter() {
+            @Override
+            public String format(final java.util.logging.LogRecord record) {
+                return record.getMessage() + "\n";
+            }
+        });
+        LOGGER.addHandler(handler);
+    }
+
+    @Test
     void testAppHasAGreeting() throws ClassNotFoundException {
         assertNotNull(Class.forName("javafx.scene.Scene"));
     }
@@ -27,7 +41,7 @@ class AppTest {
     @Test
     void testVerifyPath() {
         final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
-        final String testPath = "tower/tower.json";
+        final String testPath = "towerNew/tower.json";
         gameDataManager.loadGameDataFromTower(testPath);
         final Tower towerData = gameDataManager.getTower();
         assertNotNull(towerData);
@@ -41,7 +55,7 @@ class AppTest {
     @Test
     void testLoadAndPrintFloorData() {
         final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
-        final String testTowerPath = "tower/tower.json";
+        final String testTowerPath = "towerNew/tower.json";
         gameDataManager.loadGameDataFromTower(testTowerPath);
         final Tower towerData = gameDataManager.getTower();
         assertFalse(towerData.floors().isEmpty(), "Floor list should not be empty");
@@ -53,7 +67,7 @@ class AppTest {
     void testSpawnManager() {
         final int level = 1;
         final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
-        final String testTowerPath = "tower/tower.json";
+        final String testTowerPath = "towerNew/tower.json";
         gameDataManager.loadGameDataFromTower(testTowerPath);
         final Tower towerData = gameDataManager.getTower();
         // Instantiate SpawnManagerImpl with the tower data
@@ -66,7 +80,7 @@ class AppTest {
         LOGGER.info("Visibilità: " + generatedFloor.visibility());
         LOGGER.info("\nStanze:");
         generatedFloor.rooms().forEach(room -> {
-            LOGGER.info("- Stanza " + room.getId() + ": " 
+            LOGGER.info("- Stanza " + room.getId() + ": "
                 + (room.getBehavior() == null ? "Vuota" : room.getBehavior().getClass().getSimpleName()));
             if (room.getBehavior() instanceof EnemyRoom) {
                 final EnemyRoom er = (EnemyRoom) room.getBehavior();
