@@ -18,7 +18,7 @@ public class SpawnManagerImpl {
     private static final int DEFAULT_ROOM_NUMBER = 7;
     private static final int BUDGET_MULTIPLIER = 5;
     private static final double TREASURE_HEALTH_CHANCE = 0.5;
-    private static final double TREASURE_WEAPON_CHANCE = 0.1;
+    private static final double TREASURE_WEAPON_CHANCE = 0.5;
 
     private final List<FloorData> floors;
     private final Random random;

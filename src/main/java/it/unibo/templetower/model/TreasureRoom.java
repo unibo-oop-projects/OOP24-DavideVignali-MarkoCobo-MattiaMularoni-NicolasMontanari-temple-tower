@@ -11,6 +11,7 @@ import java.util.Random;
 public final class TreasureRoom implements RoomBehavior {
 
     private static final double EPSILON = 1e-6;
+    private int indexElement; 
     private final Random random = new Random();
 
     //possible outcomes of the treasure
@@ -80,10 +81,24 @@ public final class TreasureRoom implements RoomBehavior {
     @Override
     public void interact(final Player player, final int direction) {
         if (this.weapon.isPresent()) {
-            player.changeWeapon(this.weapon.get());
+            indexElement = 1;
         } else if (this.xps.isPresent()) {
             player.increaseExperience(this.xps.get());
+            indexElement = 2;
         }
+    }
+
+    @Override
+    public int getElement() {
+        return indexElement;
+    }
+
+    /**
+     * 
+     * @return the weapon in the treasure
+     */
+    public Weapon getWeapon() {
+        return this.weapon.get();
     }
 
     /**

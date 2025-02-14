@@ -29,41 +29,49 @@ import javafx.scene.media.MediaView;
 public final class TreasureView {
     private static final Logger LOGGER = LoggerFactory.getLogger(TreasureView.class);
     private static final int BUTTON_FONT_SIZE = 20;
-    private static final double WEAPON_DAMAGE = 0.8;
     private static final int DAMAGE_BAR_WIDTH = 200;
     private static final int BUTTON_SPACING = 20; // Added constant for HBox spacing
     private static final int IMAGE_SIZE = 100;
     private static final int PADDING = 10;
+    private static final int DIALOG_WIDTH = 250;
+    private static final int DIALOG_HEIGHT = 80;
+    private static final int VBOX = 50;
+    private static final int WINDOW_WIDTH = 800;
+    private static final int WINDOW_HEIGHT = 600;
+    private static final String MAIN_VIEW = "main_floor_view";
 
     /**
      * Creates and returns the treasure room scene.
      * 
      * @param manager    the scene manager to handle scene transitions
      * @param controller the game controller to handle game logic
-     * @return          the created Scene object
+     * @return the created Scene object
      */
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         // Creazione del layout radice (StackPane)
         final StackPane root = new StackPane();
 
+        final Label message = new Label("Do you want to open the chest?");
+        message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
+
         // Imposta l'immagine di sfondo sullo StackPane (dietro ai bottoni)
-        final String bgImageUrl = getClass().getResource("/images/combat_room.jpg").toExternalForm();
-        root.setStyle("-fx-background-image: url('" + bgImageUrl + "'); -fx-background-size: cover;");
+        final String imageUrl = getClass().getResource("/images/combat_room.jpg").toExternalForm();
+        root.setStyle("-fx-background-image: url('" + imageUrl + "'); -fx-background-size: cover;");
 
         // Creazione dei bottoni "Apri" e "Esci"
-        final Button openButton = new Button("Apri");
-        final Button exitButton = new Button("Esci");
-        openButton.getStyleClass().add("openExitButton");
-        exitButton.getStyleClass().add("openExitButton");
+        final Button btOpen = new Button("Apri");
+        final Button btExit = new Button("Esci");
+        btOpen.getStyleClass().add("openExitButton");
+        btExit.getStyleClass().add("openExitButton");
 
         // Rendere i bottoni più grandi impostando dimensioni e padding
-        openButton.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
-        exitButton.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
+        btOpen.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
+        btExit.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
 
         // Contenitore orizzontale per i bottoni, centrato
         final HBox buttonContainer = new HBox(BUTTON_SPACING); // Use constant instead of magic number
         buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.getChildren().addAll(openButton, exitButton);
+        buttonContainer.getChildren().addAll(message, btOpen, btExit);
 
         // Aggiunta iniziale del container dei bottoni al layout radice
         root.getChildren().add(buttonContainer);
@@ -83,7 +91,7 @@ public final class TreasureView {
         StackPane.setAlignment(mediaView, Pos.CENTER);
 
         // Azione del bottone "Apri": rimuove i bottoni, aggiunge il video e lo avvia
-        openButton.setOnAction(e -> {
+        btOpen.setOnAction(e -> {
             root.getChildren().remove(buttonContainer);
             root.getChildren().add(mediaView);
             mediaPlayer.play();
@@ -91,18 +99,23 @@ public final class TreasureView {
 
         // Azione del bottone "Esci": esce dalla stanza (in questo esempio termina
         // l'applicazione)
-        exitButton.setOnAction(e -> {
-            LOGGER.info("Player chose to exit the room");
-            manager.switchTo("main_floor_view");
+        LOGGER.info("Player chose to exit the room");
+        btExit.setOnAction(_ -> {
+            manager.switchTo(MAIN_VIEW);
         });
 
         // Al termine della riproduzione del video, mostra il popup
         mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
-            // Mostra il popup e aspetta la sua chiusura
-            showWeaponPopup(() -> {
-                // Dopo la chiusura del popup, torna alla main floor view
-                manager.switchTo("main_floor_view");
-            });
+            if (controller.getElementTreasure() == 1) {
+                showWeaponPopup(controller, manager, () -> { // Mostra il popup e aspetta la sua chiusura
+                    manager.switchTo(MAIN_VIEW); // Dopo la chiusura del popup, torna alla main floor view
+                });
+            } else if (controller.getElementTreasure() == 2) {
+                showXpPopup(() -> { // Mostra il popup e aspetta la sua chiusura
+                    manager.switchTo(MAIN_VIEW); // Dopo la chiusura del popup, torna alla main floor view
+                });
+            }
+
         }));
 
         root.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
@@ -113,9 +126,11 @@ public final class TreasureView {
     /**
      * Shows a popup dialog for weapon selection.
      * 
-     * @param onClose callback to be executed when the dialog is closed
+     * @param onClose    callback to be executed when the dialog is closed
+     * @param controller
+     * @param manager
      */
-    private void showWeaponPopup(final Runnable onClose) {
+    private void showWeaponPopup(final GameController controller, final SceneManager manager, final Runnable onClose) {
         final Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Oggetto Trovato!");
         dialog.setHeaderText("Hai trovato un'arma!");
@@ -128,46 +143,77 @@ public final class TreasureView {
         imageView.setFitWidth(IMAGE_SIZE);
         imageView.setFitHeight(IMAGE_SIZE);
 
-        final ProgressBar damageBar = new ProgressBar(WEAPON_DAMAGE);
+        final ProgressBar damageBar = new ProgressBar(controller.getTreasureWeapon().attack().getY());
         damageBar.setPrefWidth(DAMAGE_BAR_WIDTH);
-        final Label damageLabel = new Label("Danno: 80%");
+        final Label damageLabel = new Label("Danno: " + controller.getTreasureWeapon().attack().getY());
 
         final HBox weaponInfo = new HBox(PADDING, imageView, damageLabel);
         final VBox content = new VBox(PADDING, weaponInfo, damageBar);
 
-        final Button takeButton = new Button("Take");
+        final Button btTake = new Button("Take");
         final Button leaveButton = new Button("Leave");
 
-        takeButton.setOnAction(event -> {
-            LOGGER.info("Player took the weapon");
+        btTake.setOnAction(_ -> {
+            if (controller.getPlayerWeapons().size() < 3) {
+                controller.addPlayerWeapon(controller.getTreasureWeapon(), PADDING);
+            } else {
+                manager.switchTo("change_weapon_view");
+            }
+
             dialog.close();
             if (onClose != null) {
                 onClose.run();
             }
         });
 
-        leaveButton.setOnAction(event -> {
+        leaveButton.setOnAction(_ -> {
             LOGGER.info("Player left the weapon");
+            manager.switchTo(MAIN_VIEW);
             dialog.close();
             if (onClose != null) {
                 onClose.run();
             }
         });
 
-        final HBox buttonBox = new HBox(PADDING, takeButton, leaveButton);
+        final HBox buttonBox = new HBox(PADDING, btTake, leaveButton);
         final VBox layout = new VBox(PADDING, content, buttonBox);
         layout.setPadding(new Insets(PADDING));
 
         dialog.getDialogPane().setContent(layout);
 
-        // 🔹 Se l'utente chiude il popup con la X, esegue comunque onClose()
-        dialog.setOnCloseRequest(event -> {
-            if (onClose != null) {
-                onClose.run();
-            }
-        });
+        DialogUtil.showDialog(dialog, "Hai trovato un'arma!", onClose);
+    }
 
-        dialog.showAndWait();
+    private void showXpPopup(final Runnable onClose) {
+        final Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("YOU TAKE XP");
+        dialog.setHeaderText(null); // Rimuove il titolo predefinito
+
+        // Imposta la dimensione della finestra
+        dialog.getDialogPane().setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        // Testo grande per il messaggio di sconfitta
+        final Label loseLabel = new Label("YOU WON XP");
+        loseLabel.setStyle("-fx-font-size: 50px; -fx-font-weight: bold; -fx-text-fill: black;");
+
+        // Aggiungiamo un ButtonType fittizio per abilitare la chiusura con la X
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+        // Bottone "Leave"
+        final Button btLeave = new Button("Leave");
+        btLeave.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+        btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT); // Aumenta le dimensioni del bottone
+
+        final HBox btContainer = new HBox(btLeave);
+        btContainer.setAlignment(Pos.CENTER);
+
+        final VBox layout = new VBox(VBOX, loseLabel, btContainer);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(PADDING));
+
+        dialog.getDialogPane().setContent(layout);
+
+        DialogUtil.showDialog(dialog, "YOU WON XP", onClose);
     }
 
 }
