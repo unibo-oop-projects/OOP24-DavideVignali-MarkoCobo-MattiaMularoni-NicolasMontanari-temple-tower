@@ -11,23 +11,6 @@ import it.unibo.templetower.model.Weapon;
 public interface GameController {
 
     /**
-     * Starts the game, initializing necessary components and setting the initial state.
-     */
-    void startGame();
-
-    /**
-     * Ends the game, performing cleanup operations if necessary.
-     */
-    void endGame();
-
-    /**
-     * Handles a specific action performed by the player.
-     *
-     * @param action A string representing the action to be processed.
-     */
-    void handleAction(String action);
-
-    /**
      * Moves the player to the next floor in the game.
      */
     void goToNextFloor();
