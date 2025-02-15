@@ -20,6 +20,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -38,6 +39,10 @@ public final class CombatView {
     private static final int BUTTON_WIDTH = 150;
     private static final int HEALTH_BAR_WIDTH = 200;
     private static final String ZEROHP = "0HP";
+    private static final int FIRE_START_X = 40;
+    private static final int FIRE_START_Y = 200;
+    private static final int DISTANCE_FROM_ENEMY = 30;
+    private static final int DISTANCE_FROM_BOSS = 700;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CombatView.class);
 
@@ -57,10 +62,15 @@ public final class CombatView {
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
         root.getStyleClass().add("root");
-
+        final String bgImage;
         final ImageView backgroundView = new ImageView();
         try {
-            final Image backgroundImage = new Image(getClass().getResource("/Images/combat_room.jpg").toExternalForm());
+            if (!controller.isBossTime()) {
+                bgImage = "/Images/combat_room.jpg";
+            } else {
+                bgImage = "/Images/final_arena.png";
+            }
+            final Image backgroundImage = new Image(getClass().getResource(bgImage).toExternalForm());
             backgroundView.setImage(backgroundImage);
             backgroundView.setPreserveRatio(false);
             backgroundView.fitWidthProperty().bind(root.widthProperty());
@@ -75,13 +85,18 @@ public final class CombatView {
             return root;
         }
 
-        final HBox charactersBox = new HBox(20);
-        charactersBox.setAlignment(Pos.BOTTOM_CENTER);
+        final String playerImg;
+        final String enemyImg;
+        if (!controller.isBossTime()) {
+            playerImg = "/Images/player.png";
+            enemyImg = "/Images/enemy.png";
+        } else {
+            playerImg = "/Images/playerback.png";
+            enemyImg = "/Images/boss.png";
+        }
 
-        final ImageView playerImage = new ImageView(
-                new Image(getClass().getResource("/Images/player.png").toExternalForm()));
-        final ImageView enemyImage = new ImageView(
-                new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
+        final ImageView playerImage = new ImageView(new Image(getClass().getResource(playerImg).toExternalForm()));
+        final ImageView enemyImage = new ImageView(new Image(getClass().getResource(enemyImg).toExternalForm()));
 
         playerImage.setFitWidth(CHARACTER_SIZE);
         playerImage.setFitHeight(CHARACTER_SIZE);
@@ -111,11 +126,20 @@ public final class CombatView {
             playerHealthBar.setPrefWidth(HEALTH_BAR_WIDTH * scaleFactor);
             enemyHealthBar.setPrefWidth(HEALTH_BAR_WIDTH * scaleFactor);
         });
-
-        charactersBox.getChildren().addAll(playerImage, enemyImage);
-
+        final HBox charactersBox = new HBox(20);
         final VBox rootBox = new VBox();
         rootBox.setAlignment(Pos.BOTTOM_CENTER);
+
+        final VBox spriteContainer = new VBox(100);
+        if (!controller.isBossTime()) {
+            charactersBox.setAlignment(Pos.BOTTOM_CENTER);
+            charactersBox.getChildren().addAll(playerImage, enemyImage);
+        } else {
+            rootBox.setAlignment(Pos.BOTTOM_CENTER);
+            spriteContainer.getChildren().addAll(enemyImage, playerImage);
+            spriteContainer.setStyle("-fx-alignment: center;");
+            rootBox.getChildren().add(spriteContainer);
+        }
 
         final BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
@@ -140,13 +164,36 @@ public final class CombatView {
         attackBt.setOnAction(_ -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
 
+            final ImageView attackImage = new ImageView(new Image(getClass().getResourceAsStream("/Images/flame.gif")));
+            attackImage.setFitWidth(100);
+            attackImage.setFitHeight(100);
+            attackImage.setLayoutX(playerImage.getLayoutX() + FIRE_START_X);
+            attackImage.setLayoutY(playerImage.getLayoutY() + FIRE_START_Y);
+
+            ((Pane) playerImage.getParent()).getChildren().add(attackImage);
+
+            final double distance;
+            final KeyValue kv;
+            final KeyFrame kf;
+
             final Timeline timeline = new Timeline();
-            final double distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - 30;
-            final KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
-            final KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
+            if (controller.isBossTime()) {
+                distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - DISTANCE_FROM_BOSS;
+                kv = new KeyValue(attackImage.translateYProperty(), distance);
+                kf = new KeyFrame(Duration.seconds(1), kv);
+            } else {
+                ((Pane) attackImage.getParent()).getChildren().remove(attackImage);
+                distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - DISTANCE_FROM_ENEMY;
+                kv = new KeyValue(playerImage.translateXProperty(), distance);
+                kf = new KeyFrame(Duration.seconds(0.5), kv);
+            }
+
             timeline.getKeyFrames().add(kf);
 
             timeline.setOnFinished(_ -> {
+                if (controller.isBossTime()) {
+                    ((Pane) attackImage.getParent()).getChildren().remove(attackImage);
+                } 
                 controller.attackEnemy();
 
                 final PauseTransition pause = new PauseTransition(Duration.millis(200));
@@ -223,7 +270,11 @@ public final class CombatView {
             manager.switchTo("select_weapon_view");
         });
 
-        rootBox.getChildren().addAll(charactersBox, healthBarsPane, topBox);
+        if (!controller.isBossTime()) {
+            rootBox.getChildren().addAll(charactersBox, healthBarsPane, topBox);
+        } else {
+            rootBox.getChildren().addAll(healthBarsPane, topBox);
+        }
         root.getChildren().add(rootBox);
 
         root.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());

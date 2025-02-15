@@ -62,11 +62,21 @@ public class StairsView {
             mediaView.fitHeightProperty().bind(root.heightProperty());
             mediaView.setPreserveRatio(false);
 
-            mediaPlayer.play();
-            mediaPlayer.setOnEndOfMedia(() -> manager.switchTo("main_floor_view"));
+            mediaPlayer.play(); // Avvia il video
+
+            // Quando il video finisce, cambia scena
+            mediaPlayer.setOnEndOfMedia(() -> {
+                if (!controller.isBossTime()) {
+                    manager.switchTo("main_floor_view");
+                } else {
+                    manager.switchTo("combat_view");
+                }
+            });
         });
 
-        btNo.setOnAction(_ -> manager.switchTo("main_floor_view"));
+        btNo.setOnAction(event -> {
+            manager.switchTo("main_floor_view"); // Torna alla scena precedente
+        });
 
         return root;
     }

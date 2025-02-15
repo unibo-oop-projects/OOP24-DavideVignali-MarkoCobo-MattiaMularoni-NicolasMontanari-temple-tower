@@ -169,4 +169,10 @@ public interface GameController {
      * @return if the room can be displayed or hidden
      */
     Boolean isRoomToDisplay();
+
+    /**
+     * 
+     * @return if is time to show the boss view
+     */
+    Boolean isBossTime();
 }
