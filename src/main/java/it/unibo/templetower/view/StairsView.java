@@ -52,7 +52,7 @@ public class StairsView {
         // Contenitore principale per gestire il passaggio alla modalità video
         final StackPane root = new StackPane(layout);
 
-        btYes.setOnAction(_ -> {
+        btYes.setOnAction(event -> {
 
             controller.goToNextFloor();
             // Rimuove tutto e aggiunge solo il video a tutta la finestra
@@ -67,10 +67,16 @@ public class StairsView {
             mediaPlayer.play(); // Avvia il video
 
             // Quando il video finisce, cambia scena
-            mediaPlayer.setOnEndOfMedia(() -> manager.switchTo("main_floor_view"));
+            mediaPlayer.setOnEndOfMedia(() -> {
+                if (!controller.isBossTime()){
+                    manager.switchTo("main_floor_view");
+                }else {
+                    manager.switchTo("boss_view");
+                }
+            });
         });
 
-        btNo.setOnAction(_ -> {
+        btNo.setOnAction(event -> {
             manager.switchTo("main_floor_view"); // Torna alla scena precedente
         });
 
