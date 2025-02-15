@@ -36,9 +36,9 @@ La meccanica dei livelli circolari prende ispirazione dal gioco \href{https://ri
 \subsection*{Requisiti funzionali}
 \begin{itemize}
 	\item L'area di gioco è circolare ed è composta da diverse caselle contententi gli elementi di gioco che possono essere positivi o negativi per il giocatore.
-	\item Gli elementi di gioco sono rappresentati da tesori (possono contenere punti esperienza, armi, oggetti curativi), trappole (tolgono punti vita), scale (permettono il passaggio a un livello superiore).
+	\item Gli elementi di gioco sono rappresentati da tesori (possono contenere punti esperienza, armi), trappole (tolgono punti vita), scale (permettono il passaggio a un livello superiore).
 	\item Il giocatore si può muovere all'interno del livello, può combattere contro i nemici,  interagire con gli elementi di gioco.
-	\item Dopo ogni scontro con un nemico o dopo aver attraversato una trappola il giocatore perde i punti vita, al termine dei quali la partita termina e si ritorna alla schermata inziale. È possibile riacquistare punti vita attraverso gli oggetti curativi.
+	\item Dopo ogni scontro con un nemico o dopo aver attraversato una trappola il giocatore perde i punti vita, al termine dei quali la partita termina e si ritorna alla schermata inziale.
     \item Generazione casuale della torre per permettere partite sempre diverse.
 \end{itemize}
 
@@ -47,44 +47,40 @@ La meccanica dei livelli circolari prende ispirazione dal gioco \href{https://ri
 	\item Una volta arrivato all'ultimo piano il giocatore incontrerà il boss finale, il quale avrà comportamenti  unici e una difficoltà maggiore rispetto ai nemici normali .
 	\item Difficoltà variabile in base al progresso di gioco.
 	\item Musica di sottofondo e feedback sonori associati alle varie azioni.
-	\item Salvataggio risultati delle partite precedenti, visualizzabili in un'apposita schermata.
-	\item Esistono più tipologie di attacchi la quale efficacia varia rispetto al tipo di nemico.
+	\item Esistono più tipologie di armi la quale efficacia varia rispetto al tipo di nemico.
 \end{itemize}
 
 \section{Modello del Dominio}
 \textbf{Temple Tower} sarà rappresentato da una torre composta da un certo numero di piani (\textit{Floor}), 
 %
-ciascuno dei quali conterrà stanze collegate tra loro. Ogni stanza potrà contenere una trappola, un nemico, un tesoro oppure ospitare il giocatore.
+ciascuno dei quali conterrà stanze collegate tra loro. Ogni stanza potrà contenere una trappola, un nemico, un tesoro e ospitare il giocatore.
 
 \begin{itemize}
     \item \textbf{Trappole}: infliggono danni al giocatore.
     \item \textbf{Nemici}: attaccano il giocatore in combattimenti a turni.
-    \item \textbf{Tesori}: forniscono punti vita, esperienza o nuove armi.
+    \item \textbf{Tesori}: forniscono punti vita, nuove armi, oppure potrebbe essere una trappola.
 \end{itemize}
 %
 Il giocatore potrà utilizzare armi per affrontare i nemici. Poiché gli attacchi avvengono a turni, 
 %
 sarà fondamentale bilanciare le statistiche per evitare vittorie "matematiche" dovute a differenze di efficacia delle armi. 
 %
-Il giocatore e i nemici avranno a disposizione diverse tipologie di mosse di attacco, che possono variare in potenza ed effetto.
+Il giocatore e i nemici avranno a disposizione diverse tipologie di mosse di attacco e armi, che possono variare in potenza ed effetto.
 %
 Dopo aver esplorato le stanze di un piano, il giocatore potrà utilizzare le scale per salire al piano successivo della torre. 
 %
-Durante la partita, sia il giocatore sia i nemici avranno due barre di stato: \textbf{vita} ed \textbf{esperienza}.
+Durante la partita, sia il giocatore sia i nemici avranno delle barre di stato: \textbf{vita}.
 %
 \begin{itemize}
     \item \textbf{Barra della vita}: si riduce subendo danni da nemici o trappole. Quando arriva a zero, la partita termina e si ricomincia dall'inizio.
-    \item \textbf{Barra dell’esperienza}: aumenta con i tesori o combattendo nemici. Raggiunto un certo livello, il giocatore sbloccherà abilità o miglioramenti.
 \end{itemize}
 %
 All’ultimo piano, il giocatore affronterà il \textbf{boss finale}, un nemico più forte, dotato di mosse di attacco avanzate e particolari rispetto ai nemici ordinari.
 %
-Per arricchire l’esperienza, sarà presente un sottofondo musicale durante tutto il gioco, accompagnato da effetti sonori che reagiscono alle azioni del giocatore, 
-%
-come combattimenti, vittorie o l'apertura di tesori.
+Per arricchire l’esperienza, sarà presente un sottofondo musicale durante tutto il gioco.
 %
 \begin{figure}[H]
-	\includegraphics[scale=0.15]{img/analysis.png}
+	\includegraphics[scale=0.15]{img/analisys.png}
 \end{figure}
 
 \chapter{Design}
@@ -104,16 +100,20 @@ L'architettura del gioco \textbf{Temple Tower} segue il pattern architetturale \
 
     \item \textbf{View}: 
     \begin{itemize}
-        \item La classe \texttt{GameView} gestisce la presentazione grafica del gioco. 
-        \item È responsabile della visualizzazione dello stato attuale della stanza (\texttt{displayRoom}), degli aggiornamenti della barra di stato del giocatore (\texttt{updateStatusBar}) e della gestione di eventi speciali come la vittoria o il game over.
+        \item Tutta la view è gestita da uno (\texttt{SceneManager}), il quale si occupa, mediante l'implementazione di un pattern Factory, di gestire il
+        %
+		cambiamento della vista in base alla situazione attuale.
+        \item Grazie al manager è possibile decentralizzare le responsabilità della vista a n classi, le quali si occuperanno della gestione degli eventi
+        %
+		della singola interfaccia.
     \end{itemize}
 
     \item \textbf{Controller}: 
     \begin{itemize}
         \item La classe \texttt{GameController} funge da intermediario tra il modello e la vista, orchestrando il flusso degli eventi nel gioco.
-        \item Gestisce le azioni dell'utente (\texttt{handleAction}), permette al giocatore di muoversi tra le stanze (\texttt{changeRoom}) o salire al piano successivo (\texttt{gotoNextFloor}), e si occupa di iniziare e terminare il gioco.
+        \item Gestisce le azioni dell'utente, permette al giocatore di muoversi tra le stanze (\texttt{changeRoom}) o salire al piano successivo (\texttt{gotoNextFloor}), si occupa inoltre di iniziare e terminare il gioco.
     \end{itemize}
-\end{itemize}
+\end{itemize} 
 
 \subsection*{Scalabilità e Manutenibilità}
 Grazie all'uso combinato dei pattern MVC e Strategy:
@@ -403,6 +403,25 @@ e non va in questa sezione.
 	Conseguentemente, è \emph{molto} conveniente \emph{citare} una fonte ed usarla invece di tentare di spacciare per proprio il lavoro di altri.
 	\item Si elencano design pattern
 \end{itemize}
+
+\subsection{Vignali}
+\subsubsection{Utilizzo della libreria gson}
+Utilizzato principalmente in GameDataManager per l'importazione e il caricamento delle torri: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo della libreria JavaFX}
+Utilizato All'interno di ModdingMenuView insieme a codice CSS: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo della libreria SL4J}
+Utilizzato per la gestione dei log principalemente nei test ma anche in giro per il codice: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo della libreria Apache Commons IO}
+Utilizzato per la gestione dei file insime alla java util per l'importazione dei file: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo della libreria Java util zip}
+Utilizzato per la decompressione dei file: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo di stream e lambda expressions}
+Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo di Optional}
+Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink}/ 
+\subsection{Mularoni}
+\subsection{Montanari}
+\subsection{Cobo}
 
 \subsection{Esempio}
 
