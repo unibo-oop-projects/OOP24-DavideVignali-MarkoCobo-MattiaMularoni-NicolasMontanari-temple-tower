@@ -1,5 +1,6 @@
 package it.unibo.templetower.view;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -28,9 +30,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
-/** 
- * This scene represents a floor of the game, where the player can move between rooms.
- * This class is designed for extension and provides the base implementation for floor views.
+/**
+ * This scene represents a floor of the game, where the player can move between
+ * rooms.
+ * This class is designed for extension and provides the base implementation for
+ * floor views.
  * Subclasses should override createScene to customize the floor appearance.
  */
 public class MainFloorView {
@@ -56,28 +60,29 @@ public class MainFloorView {
 
     /**
      * Creates and returns the main scene for the floor view.
-     * @param manager The scene manager
+     * 
+     * @param manager    The scene manager
      * @param controller The game controller
      * @return The created scene
      */
     public BorderPane createScene(final SceneManager manager, final GameController controller) {
-        //Background
+        // Background
         final BorderPane root = new BorderPane();
         dPane = new Pane();
         root.setCenter(dPane);
         root.setId("circle-room-back");
 
-        //Inner and outer circles for create the rooms container
+        // Inner and outer circles for create the rooms container
         this.nRooms = controller.getNumberOfRooms();
         outer = createCircle("outer-circle-rooms", OUTER_RADIUS);
         inner = createCircle("inner-circle-rooms", INNER_RADIUS);
         dPane.getChildren().addAll(outer, inner);
 
-        //Listener for keeping the pane responsive to screen size changes
+        // Listener for keeping the pane responsive to screen size changes
         root.widthProperty().addListener((obs, oldVal, newVal) -> adaptScene(root, controller));
         root.heightProperty().addListener((obs, oldVal, newVal) -> adaptScene(root, controller));
 
-        //Control buttons
+        // Control buttons
         createButtons(controller, manager);
 
         root.sceneProperty().addListener(
@@ -99,19 +104,19 @@ public class MainFloorView {
         right.setMinWidth(buttons.getPrefWidth());
         enter.setMinWidth(buttons.getPrefWidth());
 
-        //When the left button is clicked, the player moves to the previous room
+        // When the left button is clicked, the player moves to the previous room
         left.setOnMouseClicked(e -> handleRoomChange(controller, -1));
 
-        //When the right button is clicked, the player moves to the next room
+        // When the right button is clicked, the player moves to the next room
         right.setOnMouseClicked(e -> handleRoomChange(controller, 1));
 
-        //When the enter button is clicked, the player moves to the first room
+        // When the enter button is clicked, the player moves to the first room
         enter.setOnMouseClicked(e -> handleRoomEnter(controller, manager));
 
         dPane.getChildren().add(buttons);
     }
 
-    //when the room changes, the sector is highlighted
+    // when the room changes, the sector is highlighted
     private void handleRoomChange(final GameController controller, final int direction) {
         controller.changeRoom(direction);
         highlightSector(controller.getPlayerActualRoom());
@@ -128,19 +133,19 @@ public class MainFloorView {
         return circle;
     }
 
-    //Adapts the scene to the screen size
+    // Adapts the scene to the screen size
     private void adaptScene(final Pane scene, final GameController controller) {
         final double centerX = scene.getWidth() / 2;
         final double centerY = scene.getHeight() / 2;
 
-        updateCirclePositionAndRadius(outer, centerX, centerY, 
-        Math.min(scene.getWidth(), scene.getHeight()) / 3);
-        updateCirclePositionAndRadius(inner, centerX, centerY, 
-        Math.min(scene.getWidth(), scene.getHeight()) / INNER_CIRCLE_RATIO);
+        updateCirclePositionAndRadius(outer, centerX, centerY,
+                Math.min(scene.getWidth(), scene.getHeight()) / 3);
+        updateCirclePositionAndRadius(inner, centerX, centerY,
+                Math.min(scene.getWidth(), scene.getHeight()) / INNER_CIRCLE_RATIO);
 
         final double roomRadius = (outer.getRadius() + inner.getRadius()) / 2;
-        dPane.getChildren().removeIf(node -> node instanceof Arc || node instanceof Text 
-        || node instanceof Line || node instanceof HBox);
+        dPane.getChildren().removeIf(node -> node instanceof ImageView || node instanceof Arc || node instanceof Text
+                || node instanceof Line || node instanceof HBox);
 
         buttons.setLayoutX(centerX - buttons.getPrefWidth() * 3 / 2);
         buttons.setLayoutY(scene.getHeight() / BUTTON_VERTICAL_POSITION);
@@ -149,8 +154,9 @@ public class MainFloorView {
         sectorMap.clear();
 
         for (int i = 0; i < controller.getNumberOfRooms(); i++) {
-            createRoomAndSector(i, centerX, centerY, roomRadius);
+            createRoomAndSector(controller, i, centerX, centerY, roomRadius, controller.isRoomToDisplay());
         }
+
         applyInnerCircleTexture();
         Platform.runLater(() -> highlightSector(controller.getPlayerActualRoom()));
     }
@@ -175,22 +181,45 @@ public class MainFloorView {
         circle.setRadius(radius);
     }
 
-    private void createRoomAndSector(final int roomIndex, final double centerX,
-            final double centerY, final double roomRadius) {
+    private void createRoomAndSector(final GameController controller, final int roomIndex, final double centerX,
+            final double centerY, final double roomRadius, final boolean isToDisplay) {
         final double angle = 2 * Math.PI / nRooms * roomIndex;
         final double x = centerX + roomRadius * Math.cos(angle) - SECTOR_ANGLE_OFFSET;
         final double y = centerY + roomRadius * Math.sin(angle) - SECTOR_ANGLE_OFFSET;
 
-        // Room label
         dPane.getChildren().add(createRoomLabel(x, y, roomIndex));
+
+        dPane.getChildren().add(addImage(controller, x, y, isToDisplay, roomIndex));
 
         final Arc sector = createSector(centerX, centerY, outer.getRadius(), roomIndex);
 
-        //add the sector to the map for highlighting
+        // add the sector to the map for highlighting
         sectorMap.put(roomIndex, sector);
         dPane.getChildren().add(sector);
 
         dPane.getChildren().add(createDivisionLine(centerX, centerY, angle));
+    }
+
+    private ImageView addImage(final GameController controller, final double x, final double y, final boolean isToDisplay,
+            final int roomIndex) {
+        final String path;
+        if (isToDisplay) {
+            path = controller.getRoomImagePath(roomIndex);
+        } else {
+            path = "Images/smoke.gif";
+        }
+        final InputStream stream = getClass().getClassLoader()
+                .getResourceAsStream(path != null
+                        ? path
+                        : "Images/smoke.gif");
+        final ImageView spriteImg = new ImageView(new Image(stream));
+
+        spriteImg.setTranslateX(x);
+        spriteImg.setTranslateY(y);
+        spriteImg.setFitHeight(100);
+        spriteImg.setFitWidth(100);
+
+        return spriteImg;
     }
 
     private void highlightSector(final int roomIndex) {
@@ -235,7 +264,7 @@ public class MainFloorView {
         final double rotatedAngle = angle - 90;
         final double startX = centerX + inner.getRadius() * Math.cos(rotatedAngle + Math.PI / 2); // Cerchio interno
         final double startY = centerY + inner.getRadius() * Math.sin(rotatedAngle + Math.PI / 2);
-        final double endX = centerX + outer.getRadius() * Math.cos(rotatedAngle + Math.PI / 2);   // Cerchio esterno
+        final double endX = centerX + outer.getRadius() * Math.cos(rotatedAngle + Math.PI / 2); // Cerchio esterno
         final double endY = centerY + outer.getRadius() * Math.sin(rotatedAngle + Math.PI / 2);
 
         final Line line = new Line(startX, startY, endX, endY);

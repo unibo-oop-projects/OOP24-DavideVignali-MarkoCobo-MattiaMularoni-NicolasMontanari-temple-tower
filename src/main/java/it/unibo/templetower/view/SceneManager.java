@@ -84,11 +84,16 @@ public final class SceneManager {
             return; // Do not switch scenes automatically
         }
         Pane pane = panes.get(sceneName);
+
+        //recreating Panes for resetting the view
         if ("combat_view".equals(sceneName)) {
             pane = new CombatView().createScene(this, controller);
         }
-        if ("select_weapon_view".equals(sceneName)){
+        if ("select_weapon_view".equals(sceneName)) {
             pane = new SelectWeaponView().createScene(this, controller);
+        }
+        if ("stairs_view".equals(sceneName)) {
+            pane = new StairsView().createScene(this, controller);
         }
         if (pane == null) {
             throw new IllegalArgumentException("Scene " + sceneName + " not found");
