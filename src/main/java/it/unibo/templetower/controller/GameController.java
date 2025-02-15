@@ -54,6 +54,11 @@ public interface GameController {
     void attackPlayer();
 
     /**
+     * @param diff
+     */
+    void setPlayerDifficulty(double diff);
+
+    /**
      * Gets the current life points of the player.
      * 
      * @return the current life points of the player as a double value
