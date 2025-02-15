@@ -216,7 +216,7 @@ public final class CombatView {
                                 if (controller.getPlayerLife() <= 0) {
                                     attackBt.setDisable(true);
                                     playerHpLabel.setText(ZEROHP);
-                                    controller.gameOver();
+                                    controller.resetGame();
                                     popUp(() -> manager.switchTo("home"));
                                 }
                             });
@@ -240,7 +240,7 @@ public final class CombatView {
                             playerHealthBar.setProgress(0 / 100.0);
                             attackBt.setDisable(true);
                             playerHpLabel.setText(ZEROHP);
-                            controller.gameOver();
+                            controller.resetGame();
                             Platform.runLater(() -> popUp(() -> manager.switchTo("home")));
                         }
 
