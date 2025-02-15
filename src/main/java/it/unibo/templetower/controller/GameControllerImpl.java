@@ -32,6 +32,7 @@ public final class GameControllerImpl implements GameController {
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private final Weapon startWeapon;
     private final SpawnManagerImpl spawnManager;
+    private boolean isBoss;
 
     /**
      * Constructs a new GameControllerImpl instance.
@@ -40,6 +41,7 @@ public final class GameControllerImpl implements GameController {
      */
     public GameControllerImpl() {
         currentFloorIndex = 1;
+        isBoss = false;
         assetManager = new AssetManager();
         assetManager.addGenericEntityAsset("combat_view", "Images/enemy.png");
         assetManager.addGenericEntityAsset("treasure_view", "Images/treasure.png");
@@ -98,6 +100,10 @@ public final class GameControllerImpl implements GameController {
         rooms.clear();
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
         rooms.addAll(currentFloor.rooms());
+
+        if ("boss_view".equals(rooms.get(0).getName())) {
+            isBoss = true;
+        }
     }
 
     /**
@@ -202,7 +208,7 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void gameOver() {
-        //TODO
+        // TODO
     }
 
     /**
@@ -251,5 +257,10 @@ public final class GameControllerImpl implements GameController {
     @Override
     public int getXpTreasure() {
         return this.rooms.get(currentRoomIndex).getXP();
+    }
+
+    @Override
+    public Boolean isBossTime() {
+        return isBoss;
     }
 }
