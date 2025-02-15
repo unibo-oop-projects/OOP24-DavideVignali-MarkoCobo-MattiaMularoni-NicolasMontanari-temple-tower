@@ -129,7 +129,45 @@ Questa architettura rende il sistema flessibile, modulare e facilmente estensibi
 \end{figure}
 
 \section{Design dettagliato}
-\subsection{2.2.3 Montanari}
+\subsection{Cobo}
+\subsubsection{Sistema di Gestione Audio}
+Il sistema richiede una gestione per la riproduzione della musica di sottofondo, le cui funzionalit\`a principali sono:
+\begin{itemize}
+    \item Gestione del volume;
+    \item Controllo dello stato di riproduzione della musica;
+    \item Corretto caricamento e gestione delle risorse audio;
+    \item Mantenimento di una corretta separazione tra logica, controllo e view.
+\end{itemize}
+
+\textbf {Architettura MVC}\newline
+La soluzione proposta implementa un pattern Model-View-Controller (MVC) con le seguenti componenti:
+\begin{itemize}
+    \item \textbf{Model (MusicModel)}: Mantiene informazioni sul volume e sullo stato di riproduzione, gestisce il ciclo di vita del clip audio e lo stato interno del sistema audio.
+    \item \textbf{Controller (MusicController)}: Gestisce le operazioni sulla riproduzione musicale e fa da intermediario tra View e Model.
+    \item \textbf{View}: Richiama i metodi del controller per gestire la riproduzione.
+\end{itemize}
+
+\textbf{Vantaggi e svantaggi}\newline
+\textbf{Pro}: Separazione delle responsabilit\`a, il MusicModel gestisce i dettagli tecnici mentre il MusicController gestisce il flusso principale.
+
+\textbf{Contro}: Richiede una buona coordinazione tra le classi.
+
+\textbf{Diagramma UML}\newline
+\begin{figure}[h]
+    \centering 
+    \includegraphics[width=0.8\textwidth]{img/uml_diagram.png}
+    \caption{Diagramma UML del sistema di gestione audio}
+    \label{fig:uml}
+\end{figure}
+
+\subsubsection{Pattern Singleton}
+Il pattern Singleton \`e stato utilizzato nella classe \texttt{MusicController} per garantire che esista solo un'istanza del controller musicale durante l'intera esecuzione dell'applicazione. Questo evita conflitti e garantisce un punto di accesso globale alla gestione della musica.
+
+\subsubsection{Metodo Template: getInstance()}
+\textbf{Motivazione}: Assicura che esista solo un'istanza di \texttt{MusicController}, facilitando la gestione centralizzata della riproduzione musicale. Il pattern Singleton \`e stato utilizzato in modo appropriato per il \texttt{MusicController}, poich\'e la gestione centralizzata della riproduzione musicale richiede una singola istanza.
+
+
+\subsection{Montanari}
 \subsubsection{Gestione dei Popup tramite Factory Method}
 
 \textbf{Problema}\
