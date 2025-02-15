@@ -35,7 +35,7 @@ public final class DialogUtil {
         loseLabel.getStyleClass().add("label");
 
         final Button btLeave = new Button("Close");
-        btLeave.setOnAction(event -> {
+        btLeave.setOnAction(_ -> {
             dialog.setResult(null); // Imposta un risultato per chiudere la dialog
             dialog.close();
             if (onClose != null) {
@@ -53,7 +53,7 @@ public final class DialogUtil {
         layout.setPadding(new Insets(PADDING));
 
         // Imposta il contenuto della finestra
-        dialog.getDialogPane().setContent(layout);
+        //dialog.getDialogPane().setContent(layout);
 
         // Permette la chiusura con la X
         dialog.setOnCloseRequest(_ -> {

@@ -32,6 +32,7 @@ public final class PlayerImpl implements Player {
             this.actualRoom = Optional.of(actualRoom.get());
         }
         weapon.add(startweapon);
+        weapon.add(startweapon);
 
         this.life = 100;
         this.experience = 0;
@@ -41,8 +42,12 @@ public final class PlayerImpl implements Player {
     @Override
     public void attack(final EnemyRoom enemy) {
         if (enemy != null) {
-            enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY());
+            enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY() * actualRoom.get().getMoltiplicator(this.weapon.get(actualWeaponIndex)));
         }
+    }
+
+    public void setActualRoom(Optional<Room> room) {
+        this.actualRoom = room;
     }
 
     @Override

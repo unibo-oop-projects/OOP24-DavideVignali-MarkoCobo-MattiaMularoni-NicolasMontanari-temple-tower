@@ -62,6 +62,13 @@ public final class Room {
         return -1; // Indicates that the room doesn't contain an enemy
     }
 
+    public double getMoltiplicator(final Weapon actualWeapon){
+        if (behavior instanceof EnemyRoom enemyRoom) {
+            return enemyRoom.calculateMulti(actualWeapon.attack().getX());
+        }
+        return -1;
+    }
+
     /**
      * Gets the life points of the player.
      * @param player the player whose life points to get
@@ -129,6 +136,13 @@ public final class Room {
             return treasureRoom.getWeapon();
         }
         return null;
+    }
+
+    public int getXP() {
+        if (behavior instanceof TreasureRoom treasureRoom) {
+            return treasureRoom.getXpLife();
+        }
+        return 0;
     }
 
 }

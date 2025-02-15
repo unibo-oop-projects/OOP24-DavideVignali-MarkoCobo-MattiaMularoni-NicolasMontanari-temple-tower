@@ -27,7 +27,7 @@ public class TrapView {
         final Label trapLabel = new Label("YOU TAKE A TRAP");
         trapLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: bold;");
 
-        controller.attackPlayer();
+        controller.playerTakeDamage();
 
         final Label lifeLabel = new Label("ACTUAL LIFE POINTS: " + controller.getPlayerLife());
         lifeLabel.setStyle("-fx-font-size: 36px;");

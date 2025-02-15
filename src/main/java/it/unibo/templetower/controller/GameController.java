@@ -166,4 +166,7 @@ public interface GameController {
      */
     List<Weapon> getPlayerWeapons();
 
+    void increaseLifePlayer(int xp);
+
+    int getXpTreasure();
 }

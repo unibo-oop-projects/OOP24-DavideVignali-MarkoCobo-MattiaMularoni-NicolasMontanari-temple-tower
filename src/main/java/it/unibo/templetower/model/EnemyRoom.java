@@ -33,6 +33,13 @@ public final class EnemyRoom implements RoomBehavior {
         throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
     }
 
+    public double calculateMulti(final String attackId){
+        if(enemy.damageMultipliers().containsKey(attackId)){
+            return enemy.damageMultipliers().get(attackId);
+        }
+        return 1.0;
+    }
+
     /**
      * {@inheritDoc}
      * Handles player interaction with the enemy room.
@@ -44,7 +51,6 @@ public final class EnemyRoom implements RoomBehavior {
         if (direction == 1) {
             player.attack(this);
         } else {
-            //TODO manage the enemy attack
             player.takeDamage(this.enemy.attacks().get(0).getY());
         }
     }
@@ -77,5 +83,9 @@ public final class EnemyRoom implements RoomBehavior {
     public int getElement() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getElement'");
+    }
+
+    public Enemy getEnemy() {
+        return this.enemy;
     }
 }

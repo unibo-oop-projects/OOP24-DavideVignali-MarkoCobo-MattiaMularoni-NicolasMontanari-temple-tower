@@ -39,7 +39,7 @@ public class StairsView {
         btNo.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
 
         // Preparazione del video
-        final String videoPath = StairsView.class.getResource("/video/treasure.mp4").toExternalForm();
+        final String videoPath = StairsView.class.getResource("/video/stairs.mp4").toExternalForm();
         final Media media = new Media(videoPath);
         final MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setRate(VELOCITY);

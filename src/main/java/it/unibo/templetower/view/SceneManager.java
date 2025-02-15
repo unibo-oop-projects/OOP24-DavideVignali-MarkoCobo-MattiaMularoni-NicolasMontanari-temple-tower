@@ -87,6 +87,9 @@ public final class SceneManager {
         if ("combat_view".equals(sceneName)) {
             pane = new CombatView().createScene(this, controller);
         }
+        if ("select_weapon_view".equals(sceneName)){
+            pane = new SelectWeaponView().createScene(this, controller);
+        }
         if (pane == null) {
             throw new IllegalArgumentException("Scene " + sceneName + " not found");
         }
