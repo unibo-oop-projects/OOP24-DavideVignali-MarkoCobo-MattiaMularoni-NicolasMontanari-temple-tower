@@ -1,5 +1,9 @@
 package it.unibo.templetower.controller;
 
+import java.util.List;
+
+import it.unibo.templetower.model.Weapon;
+
 /**
  * Defines the core functionalities required to manage the game logic, 
  * including room navigation, game state management, and player actions.
@@ -56,22 +60,6 @@ public interface GameController {
      */
     int getNumberOfRooms();
 
-    /** 
-     * Returns the path of the sprite of the enemy for the specified level.
-     * 
-     * @param level the level number for which to get the enemy sprite
-     * @return a String containing the file path to the enemy sprite
-     */
-    String getEnemySpritePath(int level);
-
-    /** 
-     * Returns the path of the sprite for the specified entity type.
-     * 
-     * @param type the type of entity for which to get the sprite
-     * @return a String containing the file path to the entity sprite
-     */
-    String getEntiSpritePath(String type);
-
     /**
      * Performs an attack action from the player towards the enemy.
      */
@@ -95,4 +83,76 @@ public interface GameController {
      * @return the current life points of the enemy as a double value
      */
     double getEnemyLifePoints();
+
+    /** 
+     * 
+     * @param index of room
+     * @return the room image path for displaying in the view
+     */
+    String getRoomImagePath(int index);
+
+    /** 
+     * When the player health is 0 reset the game.
+     * 
+     */
+    void gameOver();
+
+    /**
+     * Simulates the damage taken by the player.
+     */
+    void playerTakeDamage();
+
+    /**
+     * Resets the player's life points to the initial value.
+     */
+    void resetPlayerLife();
+
+    /**
+     * Removes a weapon from the player's inventory.
+     * 
+     * @param index the index of the weapon to be removed
+     */
+    void removeWeapon(int index);
+
+    /**
+     * Add a weapon from the player's inventory.
+     * 
+     * @param newWeapon
+     * @param index the index of the weapon to be removed
+     */
+    void addPlayerWeapon(Weapon newWeapon, int index);
+
+    /**
+     * Change a weapon from the player's inventory.
+     * 
+     * @param index the index of the weapon to be removed
+     */
+    void changeWeaponIndex(int index);
+
+    /**
+     * Retrieves the treasure element in the current room.
+     * 
+     * @return the treasure element in the room
+     */
+    int getElementTreasure();
+
+    /**
+     * Retrieves the treasure weapon in the current room.
+     * 
+     * @return the treasure weapon
+     */
+    Weapon getTreasureWeapon();
+
+    /**
+     * Retrieves the current player.
+     * 
+     * @return the player
+     */
+    List<Weapon> getPlayerWeapons();
+
+    /**
+     * 
+     * @return if the room can be displayed or hidden
+     */
+    Boolean isRoomToDisplay();
 }

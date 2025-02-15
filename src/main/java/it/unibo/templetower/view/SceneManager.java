@@ -58,8 +58,12 @@ public final class SceneManager {
             panes.put("treasure_view", new TreasureView().createScene(this, controller));
             panes.put("stairs_view", new StairsView().createScene(this, controller));
             panes.put("enter_menu", new EnterMenu().createScene(this));
+            panes.put("settings_menu", new SettingsMenu().createScene(this));
             panes.put("home", new Home().createScene(this));
             panes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
+            panes.put("change_weapon_view", new ChangeWeaponView().createScene(this, controller));
+            panes.put("select_weapon_view", new SelectWeaponView().createScene(this, controller));
+            panes.put("trap_view", new TrapView().createScene(this, controller));
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to initialize scenes", e);
@@ -80,8 +84,13 @@ public final class SceneManager {
             return; // Do not switch scenes automatically
         }
         Pane pane = panes.get(sceneName);
+
+        //recreating Panes for resetting the view
         if ("combat_view".equals(sceneName)) {
             pane = new CombatView().createScene(this, controller);
+        }
+        if ("stairs_view".equals(sceneName)) {
+            pane = new StairsView().createScene(this, controller);
         }
         if (pane == null) {
             throw new IllegalArgumentException("Scene " + sceneName + " not found");

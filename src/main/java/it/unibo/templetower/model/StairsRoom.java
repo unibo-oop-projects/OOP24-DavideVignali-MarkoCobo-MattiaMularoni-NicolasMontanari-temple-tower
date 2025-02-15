@@ -16,4 +16,10 @@ public final class StairsRoom implements RoomBehavior {
         // Empty implementation as interaction is handled elsewhere
     }
 
+    @Override
+    public int getElement() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getElement'");
+    }
+
 }

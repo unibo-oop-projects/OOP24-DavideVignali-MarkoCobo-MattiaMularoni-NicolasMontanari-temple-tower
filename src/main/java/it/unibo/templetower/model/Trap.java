@@ -42,4 +42,10 @@ public final class Trap implements RoomBehavior {
     public int getDamage() {
         return this.damage;
     }
+
+    @Override
+    public int getElement() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getElement'");
+    }
 }
