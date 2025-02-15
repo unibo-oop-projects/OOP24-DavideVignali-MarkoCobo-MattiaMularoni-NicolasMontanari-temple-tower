@@ -471,11 +471,11 @@ Utilizzato per la gestione dei log principalemente nei test ma anche in giro per
 \subsubsection{Utilizzo della libreria Apache Commons IO}
 Utilizzato per la gestione dei file insime alla java util per l'importazione dei file: \href{https://google.com}{permalink}/ 
 \subsubsection{Utilizzo della libreria Java util zip}
-Utilizzato per la decompressione dei file: \href{https://google.com}{permalink}/ 
+Utilizzato per la decompressione dei file: \href{https://google.com}{permalink} 
 \subsubsection{Utilizzo di stream e lambda expressions}
-Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink}/ 
+Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink} 
 \subsubsection{Utilizzo di Optional}
-Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink}/ 
+Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink} 
 
 \subsection{Mularoni}
 \subsubsection{Utilizzo di \texttt{Stream} e lambda expressions} - Esempio: \href{https://google.com}{permalink}/ 
@@ -553,27 +553,21 @@ Permalink: \url{https://github.com/AlchemistSimulator/Alchemist/blob/d8a1799027d
 
 \chapter{Commenti finali}
 
-In quest'ultimo capitolo si tirano le somme del lavoro svolto e si delineano eventuali sviluppi
-futuri.
-
-\textit{Nessuna delle informazioni incluse in questo capitolo verrà utilizzata per formulare la valutazione finale}, a meno che non sia assente o manchino delle sezioni obbligatorie.
+\section{Vignali}
+Penso che la parte scritta da me sia stata fatta al meglio per il tempo a disposizione, e il fatto di aver passato molto tempo iniziale a 
 %
-Al fine di evitare pregiudizi involontari, l'intero capitolo verrà letto dai docenti solo dopo aver formulato la valutazione.
-
-\section{Autovalutazione e lavori futuri}
-
-\textbf{È richiesta una sezione per ciascun membro del gruppo, obbligatoriamente}.
+pensare su come far funzionare la questione dei Json è servita, alcuni dati che inizialmente avevo pensato di inserire nella mia parte che era principalmente la struttura dati li ho dovuti
 %
-Ciascuno dovrà autovalutare il proprio lavoro, elencando i punti di forza e di debolezza in quanto prodotto.
-Si dovrà anche cercare di descrivere \emph{in modo quanto più obiettivo possibile} il proprio ruolo all'interno del gruppo.
-Si ricorda, a tal proposito, che ciascuno studente è responsabile solo della propria sezione: non è un problema se ci sono opinioni contrastanti, a patto che rispecchino effettivamente l'opinione di chi le scrive.
-Nel caso in cui si pensasse di portare avanti il progetto, ad esempio perché effettivamente impiegato, o perché sufficientemente ben riuscito da poter esser usato come dimostrazione di esser capaci progettisti, si descriva brevemente verso che direzione portarlo.
-
-\subsubsection{Mularoni}
+rimuovere per non appesantire troppo il lavoro ai miei compagni, mentre alcuni non sono stati utilizzati anche se inseriti,
+%
+tutto sommato sono soddisfatto della mia parte e del mio codice, la feature più grande che ho dovuto rimuovere per mancanza di tempo è
+%
+la creazione tramite interfaccia di torri personalizzate, probabilmente sarebbero servite 15-20 ore extra per implemtarla e sarebbe stato molto interessante svilupparla quindi potrebbe essere una dei lavori futuri
+\section{Mularoni}
 Considerando il tempo a disposizione e gli impegni derivanti da lavoro e altri esami, reputo questo progetto "accettabile" ma con un grande potenziale inespresso,
 %
 dovuto sia alla scarsa divisibilità del progetto a livello di idea (è difficile che tutti lavorino a compartimenti stagni) che di organizzazione generale.
-\subsection{Montanari}
+\section{Montanari}
 Durante lo sviluppo del progetto, mi sono occupato principalmente del sistema di combattimento, della creazione delle varie view di gioco e del controller in modo da far comunicare tutte le classi tra di loro. Ritengo che i miei punti di forza siano stati la capacità di problem-solving, la scrittura di codice efficiente e la collaborazione con il team. Tuttavia, ho riscontrato alcune difficoltà, in particolare nella gestione del tempo e nel debugging di problemi complessi.
 
 \subsubsection{Ruolo all'interno del gruppo}
@@ -583,38 +577,39 @@ All'interno del team, il mio ruolo è stato quello di sviluppatore principale pe
 Se il progetto dovesse essere portato avanti, credo che si potrebbe migliorare in diverse direzioni. In particolare, suggerirei di ottimizzare le prestazioni del sistema di combattimento, migliorare l'interfaccia utente e aggiungere nuove funzionalità per rendere il gioco più coinvolgente. Inoltre, potrebbe essere utile impiegare il progetto come base per un gioco più ampio o come portfolio personale per dimostrare le competenze acquisite.
 
 Nel complesso, questa esperienza mi ha permesso di migliorare le mie competenze in programmazione, gestione delle comunicazioni tra classi e sviluppo di interfacce di gioco, e sono soddisfatto dei progressi fatti.
-\section{Difficoltà incontrate e commenti per i docenti}
 
-Questa sezione, \textbf{opzionale}, può essere utilizzata per segnalare ai docenti eventuali problemi o difficoltà incontrate nel corso o nello svolgimento del progetto, può essere vista come una seconda possibilità di valutare il corso (dopo quella offerta dalle rilevazioni della didattica) avendo anche conoscenza delle modalità e delle difficoltà collegate all'esame, cosa impossibile da fare usando le valutazioni in aula per ovvie ragioni.
-%
-È possibile che alcuni dei commenti forniti vengano utilizzati per migliorare il corso in futuro: sebbene non andrà a vostro beneficio, potreste fare un favore ai vostri futuri colleghi.
-%
-Ovviamente \textit{il contenuto della sezione non impatterà il voto finale}.
+\section{Cobo}
+Mi sono occupato della gestione dell’audio e dell’integrazione del sistema musicale nel progetto. Ho implementato il controllo della musica di sottofondo, il sistema di regolazione del volume e la gestione della riproduzione attraverso il pattern Singleton. Inoltre mi sono occupato della gestione delle scene e dell’interfaccia utente, implementando i menu, ad esempio quello delle impostazioni che ha pulsanti per il controllo del volume e per la navigazione tra schermate.
 
+\subsubsection{Punti di forza}
+Utilizzo avanzato di Java Sound API per il controllo dell’audio.
+Implementazione del pattern Singleton con doppia verifica per garantire efficienza e sicurezza.
+Utilizzo di JavaFX per un'interfaccia grafica responsive e dinamica.
+Creazione di pulsanti grafici con immagini per un’interfaccia più intuitiva.
+Organizzazione chiara del codice, rendendo i menu facilmente estendibili.
+\subsubsection{Punti di debolezza}
+La gestione del volume potrebbe essere migliorata con un'interfaccia utente più intuitiva.
+Alcune transizioni tra scene potrebbero essere più fluide e animate.
+L’aspetto visivo del menu potrebbe essere più curato con CSS.
+\subsubsection{Lavori futuri}
+Se il progetto venisse portato avanti, si potrebbe migliorare il sistema audio offrendo un maggiore controllo e una qualità audio migliore. Inoltre si potrebbe aggiungere un file di configurazione per memorizzare le preferenze dell’utente e un design UI più accattivante con animazioni e transizioni fluide.
+Durante il corso mi sono trovato molto bene con i docenti, sia per la chiarezza delle spiegazioni sia per l’efficacia dei metodi di insegnamento adottati. Il materiale fornito e l’approccio didattico hanno reso l’apprendimento strutturato e accessibile, facilitando la comprensione anche di concetti avanzati.
 \appendix
 \chapter{Guida utente}
 
-Capitolo in cui si spiega come utilizzare il software. Nel caso in cui il suo uso sia del tutto
-banale, tale capitolo può essere omesso.
+Abbiamo cercato di rendere l'applicazione il più facile possibile da utilizzare.
 %
-A tal riguardo, si fa presente agli studenti che i docenti non hanno mai utilizzato il software
-prima, per cui aspetti che sembrano del tutto banali a chi ha sviluppato l'applicazione possono non
-esserlo per chi la usa per la prima volta.
+Una volta avviata all'utente basterà cliccare il bottone su schermo per arrivare al menu principale,
 %
-Se, ad esempio, per cominciare una partita con un videogioco è necessario premere la barra
-spaziatrice, o il tasto ``P'', è necessario che gli studenti lo segnalino.
-
-\subsection*{Elementi positivi}
-
-\begin{itemize}
- \item Si istruisce in modo semplice l'utente sull'uso dell'applicazione, eventualmente facendo uso di schermate e descrizioni.
-\end{itemize}
-
-\subsection*{Elementi negativi}
-\begin{itemize}
- \item Si descrivono in modo eccessivamente minuzioso tutte le caratteristiche, anche minori, del software in oggetto.
- \item Manca una descrizione che consenta ad un utente qualunque di utilizzare almeno le funzionalità primarie dell'applicativo.
-\end{itemize}
+a questo punto serve importare una qualunque torre tramite il Modding Menu, e selezionarla per poter giocare, la tower si troverà nella repository
+%
+oppure può essere scaricata da questo link \href{https://google.com}{(Tower Download)}. La tower può essere selezionata in una qualunque posizione
+%
+all'interno del proprio pc, una volta selezionata si può iniziare a giocare, cliccando il bottone centrale, si consiglia di utilizzare la difficoltà facile per motivi di testing,
+%
+a questo punto per giocare si può girare a destra oppure sinistra con i due bottoni in basso e cliccando il bottone centrale
+%
+si può entrare in una delle stanze, una volta entrato basterà seguire le istruzioni su schermo;
 
 \chapter{Esercitazioni di laboratorio}
 
@@ -628,6 +623,12 @@ spaziatrice, o il tasto ``P'', è necessario che gli studenti lo segnalino.
  \item Laboratorio 04: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=12345#p123456}
  \item Laboratorio 06: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=22222#p222222}
  \item Laboratorio 09: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=99999#p999999}
+\end{itemize}
+
+\subsection{davide.vignali4@studio.unibo.it}
+
+\begin{itemize}
+ \item Laboratorio 09: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=179154#p248027}
 \end{itemize}
 
 \subsection{nicolas.montanari3@studio.unibo.it}
