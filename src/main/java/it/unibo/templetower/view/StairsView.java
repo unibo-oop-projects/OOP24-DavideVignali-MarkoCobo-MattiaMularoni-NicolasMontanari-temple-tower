@@ -68,10 +68,10 @@ public class StairsView {
 
             // Quando il video finisce, cambia scena
             mediaPlayer.setOnEndOfMedia(() -> {
-                if (!controller.isBossTime()){
+                if (!controller.isBossTime()) {
                     manager.switchTo("main_floor_view");
-                }else {
-                    manager.switchTo("boss_view");
+                } else {
+                    manager.switchTo("combat_view");
                 }
             });
         });

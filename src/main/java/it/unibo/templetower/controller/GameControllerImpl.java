@@ -101,7 +101,7 @@ public final class GameControllerImpl implements GameController {
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
         rooms.addAll(currentFloor.rooms());
 
-        if (rooms.get(0).getName().equals("boss_view")) {
+        if ("boss_view".equals(rooms.get(0).getName())) {
             isBoss = true;
         }
     }

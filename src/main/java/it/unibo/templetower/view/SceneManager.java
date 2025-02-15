@@ -64,7 +64,6 @@ public final class SceneManager {
             panes.put("change_weapon_view", new ChangeWeaponView().createScene(this, controller));
             panes.put("select_weapon_view", new SelectWeaponView().createScene(this, controller));
             panes.put("trap_view", new TrapView().createScene(this, controller));
-            panes.put("boss_view", new BossView().createScene(this, controller));
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to initialize scenes", e);

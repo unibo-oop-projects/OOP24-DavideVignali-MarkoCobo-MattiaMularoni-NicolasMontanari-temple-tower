@@ -24,7 +24,7 @@ public class SpawnManagerImpl {
     private final Random random;
     private final int towerHeight;
 
-    private static final int FLOOR_BEFORE_BOSS = 0;
+    private static final int FLOOR_BEFORE_BOSS = 2;
     private int passedFloors;
 
     /**
