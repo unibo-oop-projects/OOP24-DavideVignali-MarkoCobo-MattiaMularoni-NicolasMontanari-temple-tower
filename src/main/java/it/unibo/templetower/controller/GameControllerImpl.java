@@ -233,4 +233,9 @@ public final class GameControllerImpl implements GameController {
     public Boolean isBossTime() {
         return isBoss;
     }
+
+    @Override
+    public void setPlayerDifficulty(final double diff) {
+        player.setDifficulty(diff);
+    }
 }
