@@ -22,7 +22,7 @@ public final class GameControllerImpl implements GameController {
     private List<Room> rooms;
     private int currentFloorIndex; // traccia il piano attuale
     private int currentRoomIndex;
-    private Player player;
+    private final Player player;
     @SuppressWarnings("unused")
     private Floor currentFloor;
     private final AssetManager assetManager;
@@ -48,20 +48,8 @@ public final class GameControllerImpl implements GameController {
         assetManager.addGenericEntityAsset("stairs_view", "Images/stairs.png");
         assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
         final Weapon startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
-
-        // Initialize game data manager and load tower data
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
-        gameDataManager.loadGameDataFromTower(DEFAULT_TOWER_PATH);
-        final Tower towerData = gameDataManager.getTower();
-        // Spawn the floor and initialize rooms
-        spawnManager = new SpawnManagerImpl(towerData);
-        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER); // Assuming 7 rooms per floor
-        currentFloor = generatedFloor;
-        rooms = generatedFloor.rooms();
-
         // Initialize player
         player = new PlayerImpl(startWeapon, Optional.empty());
-        currentRoomIndex = 0;
     }
 
     /**
@@ -174,28 +162,22 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public int getNumberOfRooms() {
-        return rooms.size();
+        return ROOMS_NUMBER;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void gameOver() {
-        currentFloorIndex = 1;
+    public void resetGame() {
         isBoss = false;
-        final Weapon startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
-
         final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
-        gameDataManager.loadGameDataFromTower(DEFAULT_TOWER_PATH);
+        gameDataManager.loadGameDataFromTower(gameDataManager.getTowerPath().get());
         final Tower towerData = gameDataManager.getTower();
         spawnManager = new SpawnManagerImpl(towerData);
         final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER); // Assuming 7 rooms per floor
         currentFloor = generatedFloor;
         rooms = generatedFloor.rooms();
-
-        // Initialize player
-        player = new PlayerImpl(startWeapon, Optional.empty());
         currentRoomIndex = 0;
     }
 

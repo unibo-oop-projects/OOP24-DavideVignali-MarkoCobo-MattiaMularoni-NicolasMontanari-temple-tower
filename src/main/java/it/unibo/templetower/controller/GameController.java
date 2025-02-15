@@ -78,7 +78,7 @@ public interface GameController {
      * When the player health is 0 reset the game.
      * 
      */
-    void gameOver();
+    void resetGame();
 
     /**
      * Simulates the damage taken by the player.
