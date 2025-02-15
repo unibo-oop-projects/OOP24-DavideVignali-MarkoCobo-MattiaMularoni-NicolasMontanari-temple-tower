@@ -129,6 +129,68 @@ Questa architettura rende il sistema flessibile, modulare e facilmente estensibi
 \end{figure}
 
 \section{Design dettagliato}
+\subsection{Vignali}
+
+\subsubsection{Modular Game Data Loading and Tower Configuration}
+
+\paragraph{Problema} Il sistema necessita di caricare e gestire dati di gioco da file JSON esterni in modo flessibile e modulare, permettendo l'uso sia di torri predefinite che di mod create dagli utenti. I dati devono essere validati e supportare riferimenti relativi tra file.
+
+\paragraph{Soluzione} Ho valutato due approcci principali:
+\begin{enumerate}
+    \item Un sistema di caricamento dati decentralizzato dove ogni componente carica i propri dati
+    \item Un gestore centralizzato che coordina tutto il caricamento
+\end{enumerate}
+Ho scelto la seconda opzione implementando GameDataManagerImpl come Singleton per garantire un punto di accesso unico ai dati di gioco. Ho considerato l'uso di Dependency Injection, ma data la natura globale dei dati di gioco e la necessità di garantire uno stato coerente, Singleton è risultato più appropriato.
+
+Il sistema utilizza Record immutabili (FloorData, Enemy, Weapon) e custom deserializer GSON per garantire type-safety e validazione durante il caricamento. Questa soluzione permette una chiara separazione tra dati e logica, facilitando l'estensione del sistema con nuove mod.
+
+Schema UML:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{img/GameDataManagerUML.png}
+	\caption{GameDataManagerImpl as Singleton and its relations.}
+\end{figure}
+
+\subsubsection{Sistema di Modding}
+
+\paragraph{Problema} Il gioco deve permettere agli utenti di creare e importare torri personalizzate (mod) sia da cartelle che da file ZIP, gestendo validazione, conflitti di nomi e isolamento tra mod.
+
+\paragraph{Soluzione} Ho considerato due possibili architetture:
+
+\begin{enumerate}
+    \item Un sistema event-based con chiamate asincrone per l'importazione
+    \item Un'architettura MVC con Observer pattern per la sincronizzazione UI
+\end{enumerate}
+Ho scelto la seconda opzione perché offre una separazione più chiara delle responsabilità e una gestione più prevedibile dello stato. Il pattern Observer è stato preferito a un sistema di callback perché permette di aggiungere facilmente nuovi observer senza modificare il codice esistente.
+
+Ho implementato anche il pattern Strategy per l'importazione, permettendo di aggiungere facilmente nuovi formati di mod oltre a ZIP e cartelle.
+
+Schema UML:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{img/ModdingMenuUML.png}
+	\caption{Modding Menu UML: MVC and Observer pattern overview.}
+\end{figure}
+
+\subsubsection{Gestione dello Spawn System}
+
+\paragraph{Problema} Il sistema deve generare contenuti procedurali bilanciati rispettando vincoli di livello e configurazioni di spawn.
+
+\paragraph{Soluzione} Ho valutato due approcci:
+\begin{enumerate}
+	\item Generazione puramente casuale con post-validazione
+	\item Sistema template-based con strategie di Generazione
+\end{enumerate}
+
+Ho scelto il secondo approccio implementando un Template Method in SpawnManagerImpl che standardizza il processo di generazione permettendo variazioni nel comportamento specifico. Questo pattern è stato preferito a una soluzione più flessibile ma potenzialmente caotica basata su eventi.
+Il metodo template definisce tre fasi:
+\begin{enumerate}
+	\item Selezione del tipo di piano (template method)
+	\item Generazione delle stanze (hook method)
+	\item Popolamento delle stanze (hook method)
+\end{enumerate}
+
+\subsection{Other members}
 
 In questa sezione si possono approfondire alcuni elementi del design con maggior dettaglio.
 %
