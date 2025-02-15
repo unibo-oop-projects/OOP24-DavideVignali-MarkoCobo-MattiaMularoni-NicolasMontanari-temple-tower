@@ -1,9 +1,13 @@
 package it.unibo.templetower.view;
 
+import java.io.File;
+
 import it.unibo.templetower.controller.GameController;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
@@ -18,7 +22,6 @@ public class StairsView {
     private static final int SPACING = 20;
     private static final int OTHER5 = 50;
     private static final int OTHER4 = 40;
-    private static final double VELOCITY = 3.0;
 
     /**
      * Creates the scene for the stairs view.
@@ -32,45 +35,88 @@ public class StairsView {
         final VBox layout = new VBox(SPACING);
         layout.setAlignment(Pos.CENTER);
 
+        final String bgImage;
+        if (!controller.isBossTime()) {
+            bgImage = controller.getBackgroundImage(); // Se non è il boss, usa l'immagine dal controller
+        } else {
+            bgImage = "/Images/final_arena.png"; // Se è il boss, usa sempre questa immagine
+        }
+
+        final Image backgroundImage;
+        try {
+            if (!controller.isBossTime()) {
+                final File file = new File(bgImage);
+                backgroundImage = new Image(file.toURI().toString()); // Carica l'immagine dal percorso
+            } else {
+                backgroundImage = new Image(StairsView.class.getResource(bgImage).toExternalForm());
+            }
+
+            final ImageView backgroundView = new ImageView(backgroundImage);
+            backgroundView.setPreserveRatio(false);
+            backgroundView.fitWidthProperty().bind(root.widthProperty());
+            backgroundView.fitHeightProperty().bind(root.heightProperty());
+            root.getChildren().add(backgroundView);
+        } catch (IllegalArgumentException e) {
+            final Label errorLabel = new Label("Background image not found.");
+            errorLabel.getStyleClass().add("label");
+            root.getChildren().add(errorLabel);
+        }
+
         final Label message = new Label("Do you want to go to the next floor?");
-        message.styleProperty().bind(Bindings.concat("-fx-font-size: ", root.widthProperty().divide(OTHER4).asString(),
-                "px; -fx-text-fill: black;"));
+        message.styleProperty().bind(Bindings.concat(
+                "-fx-font-size: ", root.widthProperty().divide(OTHER4).asString(),
+                "px; -fx-text-fill: black; -fx-font-weight: bold;"));
 
         final Button btYes = new Button("Yes");
         final Button btNo = new Button("No");
 
-        btYes.styleProperty().bind(Bindings.concat("-fx-font-size: ", root.widthProperty().divide(OTHER5).asString(),
-                "px; -fx-padding: ", root.widthProperty().divide(OTHER5).asString(), "px;"));
-        btNo.styleProperty().bind(Bindings.concat("-fx-font-size: ", root.widthProperty().divide(OTHER5).asString(),
-                "px; -fx-padding: ", root.widthProperty().divide(OTHER5).asString(), "px;"));
+        btYes.styleProperty().bind(Bindings.concat(
+                "-fx-font-size: ", root.widthProperty().divide(OTHER5).asString(),
+                "px; -fx-padding: ", root.widthProperty().divide(OTHER5).asString(),
+                "px; -fx-background-color: black; -fx-text-fill: white;"));
+
+        btNo.styleProperty().bind(Bindings.concat(
+                "-fx-font-size: ", root.widthProperty().divide(OTHER5).asString(),
+                "px; -fx-padding: ", root.widthProperty().divide(OTHER5).asString(),
+                "px; -fx-background-color: black; -fx-text-fill: white;"));
 
         layout.getChildren().addAll(message, btYes, btNo);
         root.getChildren().add(layout);
 
-        final String videoPath = StairsView.class.getResource("/video/stairs.mp4").toExternalForm();
-        final Media media = new Media(videoPath);
-        final MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setRate(VELOCITY);
-        final MediaView mediaView = new MediaView(mediaPlayer);
-
         btYes.setOnAction(_ -> {
             controller.goToNextFloor();
             root.getChildren().clear();
-            root.getChildren().add(mediaView);
 
-            mediaView.fitWidthProperty().bind(root.widthProperty());
-            mediaView.fitHeightProperty().bind(root.heightProperty());
-            mediaView.setPreserveRatio(false);
+            // Creiamo un nuovo MediaPlayer ogni volta per evitare problemi di stato
+            final Media media = new Media(StairsView.class.getResource("/video/stairs.mp4").toExternalForm());
+            final MediaPlayer newMediaPlayer = new MediaPlayer(media);
+            final MediaView newMediaView = new MediaView(newMediaPlayer);
 
-            mediaPlayer.play();
+            newMediaView.fitWidthProperty().bind(root.widthProperty());
+            newMediaView.fitHeightProperty().bind(root.heightProperty());
+            newMediaView.setPreserveRatio(false);
 
-            mediaPlayer.setOnEndOfMedia(() -> {
+            root.getChildren().add(newMediaView);
+
+            // Aspettiamo che sia pronto prima di avviare
+            newMediaPlayer.setOnReady(() -> {
+                newMediaPlayer.play();
+            });
+
+            newMediaPlayer.setOnEndOfMedia(() -> {
                 if (!controller.isBossTime()) {
                     manager.switchTo("main_floor_view");
                 } else {
                     manager.switchTo("combat_view");
                 }
+                newMediaPlayer.dispose(); // Libera le risorse
             });
+
+            // Se per qualche motivo il video è già pronto, avviarlo subito
+            if (newMediaPlayer.getStatus() == MediaPlayer.Status.READY) {
+                newMediaPlayer.play();
+            }
+
         });
 
         btNo.setOnAction(event -> {

@@ -54,7 +54,8 @@ public final class GameDataManagerImpl {
             final String name = jsonObject.get(NAME_KEY).getAsString();
             final Double health = jsonObject.get("health").getAsDouble();
             final int level = jsonObject.get("level").getAsInt();
-            final String spritePath = jsonObject.get("spritePath").getAsString();
+            final String rawSprite = jsonObject.get("spritePath").getAsString();
+            final String absoluteSprite = new File(baseDir, rawSprite).getAbsolutePath();
 
             final List<Pair<String, Double>> attacks = new ArrayList<>();
             final JsonArray attacksArray = jsonObject.getAsJsonArray("attacks");
@@ -76,7 +77,7 @@ public final class GameDataManagerImpl {
                 }
             }
 
-            return new Enemy(name, health, level, attacks, multipliersMap, spritePath);
+            return new Enemy(name, health, level, attacks, multipliersMap, absoluteSprite);
         };
 
         // Custom deserializer for Weapon class
@@ -87,11 +88,12 @@ public final class GameDataManagerImpl {
             }
             final String name = jsonObject.get(NAME_KEY).getAsString();
             final Integer level = jsonObject.get("level").getAsInt();
-            final String spritePath = jsonObject.get("spritePath").getAsString();
+            final String rawSprite = jsonObject.get("spritePath").getAsString();
+            final String absoluteSprite = new File(baseDir, rawSprite).getAbsolutePath();
             final JsonObject attackObj = jsonObject.getAsJsonObject("attack");
             final String attackId = attackObj.get(ATTACK_ID_KEY).getAsString();
             final Double damage = attackObj.get("damage").getAsDouble();
-            return new Weapon(name, level, new Pair<>(attackId, damage), spritePath);
+            return new Weapon(name, level, new Pair<>(attackId, damage), absoluteSprite);
         };
 
         // Configure Gson with custom deserializers
@@ -254,6 +256,7 @@ public final class GameDataManagerImpl {
                 final String weaponsPath = Paths.get(baseDir, weaponsPathRel).toString();
                 final String floorName = floorObj.get("floorName").getAsString();
                 final String spritePath = floorObj.get("spritePath").getAsString();
+                final String absoluteSprite = new File(baseDir, spritePath).getAbsolutePath();
                 final int spawnWeight = floorObj.get("spawnWeight").getAsInt();
                 final JsonObject spawnRange = floorObj.get("spawningRange").getAsJsonObject();
                 final int minLevel = spawnRange.get("minLevel").getAsInt();
@@ -265,7 +268,7 @@ public final class GameDataManagerImpl {
 
                 floors.add(new FloorData(
                     floorName,
-                    spritePath,
+                    absoluteSprite,
                     enemies,
                     weapons,
                     new Pair<>(minLevel, maxLevel),

@@ -47,7 +47,7 @@ public final class GameControllerImpl implements GameController {
         assetManager.addGenericEntityAsset("trap_view", "Images/trap.png");
         assetManager.addGenericEntityAsset("stairs_view", "Images/stairs.png");
         assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
-        final Weapon startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
+        final Weapon startWeapon = new Weapon("Simple sword", 1, new Pair<>("phisical", 50.0), DEFAULT_TOWER_PATH);
         // Initialize player
         player = new PlayerImpl(startWeapon, Optional.empty());
     }
@@ -248,5 +248,15 @@ public final class GameControllerImpl implements GameController {
     @Override
     public String getEnemyPath() {
         return this.rooms.get(currentRoomIndex).getEnemyPath();
+    }
+
+    @Override
+    public String getWeaponPath() {
+        return this.rooms.get(currentRoomIndex).getWeapon().spritePath();
+    }
+
+    @Override
+    public String getBackgroundImage() {
+        return currentFloor.spritePath();
     }
 }

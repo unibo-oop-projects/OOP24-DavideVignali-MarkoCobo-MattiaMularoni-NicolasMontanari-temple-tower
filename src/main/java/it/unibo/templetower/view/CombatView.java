@@ -1,5 +1,7 @@
 package it.unibo.templetower.view;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +77,6 @@ public final class CombatView {
             backgroundView.setPreserveRatio(false);
             backgroundView.fitWidthProperty().bind(root.widthProperty());
             backgroundView.fitHeightProperty().bind(root.heightProperty());
-
             root.getChildren().add(backgroundView);
         } catch (IllegalArgumentException e) {
             LOGGER.error("Failed to load background image: {}", e.getMessage());
@@ -85,18 +86,21 @@ public final class CombatView {
             return root;
         }
 
+        final ImageView enemyImage;
+        final String imagePath = controller.getEnemyPath();
+        final File file = new File(imagePath);
         final String playerImg;
         final String enemyImg;
         if (!controller.isBossTime()) {
             playerImg = "/Images/player.png";
-            enemyImg = controller.getEnemyPath();
+            enemyImage = new ImageView(new Image(file.toURI().toString()));
         } else {
             playerImg = "/Images/playerback.png";
             enemyImg = "/Images/boss.png";
+            enemyImage = new ImageView(new Image(getClass().getResource(enemyImg).toExternalForm()));
         }
 
         final ImageView playerImage = new ImageView(new Image(getClass().getResource(playerImg).toExternalForm()));
-        final ImageView enemyImage = new ImageView(new Image(getClass().getResource(enemyImg).toExternalForm()));
 
         playerImage.setFitWidth(CHARACTER_SIZE);
         playerImage.setFitHeight(CHARACTER_SIZE);
@@ -156,6 +160,16 @@ public final class CombatView {
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
+        if (controller.getEnemyLifePoints() > 0) {
+            exitBt.setDisable(true);
+        }
+
+        if (controller.getEnemyLifePoints() <= 0.0) {
+            attackBt.setDisable(true);
+            enemyHpLabel.setText("0HP");
+            enemyHealthBar.setProgress(0 / 100);
+        }
+
         exitBt.setOnAction(_ -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
             manager.switchTo("main_floor_view");
@@ -193,7 +207,7 @@ public final class CombatView {
             timeline.setOnFinished(_ -> {
                 if (controller.isBossTime()) {
                     ((Pane) attackImage.getParent()).getChildren().remove(attackImage);
-                } 
+                }
                 controller.attackEnemy();
 
                 final PauseTransition pause = new PauseTransition(Duration.millis(200));
@@ -233,6 +247,7 @@ public final class CombatView {
                             enemyHealthBar.setProgress(0 / 100.0);
                             enemyHpLabel.setText(ZEROHP);
                             attackBt.setDisable(true);
+                            exitBt.setDisable(false);
                             if (controller.getPlayerLife() < 100) {
                                 controller.resetPlayerLife();
                             }
@@ -284,7 +299,6 @@ public final class CombatView {
     }
 
     private void resetCombat(final GameController controller) {
-        attackBt.setDisable(false);
         kill = true;
 
         // Resetta le barre della vita

@@ -164,4 +164,16 @@ public interface GameController {
      * @return enemy image path
      */
     String getEnemyPath();
+
+    /**
+     * 
+     * @return weapon image path
+     */
+    String getWeaponPath();
+
+    /**
+     * 
+     * @return background floor image path
+     */
+    String getBackgroundImage();
 }

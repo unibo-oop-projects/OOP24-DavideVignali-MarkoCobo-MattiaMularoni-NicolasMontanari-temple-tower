@@ -102,6 +102,9 @@ public final class SceneManager {
         if ("stairs_view".equals(sceneName)) {
             pane = new StairsView().createScene(this, controller);
         }
+        if ("treasure_view".equals(sceneName)) {
+            pane = new TreasureView().createScene(this, controller);
+        }
         if (pane == null) {
             throw new IllegalArgumentException("Scene " + sceneName + " not found");
         }

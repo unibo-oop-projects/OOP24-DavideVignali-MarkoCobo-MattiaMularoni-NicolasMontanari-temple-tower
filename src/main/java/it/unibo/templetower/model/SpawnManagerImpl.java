@@ -24,7 +24,7 @@ public class SpawnManagerImpl {
     private final Random random;
     private final int towerHeight;
 
-    private static final int FLOOR_BEFORE_BOSS = 2;
+    private final int floorBeforeBoss;
     private int passedFloors;
 
     /**
@@ -37,6 +37,7 @@ public class SpawnManagerImpl {
         this.floors = new ArrayList<>(towerData.floors());
         this.random = new Random();
         this.towerHeight = towerData.height();
+        floorBeforeBoss = towerData.height();
     }
 
     /**
@@ -66,7 +67,7 @@ public class SpawnManagerImpl {
         final int stairsIndex = random.nextInt(roomNumber);
         int enemyBudget = level * BUDGET_MULTIPLIER;
 
-        if (passedFloors >= FLOOR_BEFORE_BOSS) {
+        if (passedFloors >= floorBeforeBoss) {
             final var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
             final Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
             return new Floor("boss", "Images/boss.png", List.of(new Room(new EnemyRoom(selectedEnemy), "boss_view", 1)), 1);
