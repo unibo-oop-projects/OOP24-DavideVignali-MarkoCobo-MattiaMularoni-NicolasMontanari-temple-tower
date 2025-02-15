@@ -60,15 +60,11 @@ public class SelectWeaponView {
             vbox.getChildren().add(weapon3);
         }
 
-        // Creiamo il nuovo bottone "Back"
         final Button backButton = new Button("Back");
         backButton.setStyle("-fx-font-size: 20px; -fx-padding: 10px 20px;");
 
-        // Configura l'azione del bottone per tornare alla scena precedente
-        backButton.setOnAction(e -> manager.switchTo("combat_view")); // Assicurati di sostituire "previous_scene" con
-                                                                      // il nome della scena precedente
+        backButton.setOnAction(e -> manager.switchTo("combat_view")); 
 
-        // Aggiungiamo il bottone al VBox
         vbox.getChildren().add(backButton);
 
         root.getChildren().add(vbox);

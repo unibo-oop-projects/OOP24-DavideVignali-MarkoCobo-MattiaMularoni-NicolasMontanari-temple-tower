@@ -30,7 +30,7 @@ public final class TreasureView {
     private static final Logger LOGGER = LoggerFactory.getLogger(TreasureView.class);
     private static final int BUTTON_FONT_SIZE = 20;
     private static final int DAMAGE_BAR_WIDTH = 200;
-    private static final int BUTTON_SPACING = 20; // Added constant for HBox spacing
+    private static final int BUTTON_SPACING = 20;
     private static final int IMAGE_SIZE = 100;
     private static final int PADDING = 10;
     private static final int DIALOG_WIDTH = 800;

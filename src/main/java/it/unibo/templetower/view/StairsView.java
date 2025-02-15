@@ -62,9 +62,8 @@ public class StairsView {
             mediaView.fitHeightProperty().bind(root.heightProperty());
             mediaView.setPreserveRatio(false);
 
-            mediaPlayer.play(); // Avvia il video
+            mediaPlayer.play();
 
-            // Quando il video finisce, cambia scena
             mediaPlayer.setOnEndOfMedia(() -> {
                 if (!controller.isBossTime()) {
                     manager.switchTo("main_floor_view");
@@ -75,7 +74,7 @@ public class StairsView {
         });
 
         btNo.setOnAction(event -> {
-            manager.switchTo("main_floor_view"); // Torna alla scena precedente
+            manager.switchTo("main_floor_view");
         });
 
         return root;

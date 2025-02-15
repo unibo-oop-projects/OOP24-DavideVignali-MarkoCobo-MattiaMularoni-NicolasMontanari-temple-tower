@@ -109,7 +109,7 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Attacks the enemy in the current room.
      */
     @Override
     public void attackEnemy() {
@@ -117,7 +117,7 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Attacks the player in the current room.
      */
     @Override
     public void attackPlayer() {
@@ -125,7 +125,9 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the current life points of the player.
+     *
+     * @return the player's life points
      */
     @Override
     public double getPlayerLife() {
@@ -133,7 +135,9 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the life points of the enemy in the current room.
+     *
+     * @return the enemy's life points
      */
     @Override
     public double getEnemyLifePoints() {
@@ -141,7 +145,9 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Enters the current room and returns its name.
+     *
+     * @return the name of the entered room
      */
     @Override
     public String enterRoom() {
@@ -150,7 +156,9 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the index of the room where the player currently is.
+     *
+     * @return the index of the player's current room
      */
     @Override
     public int getPlayerActualRoom() {
@@ -158,7 +166,9 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the total number of rooms.
+     *
+     * @return the number of rooms
      */
     @Override
     public int getNumberOfRooms() {
@@ -166,7 +176,7 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Resets the game state, including floors, rooms, and enemies.
      */
     @Override
     public void resetGame() {
@@ -175,14 +185,14 @@ public final class GameControllerImpl implements GameController {
         gameDataManager.loadGameDataFromTower(gameDataManager.getTowerPath().get());
         final Tower towerData = gameDataManager.getTower();
         spawnManager = new SpawnManagerImpl(towerData);
-        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER); // Assuming 7 rooms per floor
+        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
         currentFloor = generatedFloor;
         rooms = generatedFloor.rooms();
         currentRoomIndex = 0;
     }
 
     /**
-     * {@inheritDoc}
+     * Resets the player's life to the initial value.
      */
     @Override
     public void resetPlayerLife() {
@@ -190,12 +200,13 @@ public final class GameControllerImpl implements GameController {
     }
 
     /**
-     * {@inheritDoc}
+     * Applies damage to the player from a trap in the current room.
      */
     @Override
     public void playerTakeDamage() {
         player.takeDamage(this.rooms.get(currentRoomIndex).getTrapDamage());
     }
+
 
     @Override
     public void removeWeapon(final int index) {

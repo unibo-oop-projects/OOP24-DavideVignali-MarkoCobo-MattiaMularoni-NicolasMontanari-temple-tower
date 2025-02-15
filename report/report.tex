@@ -129,6 +129,85 @@ Questa architettura rende il sistema flessibile, modulare e facilmente estensibi
 \end{figure}
 
 \section{Design dettagliato}
+\subsection{2.2.3 Montanari}
+\subsubsection{Gestione dei Popup tramite Factory Method}
+
+\textbf{Problema}\
+Nel gioco, esistono diversi tipi di finestre di dialogo (popup) che vengono mostrate in varie situazioni, come la raccolta di un'arma o il guadagno di esperienza. La creazione manuale di questi popup in ogni punto del codice porta a una duplicazione del codice e a una ridotta manutenibilit`a. Inoltre, senza un’astrazione adeguata, ogni nuova finestra di dialogo richiederebbe la scrittura ripetitiva della sua struttura, aumentando il rischio di incoerenze nel comportamento.
+
+\textbf{Soluzione}\
+Per risolvere questo problema, `e stato adottato il Factory Method, che consente di delegare la creazione dei popup a una classe centralizzata (\texttt{DialogFactory}). Questa classe definisce un metodo \texttt{createDialog} che, in base al tipo di popup richiesto, restituisce un oggetto \texttt{Dialog} con il contenuto e il comportamento appropriati.
+
+Questa soluzione offre diversi vantaggi:
+\begin{itemize}
+\item \textbf{Miglior riuso del codice}: la logica di costruzione dei popup `e riutilizzabile e centralizzata.
+\item \textbf{Maggiore manutenibilit`a}: per aggiungere nuovi tipi di popup, basta estendere il metodo \texttt{createDialog} senza modificare il codice esistente.
+\item \textbf{Maggiore coerenza}: tutti i popup rispettano uno stile uniforme e una gestione degli eventi standardizzata.
+\end{itemize}
+
+Un’alternativa considerata era l’uso di una classe \texttt{DialogUtil} con metodi statici per ogni tipo di popup. Tuttavia, questo approccio avrebbe reso pi`u difficile estendere il sistema senza modificare direttamente la classe di utilit`a, violando il principio Open/Closed.
+
+\textbf{Schema UML}\
+Lo schema seguente mostra l'implementazione del Factory Method per la creazione dei popup:
+
+\begin{figure}[H]
+	\includegraphics[scale=0.8]{img/montanariDialog.png}
+\end{figure}
+
+\textbf{Applicazione del Pattern Factory Method}\
+\begin{itemize}
+\item \texttt{DialogFactory} `e la classe che definisce il metodo \texttt{createDialog}, delegando la creazione alle classi specifiche.
+\item \texttt{WeaponPopup} e \texttt{XpPopup} sono le sottoclassi che sovrascrivono il metodo factory per fornire l’implementazione specifica del popup.
+\item Il codice client utilizza \texttt{DialogFactory.createDialog()} per ottenere il popup corretto senza conoscere i dettagli della sua implementazione.
+\end{itemize}
+
+Questa implementazione segue il pattern Factory Method, migliorando la separazione delle responsabilit`a e facilitando l’aggiunta di nuovi tipi di popup in futuro.
+
+\subsubsection{Gestione della Sincronizzazione tra Attacco, Punti Vita e UI}
+
+\textbf{Problema}
+Nel contesto della gestione della scena di combattimento, è emersa la necessità di garantire una sincronizzazione corretta tra l'attacco del giocatore, la riduzione dei punti vita dell'avversario e l'aggiornamento dell'interfaccia utente (UI). Un’errata gestione di questo processo potrebbe causare incongruenze visive o problemi di gameplay, come:
+\begin{itemize}
+    \item Attacchi non registrati;
+    \item Aggiornamenti tardivi della UI;
+    \item Reazioni non coerenti tra azione e conseguenza.
+\end{itemize}
+
+\textbf{Soluzione}
+Per affrontare questa problematica, è stata implementata una gestione sequenziale delle azioni attraverso l'uso combinato di:
+\begin{itemize}
+    \item \textbf{Animazioni} (\texttt{Timeline}) per gestire i movimenti visivi;
+    \item \textbf{Ritardi programmati} (\texttt{PauseTransition}) per sincronizzare le azioni;
+    \item \textbf{Aggiornamenti sincroni della UI} (\texttt{Platform.runLater}) per garantire modifiche sicure nel thread principale.
+\end{itemize}
+
+Il flusso di esecuzione prevede i seguenti passaggi:
+\begin{enumerate}
+    \item L’attacco viene eseguito, attivando un'animazione di avanzamento del giocatore o un effetto visivo (ad esempio, una fiamma).
+    \item Una volta terminata l’animazione, il danno viene applicato riducendo i punti vita dell’avversario.
+    \item La UI viene aggiornata, modificando la barra della salute (\texttt{ProgressBar}) e il valore numerico degli HP dell'avversario.
+    \item Se il nemico è ancora in vita, viene avviato un ritardo tramite \texttt{PauseTransition}, che simula il tempo di reazione prima della sua risposta.
+    \item Il nemico esegue il contrattacco, aggiornando la UI con la nuova quantità di punti vita del giocatore.
+    \item Si verifica se il combattimento è terminato:
+    \begin{itemize}
+        \item In caso di vittoria del giocatore, il pulsante di attacco viene disabilitato e la salute viene ripristinata.
+        \item In caso di sconfitta, viene mostrato un popup che reindirizza il giocatore al menu principale.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Schema UML}\
+Lo schema seguente mostra l'implementazione di una parte delle classi utilizzate
+
+\begin{figure}[H]
+	\includegraphics[scale=0.9]{img/montanariPlatform.png}
+\end{figure}
+
+\textbf{Benefici ottenuti}
+Grazie a questa soluzione, si ottiene una transizione fluida tra attacco, difesa e aggiornamento dell’UI, evitando problemi di desincronizzazione. L’uso di \texttt{Platform.runLater} assicura che ogni aggiornamento dell'interfaccia venga eseguito nel thread principale di JavaFX, prevenendo errori di concorrenza e migliorando la responsività dell'applicazione. 
+
+Inoltre, l'introduzione di pause controllate tra le fasi di combattimento permette di migliorare il feedback visivo per il giocatore, rendendo l’esperienza più chiara e coinvolgente.
+
+
 \subsection{Vignali}
 
 \subsubsection{Modular Game Data Loading and Tower Configuration}
@@ -369,6 +448,44 @@ Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink}
 \subsubsection{Uso di Platform.runLater()} - Fonte: \href{https://stackoverflow.com/questions/13784333/platform-runlater-and-task-in-javafx}{Stackoverflow}/ 
 
 \subsection{Montanari}
+\subsubsection{Uso di SLF4J per il logging}
+Il progetto utilizza il framework SLF4J per la gestione dei log. Questo consente un monitoraggio efficace degli eventi di gioco.\newline
+Esempio di codice:
+\begin{verbatim}
+private static final Logger LOGGER = LoggerFactory.getLogger(GameControllerImpl.class);
+\end{verbatim}
+\href{https://github.com/}{Link al codice su GitHub}
+
+\subsubsection{Uso di Lambda Expressions}
+Per la gestione degli eventi, il codice utilizza espressioni lambda che migliorano la leggibilità e riducono la verbosità.\newline
+Esempio:
+\begin{verbatim}
+attackBt.setOnAction(e -> this.performAttack());
+\end{verbatim}
+\href{https://github.com/}{Link al codice su GitHub}
+
+\subsubsection{Gestione del multithreading con Platform.runLater}
+JavaFX richiede che gli aggiornamenti dell'interfaccia avvengano nel thread principale. Platform.runLater viene utilizzato per garantire che le modifiche alla UI siano eseguite in modo sicuro.\newline
+Esempio:
+\begin{verbatim}
+Platform.runLater(() -> playerHpBar.setProgress(newHealth / (double) maxHealth));
+\end{verbatim}
+\href{https://github.com/}{Link al codice su GitHub}
+
+\subsubsection{Utilizzo di Timeline e KeyFrame per le animazioni}
+Il codice implementa animazioni utilizzando Timeline e KeyFrame, creando effetti visivi per gli attacchi e la riduzione della vita dei personaggi.\newline
+Esempio:
+\begin{verbatim}
+Timeline attackAnimation = new Timeline(
+new KeyFrame(Duration.seconds(0.5), e -> enemyHpBar.setProgress(newEnemyHp / (double) maxEnemyHp))
+);
+attackAnimation.play();
+\end{verbatim}
+\href{https://github.com/}{Link al codice su GitHub}
+
+\subsubsection{Utilizzo di JavaFX Scene Graph}
+La costruzione dell'interfaccia utente avviene attraverso l'uso di StackPane, HBox, VBox e BorderPane.\newline
+\href{https://github.com/}{Link al codice su GitHub}
 \subsection{Cobo}
 
 \subsection{Esempio}
@@ -418,6 +535,16 @@ Nel caso in cui si pensasse di portare avanti il progetto, ad esempio perché ef
 Considerando il tempo a disposizione e gli impegni derivanti da lavoro e altri esami, reputo questo progetto "accettabile" ma con un grande potenziale inespresso,
 %
 dovuto sia alla scarsa divisibilità del progetto a livello di idea (è difficile che tutti lavorino a compartimenti stagni) che di organizzazione generale.
+\subsection{Montanari}
+Durante lo sviluppo del progetto, mi sono occupato principalmente del sistema di combattimento, della creazione delle varie view di gioco e del controller in modo da far comunicare tutte le classi tra di loro. Ritengo che i miei punti di forza siano stati la capacità di problem-solving, la scrittura di codice efficiente e la collaborazione con il team. Tuttavia, ho riscontrato alcune difficoltà, in particolare nella gestione del tempo e nel debugging di problemi complessi.
+
+\subsubsection{Ruolo all'interno del gruppo}
+All'interno del team, il mio ruolo è stato quello di sviluppatore principale per il sistema di combattimento e le interfacce di gioco, oltre a occuparmi della logica di comunicazione tra le classi. Ho contribuito a garantire che tutte le componenti funzionassero correttamente insieme, cercando di mantenere un buon livello di collaborazione con gli altri membri.
+
+\subsubsection{Lavori futuri}
+Se il progetto dovesse essere portato avanti, credo che si potrebbe migliorare in diverse direzioni. In particolare, suggerirei di ottimizzare le prestazioni del sistema di combattimento, migliorare l'interfaccia utente e aggiungere nuove funzionalità per rendere il gioco più coinvolgente. Inoltre, potrebbe essere utile impiegare il progetto come base per un gioco più ampio o come portfolio personale per dimostrare le competenze acquisite.
+
+Nel complesso, questa esperienza mi ha permesso di migliorare le mie competenze in programmazione, gestione delle comunicazioni tra classi e sviluppo di interfacce di gioco, e sono soddisfatto dei progressi fatti.
 \section{Difficoltà incontrate e commenti per i docenti}
 
 Questa sezione, \textbf{opzionale}, può essere utilizzata per segnalare ai docenti eventuali problemi o difficoltà incontrate nel corso o nello svolgimento del progetto, può essere vista come una seconda possibilità di valutare il corso (dopo quella offerta dalle rilevazioni della didattica) avendo anche conoscenza delle modalità e delle difficoltà collegate all'esame, cosa impossibile da fare usando le valutazioni in aula per ovvie ragioni.
@@ -460,6 +587,16 @@ spaziatrice, o il tasto ``P'', è necessario che gli studenti lo segnalino.
  \item Laboratorio 08: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=178723#p247234}
  \item Laboratorio 09: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=179154#p247924}
  \item Laboratorio 10: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=180101#p249553}
+ \item Laboratorio 04: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=12345#p123456}
+ \item Laboratorio 06: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=22222#p222222}
+ \item Laboratorio 09: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=99999#p999999}
+\end{itemize}
+
+\subsection{nicolas.montanari3@studio.unibo.it}
+
+\begin{itemize}
+ \item Laboratorio 09: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=179154}
+ \item Laboratorio 10: \url{https://virtuale.unibo.it/mod/forum/discuss.php?d=180101}
 \end{itemize}
 
 
