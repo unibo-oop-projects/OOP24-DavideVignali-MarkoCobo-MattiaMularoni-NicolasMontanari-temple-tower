@@ -141,6 +141,11 @@ public final class GameControllerImpl implements GameController {
         player.changeWeapon(index);
     }
 
+    @Override
+    public void increaseLifePlayer(final int xp) {
+        player.increaseExperience(xp);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -219,16 +224,17 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void playerTakeDamage() {
-        player.takeDamage(rooms.get(currentRoomIndex).getTrapDamage());
+        player.takeDamage(this.rooms.get(currentRoomIndex).getTrapDamage());
     }
 
     @Override
     public void removeWeapon(final int index) {
-        // player.addWeapon(rooms.get(currentRoomIndex).getWeapon(), index);
+        player.addWeapon(rooms.get(currentRoomIndex).getWeapon(), index);
     }
 
     @Override
     public int getElementTreasure() {
+        this.rooms.get(currentRoomIndex).interactWithRoom(player, ENEMYDIRECTION);
         return this.rooms.get(currentRoomIndex).getElementTreasure();
     }
 
@@ -249,6 +255,11 @@ public final class GameControllerImpl implements GameController {
     }
 
     @Override
+    public int getXpTreasure() {
+        return this.rooms.get(currentRoomIndex).getXP();
+    }
+
+	@Override
     public Boolean isBossTime() {
         return isBoss;
     }

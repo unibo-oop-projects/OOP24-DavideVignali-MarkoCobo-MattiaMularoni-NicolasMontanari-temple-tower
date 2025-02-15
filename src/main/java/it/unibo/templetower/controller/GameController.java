@@ -151,6 +151,20 @@ public interface GameController {
     List<Weapon> getPlayerWeapons();
 
     /**
+     * Increases the player's life based on the given experience points (XP).
+     *
+     * @param xp The amount of experience points to be converted into life.
+     */
+    void increaseLifePlayer(int xp);
+
+    /**
+     * Retrieves the amount of experience points (XP) contained in the treasure.
+     *
+     * @return The XP value of the treasure.
+     */
+    int getXpTreasure();
+
+    /**
      * 
      * @return if the room can be displayed or hidden
      */
