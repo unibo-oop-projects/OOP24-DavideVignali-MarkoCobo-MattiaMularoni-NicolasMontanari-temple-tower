@@ -37,6 +37,7 @@ public final class CombatView {
     private static final int CHARACTER_SIZE = 150;
     private static final int BUTTON_WIDTH = 150;
     private static final int HEALTH_BAR_WIDTH = 200;
+    private static final String ZEROHP = "0HP";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CombatView.class);
 
@@ -73,9 +74,6 @@ public final class CombatView {
             root.getChildren().add(errorLabel);
             return root;
         }
-
-        final VBox contentBox = new VBox(20);
-        contentBox.setAlignment(Pos.BOTTOM_CENTER);
 
         final HBox charactersBox = new HBox(20);
         charactersBox.setAlignment(Pos.BOTTOM_CENTER);
@@ -122,7 +120,7 @@ public final class CombatView {
         final BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        final Label playerHpLabel = new Label((controller.getPlayerLife() + "HP"));
+        final Label playerHpLabel = new Label(controller.getPlayerLife() + "HP");
         playerHpLabel.getStyleClass().add("label");
         final VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
@@ -155,7 +153,7 @@ public final class CombatView {
                 pause.setOnFinished(_ -> {
                     Platform.runLater(() -> {
                         if (controller.getEnemyLifePoints() <= 0) {
-                            enemyHpLabel.setText("0HP");
+                            enemyHpLabel.setText(ZEROHP);
                             attackBt.setDisable(true);
                             controller.resetPlayerLife();
                             enemyHealthBar.setProgress(0 / 100.0);
@@ -170,7 +168,7 @@ public final class CombatView {
 
                                 if (controller.getPlayerLife() <= 0) {
                                     attackBt.setDisable(true);
-                                    playerHpLabel.setText("0HP");
+                                    playerHpLabel.setText(ZEROHP);
                                     controller.gameOver();
                                     popUp(() -> manager.switchTo("home"));
                                 }
@@ -185,13 +183,16 @@ public final class CombatView {
                         enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
 
                         if (controller.getEnemyLifePoints() <= 0) {
+                            enemyHealthBar.setProgress(0 / 100.0);
+                            enemyHpLabel.setText(ZEROHP);
                             attackBt.setDisable(true);
-                            if(controller.getPlayerLife() < 100) {
+                            if (controller.getPlayerLife() < 100) {
                                 controller.resetPlayerLife();
                             }
                         } else if (controller.getPlayerLife() <= 0) {
+                            playerHealthBar.setProgress(0 / 100.0);
                             attackBt.setDisable(true);
-                            playerHpLabel.setText("0HP");
+                            playerHpLabel.setText(ZEROHP);
                             controller.gameOver();
                             Platform.runLater(() -> popUp(() -> manager.switchTo("home")));
                         }

@@ -22,7 +22,7 @@ public class SelectWeaponView {
      */
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
-        final VBox vbox = new VBox(VBOX_SPACING); // VBox with 20px spacing
+        final VBox vbox = new VBox(VBOX_SPACING);
         vbox.setAlignment(Pos.CENTER);
         final Button weapon1;
         final Button weapon2;
@@ -33,7 +33,7 @@ public class SelectWeaponView {
 
         vbox.getChildren().add(titleLabel);
 
-        if (controller.getPlayerWeapons().size() >= 1) {
+        if (controller.getPlayerWeapons().size() < 2) {
             weapon1 = new Button(controller.getPlayerWeapons().get(0).name() + " - Damage: "
                     + controller.getPlayerWeapons().get(0).attack().getY());
             weapon1.setOnAction(e -> controller.changeWeaponIndex(0));

@@ -111,6 +111,10 @@ public final class TreasureRoom implements RoomBehavior {
         throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
     }
 
+    /**
+     * 
+     * @return the xp in the treasure
+     */
     public int getXpLife() {
         return this.xps.get();
     } 

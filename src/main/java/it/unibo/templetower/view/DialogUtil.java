@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-* c.
+* Utility class for instantiation gradle build problem.
 */
 public final class DialogUtil {
 
@@ -36,26 +36,20 @@ public final class DialogUtil {
 
         final Button btLeave = new Button("Close");
         btLeave.setOnAction(_ -> {
-            dialog.setResult(null); // Imposta un risultato per chiudere la dialog
+            dialog.setResult(null);
             dialog.close();
             if (onClose != null) {
                 onClose.run();
             }
         });
 
-        // Contenitore per il bottone
         final HBox btContainer = new HBox(btLeave);
         btContainer.setAlignment(Pos.CENTER);
 
-        // Contenitore principale con testo e bottone
         final VBox layout = new VBox(VBOX, loseLabel, btContainer);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(PADDING));
 
-        // Imposta il contenuto della finestra
-        //dialog.getDialogPane().setContent(layout);
-
-        // Permette la chiusura con la X
         dialog.setOnCloseRequest(_ -> {
             LOGGER.info("Popup closed with X");
             dialog.setResult(null);
@@ -64,7 +58,6 @@ public final class DialogUtil {
             }
         });
 
-        // Mostra la finestra di dialogo
         dialog.showAndWait();
     }
 }
