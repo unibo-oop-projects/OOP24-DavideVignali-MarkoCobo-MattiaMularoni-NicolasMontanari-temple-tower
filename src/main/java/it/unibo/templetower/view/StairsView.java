@@ -9,16 +9,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.beans.binding.Bindings;
 
 /**
  * {@inheritDoc}.
  */
 public class StairsView {
     private static final int SPACING = 20;
+    private static final int OTHER5 = 50;
+    private static final int OTHER4 = 40;
     private static final double VELOCITY = 3.0;
 
     /**
-     * 
      * Creates the scene for the stairs view.
      *
      * @param manager    the scene manager
@@ -26,53 +28,45 @@ public class StairsView {
      * @return the created scene
      */
     public StackPane createScene(final SceneManager manager, final GameController controller) {
-        // Creazione della label con il messaggio
-        final Label message = new Label("Do you want to go to the next floor?");
-        message.setStyle("-fx-font-size: 24px; -fx-text-fill: black;");
+        final StackPane root = new StackPane();
+        final VBox layout = new VBox(SPACING);
+        layout.setAlignment(Pos.CENTER);
 
-        // Creazione dei pulsanti
+        final Label message = new Label("Do you want to go to the next floor?");
+        message.styleProperty().bind(Bindings.concat("-fx-font-size: ", root.widthProperty().divide(OTHER4).asString(),
+                "px; -fx-text-fill: black;"));
+
         final Button btYes = new Button("Yes");
         final Button btNo = new Button("No");
 
-        // Rendere i bottoni più grandi impostando dimensioni e padding
-        btYes.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
-        btNo.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+        btYes.styleProperty().bind(Bindings.concat("-fx-font-size: ", root.widthProperty().divide(OTHER5).asString(),
+                "px; -fx-padding: ", root.widthProperty().divide(OTHER5).asString(), "px;"));
+        btNo.styleProperty().bind(Bindings.concat("-fx-font-size: ", root.widthProperty().divide(OTHER5).asString(),
+                "px; -fx-padding: ", root.widthProperty().divide(OTHER5).asString(), "px;"));
 
-        // Preparazione del video
-        final String videoPath = StairsView.class.getResource("/video/treasure.mp4").toExternalForm();
+        layout.getChildren().addAll(message, btYes, btNo);
+        root.getChildren().add(layout);
+
+        final String videoPath = StairsView.class.getResource("/video/stairs.mp4").toExternalForm();
         final Media media = new Media(videoPath);
         final MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setRate(VELOCITY);
         final MediaView mediaView = new MediaView(mediaPlayer);
 
-        // Layout iniziale con messaggio e pulsanti
-        final VBox layout = new VBox(SPACING, message, btYes, btNo);
-        layout.setAlignment(Pos.CENTER);
-
-        // Contenitore principale per gestire il passaggio alla modalità video
-        final StackPane root = new StackPane(layout);
-
         btYes.setOnAction(_ -> {
-
             controller.goToNextFloor();
-            // Rimuove tutto e aggiunge solo il video a tutta la finestra
             root.getChildren().clear();
             root.getChildren().add(mediaView);
 
-            // Adatta il video alla finestra
             mediaView.fitWidthProperty().bind(root.widthProperty());
             mediaView.fitHeightProperty().bind(root.heightProperty());
             mediaView.setPreserveRatio(false);
 
-            mediaPlayer.play(); // Avvia il video
-
-            // Quando il video finisce, cambia scena
+            mediaPlayer.play();
             mediaPlayer.setOnEndOfMedia(() -> manager.switchTo("main_floor_view"));
         });
 
-        btNo.setOnAction(_ -> {
-            manager.switchTo("main_floor_view"); // Torna alla scena precedente
-        });
+        btNo.setOnAction(_ -> manager.switchTo("main_floor_view"));
 
         return root;
     }
