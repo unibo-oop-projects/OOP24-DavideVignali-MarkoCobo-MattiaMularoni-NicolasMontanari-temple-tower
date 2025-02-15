@@ -1,4 +1,5 @@
 package it.unibo.templetower.model;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public final class PlayerImpl implements Player {
      * Creates a new player with initial weapon and room.
      * 
      * @param startweapon the initial weapon for the player
-     * @param actualRoom the starting room
+     * @param actualRoom  the starting room
      */
     public PlayerImpl(final Weapon startweapon, final Optional<Room> actualRoom) {
         this.weapon = new ArrayList<>();
@@ -31,6 +32,7 @@ public final class PlayerImpl implements Player {
         } else {
             this.actualRoom = Optional.of(actualRoom.get());
         }
+        weapon.add(startweapon);
         weapon.add(startweapon);
 
         this.life = 100;
@@ -41,7 +43,8 @@ public final class PlayerImpl implements Player {
     @Override
     public void attack(final EnemyRoom enemy) {
         if (enemy != null) {
-            enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY());
+            enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY()
+                    * actualRoom.get().getMoltiplicator(this.weapon.get(actualWeaponIndex)));
         }
     }
 

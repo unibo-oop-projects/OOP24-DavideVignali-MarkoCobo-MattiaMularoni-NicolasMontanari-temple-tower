@@ -11,23 +11,6 @@ import it.unibo.templetower.model.Weapon;
 public interface GameController {
 
     /**
-     * Starts the game, initializing necessary components and setting the initial state.
-     */
-    void startGame();
-
-    /**
-     * Ends the game, performing cleanup operations if necessary.
-     */
-    void endGame();
-
-    /**
-     * Handles a specific action performed by the player.
-     *
-     * @param action A string representing the action to be processed.
-     */
-    void handleAction(String action);
-
-    /**
      * Moves the player to the next floor in the game.
      */
     void goToNextFloor();
@@ -95,7 +78,7 @@ public interface GameController {
      * When the player health is 0 reset the game.
      * 
      */
-    void gameOver();
+    void resetGame();
 
     /**
      * Simulates the damage taken by the player.
@@ -151,8 +134,28 @@ public interface GameController {
     List<Weapon> getPlayerWeapons();
 
     /**
+     * Increases the player's life based on the given experience points (XP).
+     *
+     * @param xp The amount of experience points to be converted into life.
+     */
+    void increaseLifePlayer(int xp);
+
+    /**
+     * Retrieves the amount of experience points (XP) contained in the treasure.
+     *
+     * @return The XP value of the treasure.
+     */
+    int getXpTreasure();
+
+    /**
      * 
      * @return if the room can be displayed or hidden
      */
     Boolean isRoomToDisplay();
+
+    /**
+     * 
+     * @return if is time to show the boss view
+     */
+    Boolean isBossTime();
 }
