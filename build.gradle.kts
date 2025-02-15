@@ -18,23 +18,12 @@ val javaFXModules = listOf(
     "graphics"
 )
 
-// Detect OS architecture
-val osName = System.getProperty("os.name").lowercase()
-val arch = System.getProperty("os.arch")
-val platform = when {
-    osName.contains("mac") && arch.contains("aarch64") -> "mac-aarch64"
-    osName.contains("mac") -> "mac"
-    osName.contains("win") -> "win"
-    osName.contains("linux") -> "linux"
-    else -> throw GradleException("Piattaforma non supportata: $osName $arch")
-}
-
 dependencies {
-    val javaFxVersion = "17.0.2"
+    val javaFxVersion = "23.0.2"
 
-    // JavaFX modules
+    // Use JavaFX from Maven Central
     for (module in javaFXModules) {
-        implementation("org.openjfx:javafx-$module:$javaFxVersion:$platform")
+        implementation("org.openjfx:javafx-$module:$javaFxVersion:win")
     }
 
     // Suppressions for SpotBugs
@@ -69,13 +58,47 @@ java {
 }
 
 tasks.withType<Test> {
-    // Enables JUnit 5 Jupiter module
     useJUnitPlatform()
 }
 
-val main: String by project
+tasks.shadowJar {
+    manifest {
+        attributes(
+            "Main-Class" to "it.unibo.templetower.App",
+            "Multi-Release" to "true"
+        )
+    }
+    mergeServiceFiles()
+    archiveClassifier.set("")
+    
+    // Include all resources
+    from("src/main/resources") {
+        include("**/*")
+    }
+    
+    // Copy resources to both lowercase and uppercase paths
+    from("src/main/resources/Images") {
+        into("images")
+    }
+    
+    from("src/main/resources") {
+        include("**/*.css")
+        include("**/*.png")
+        include("**/*.jpg")
+        include("**/*.gif")
+        include("**/*.wav")
+        include("**/*.mp4")
+    }
+}
 
 application {
-    // Define the main class for the application
-    mainClass.set(main)
+    mainClass.set("it.unibo.templetower.App")
+}
+
+// Configure the run task to use the module path
+tasks.withType<JavaExec> {
+    jvmArgs = listOf(
+        "--module-path", classpath.asPath,
+        "--add-modules", javaFXModules.joinToString(",") { "javafx.$it" }
+    )
 }
