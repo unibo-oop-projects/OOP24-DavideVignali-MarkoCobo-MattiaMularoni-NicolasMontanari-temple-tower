@@ -158,4 +158,10 @@ public interface GameController {
      * @return if is time to show the boss view
      */
     Boolean isBossTime();
+
+    /**
+     * 
+     * @return enemy image path
+     */
+    String getEnemyPath();
 }

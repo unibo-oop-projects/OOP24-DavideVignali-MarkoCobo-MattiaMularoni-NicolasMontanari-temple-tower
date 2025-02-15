@@ -244,4 +244,9 @@ public final class GameControllerImpl implements GameController {
     public Boolean isBossTime() {
         return isBoss;
     }
+
+    @Override
+    public String getEnemyPath() {
+        return this.rooms.get(currentRoomIndex).getEnemyPath();
+    }
 }

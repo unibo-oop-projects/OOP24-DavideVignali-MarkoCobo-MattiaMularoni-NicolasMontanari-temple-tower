@@ -89,7 +89,7 @@ public final class CombatView {
         final String enemyImg;
         if (!controller.isBossTime()) {
             playerImg = "/Images/player.png";
-            enemyImg = "/Images/enemy.png";
+            enemyImg = controller.getEnemyPath();
         } else {
             playerImg = "/Images/playerback.png";
             enemyImg = "/Images/boss.png";

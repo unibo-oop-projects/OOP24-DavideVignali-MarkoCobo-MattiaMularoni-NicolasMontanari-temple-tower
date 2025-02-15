@@ -166,4 +166,11 @@ public final class Room {
         return 0;
     }
 
+    public String getEnemyPath() {
+        if (behavior instanceof EnemyRoom enemyRoom) {
+            return enemyRoom.getEnemy().spritePath();
+        }
+        return "";
+    }
+
 }
