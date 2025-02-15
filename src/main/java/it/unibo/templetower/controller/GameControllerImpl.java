@@ -208,7 +208,7 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void gameOver() {
-        //TODO
+        // TODO
     }
 
     /**
@@ -259,7 +259,7 @@ public final class GameControllerImpl implements GameController {
         return this.rooms.get(currentRoomIndex).getXP();
     }
 
-	@Override
+    @Override
     public Boolean isBossTime() {
         return isBoss;
     }

@@ -272,7 +272,7 @@ public final class CombatView {
 
         if (!controller.isBossTime()) {
             rootBox.getChildren().addAll(charactersBox, healthBarsPane, topBox);
-        }else {
+        } else {
             rootBox.getChildren().addAll(healthBarsPane, topBox);
         }
         root.getChildren().add(rootBox);
