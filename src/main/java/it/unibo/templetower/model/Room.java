@@ -3,8 +3,8 @@ package it.unibo.templetower.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** 
- * Useful class for implement the strategy pattern, 
+/**
+ * Useful class for implement the strategy pattern,
  * it represents a generic room that can interact with the player.
  * This class is designed for extension to support different types of rooms.
  */
@@ -16,9 +16,10 @@ public final class Room {
 
     /**
      * Creates a new Room with the specified behavior, name and id.
+     * 
      * @param behavior the behavior of the room
-     * @param name the name of the room
-     * @param id the unique identifier of the room
+     * @param name     the name of the room
+     * @param id       the unique identifier of the room
      */
     public Room(final RoomBehavior behavior, final String name, final int id) {
         this.behavior = behavior;
@@ -28,6 +29,7 @@ public final class Room {
 
     /**
      * Handles the player entering the room.
+     * 
      * @param player the player entering the room
      */
     public void enter(final Player player) {
@@ -40,7 +42,8 @@ public final class Room {
 
     /**
      * Handles player interaction with the room.
-     * @param player the player interacting with the room
+     * 
+     * @param player    the player interacting with the room
      * @param direction the direction of interaction
      */
     public void interactWithRoom(final Player player, final int direction) {
@@ -53,6 +56,7 @@ public final class Room {
 
     /**
      * Gets the life points of an enemy in the room if present.
+     * 
      * @return enemy life points or -1 if no enemy is present
      */
     public double getEnemyLife() {
@@ -63,7 +67,20 @@ public final class Room {
     }
 
     /**
+     * @param actualWeapon of player
+     * 
+     * @return attack with bonus or malus
+     */
+    public double getMoltiplicator(final Weapon actualWeapon) {
+        if (behavior instanceof EnemyRoom enemyRoom) {
+            return enemyRoom.calculateMulti(actualWeapon.attack().getX());
+        }
+        return -1;
+    }
+
+    /**
      * Gets the life points of the player.
+     * 
      * @param player the player whose life points to get
      * @return the player's life points
      */
@@ -73,6 +90,7 @@ public final class Room {
 
     /**
      * Gets the room's unique identifier.
+     * 
      * @return the room's id
      */
     public int getId() {
@@ -81,6 +99,7 @@ public final class Room {
 
     /**
      * Gets the room's name.
+     * 
      * @return the room's name
      */
     public String getName() {
@@ -89,6 +108,7 @@ public final class Room {
 
     /**
      * Gets the room's behavior.
+     * 
      * @return the room's behavior
      */
     public RoomBehavior getBehavior() {
@@ -96,7 +116,8 @@ public final class Room {
     }
 
     /**
-     * Retrieves the damage value of the trap if the behavior is an instance of Trap.
+     * Retrieves the damage value of the trap if the behavior is an instance of
+     * Trap.
      * 
      * @return the trap damage value, or -1 if the behavior is not a Trap
      */
@@ -108,7 +129,8 @@ public final class Room {
     }
 
     /**
-     * Retrieves the treasure element in the room if the behavior is an instance of TreasureRoom.
+     * Retrieves the treasure element in the room if the behavior is an instance of
+     * TreasureRoom.
      * 
      * @return the treasure element, or 0 if the behavior is not a TreasureRoom
      */
@@ -120,7 +142,8 @@ public final class Room {
     }
 
     /**
-     * Retrieves the weapon in the room if the behavior is an instance of TreasureRoom.
+     * Retrieves the weapon in the room if the behavior is an instance of
+     * TreasureRoom.
      * 
      * @return the weapon, or null if the behavior is not a TreasureRoom
      */
@@ -129,6 +152,18 @@ public final class Room {
             return treasureRoom.getWeapon();
         }
         return null;
+    }
+
+    /**
+     * Retrives the xp in the Treasure room.
+     * 
+     * @return xp for increment player life.
+     */
+    public int getXP() {
+        if (behavior instanceof TreasureRoom treasureRoom) {
+            return treasureRoom.getXpLife();
+        }
+        return 0;
     }
 
 }

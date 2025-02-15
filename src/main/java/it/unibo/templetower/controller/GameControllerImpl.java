@@ -19,7 +19,7 @@ import it.unibo.templetower.utils.Pair;
  * This class handles player movements, combat, and game state.
  */
 public final class GameControllerImpl implements GameController {
-    private final List<Room> rooms;
+    private List<Room> rooms;
     private int currentFloorIndex; // traccia il piano attuale
     private int currentRoomIndex;
     private final Player player;
@@ -30,8 +30,8 @@ public final class GameControllerImpl implements GameController {
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 7;
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
-    private final Weapon startWeapon;
-    private final SpawnManagerImpl spawnManager;
+    private SpawnManagerImpl spawnManager;
+    private boolean isBoss;
 
     /**
      * Constructs a new GameControllerImpl instance.
@@ -40,52 +40,16 @@ public final class GameControllerImpl implements GameController {
      */
     public GameControllerImpl() {
         currentFloorIndex = 1;
+        isBoss = false;
         assetManager = new AssetManager();
         assetManager.addGenericEntityAsset("combat_view", "Images/enemy.png");
         assetManager.addGenericEntityAsset("treasure_view", "Images/treasure.png");
         assetManager.addGenericEntityAsset("trap_view", "Images/trap.png");
         assetManager.addGenericEntityAsset("stairs_view", "Images/stairs.png");
         assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
-        startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
-
-        // Initialize game data manager and load tower data
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
-        final String towerPath = "tower/tower.json";
-        gameDataManager.loadGameDataFromTower(towerPath);
-        final Tower towerData = gameDataManager.getTower();
-        // Spawn the floor and initialize rooms
-        spawnManager = new SpawnManagerImpl(towerData);
-        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER); // Assuming 7 rooms per floor
-        currentFloor = generatedFloor;
-        rooms = generatedFloor.rooms();
-
+        final Weapon startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
         // Initialize player
         player = new PlayerImpl(startWeapon, Optional.empty());
-        currentRoomIndex = 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void startGame() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void endGame() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void handleAction(final String action) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
@@ -98,6 +62,10 @@ public final class GameControllerImpl implements GameController {
         rooms.clear();
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
         rooms.addAll(currentFloor.rooms());
+
+        if ("boss_view".equals(rooms.get(0).getName())) {
+            isBoss = true;
+        }
     }
 
     /**
@@ -133,6 +101,11 @@ public final class GameControllerImpl implements GameController {
     @Override
     public void changeWeaponIndex(final int index) {
         player.changeWeapon(index);
+    }
+
+    @Override
+    public void increaseLifePlayer(final int xp) {
+        player.increaseExperience(xp);
     }
 
     /**
@@ -189,15 +162,23 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public int getNumberOfRooms() {
-        return rooms.size();
+        return ROOMS_NUMBER;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void gameOver() {
-        //TODO
+    public void resetGame() {
+        isBoss = false;
+        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        gameDataManager.loadGameDataFromTower(gameDataManager.getTowerPath().get());
+        final Tower towerData = gameDataManager.getTower();
+        spawnManager = new SpawnManagerImpl(towerData);
+        final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER); // Assuming 7 rooms per floor
+        currentFloor = generatedFloor;
+        rooms = generatedFloor.rooms();
+        currentRoomIndex = 0;
     }
 
     /**
@@ -213,16 +194,17 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void playerTakeDamage() {
-        player.takeDamage(rooms.get(currentRoomIndex).getTrapDamage());
+        player.takeDamage(this.rooms.get(currentRoomIndex).getTrapDamage());
     }
 
     @Override
     public void removeWeapon(final int index) {
-        // player.addWeapon(rooms.get(currentRoomIndex).getWeapon(), index);
+        player.addWeapon(rooms.get(currentRoomIndex).getWeapon(), index);
     }
 
     @Override
     public int getElementTreasure() {
+        this.rooms.get(currentRoomIndex).interactWithRoom(player, ENEMYDIRECTION);
         return this.rooms.get(currentRoomIndex).getElementTreasure();
     }
 
@@ -240,5 +222,15 @@ public final class GameControllerImpl implements GameController {
     public Boolean isRoomToDisplay() {
         final double roll = ThreadLocalRandom.current().nextDouble(1);
         return roll >= this.currentFloor.visibility();
+    }
+
+    @Override
+    public int getXpTreasure() {
+        return this.rooms.get(currentRoomIndex).getXP();
+    }
+
+    @Override
+    public Boolean isBossTime() {
+        return isBoss;
     }
 }
