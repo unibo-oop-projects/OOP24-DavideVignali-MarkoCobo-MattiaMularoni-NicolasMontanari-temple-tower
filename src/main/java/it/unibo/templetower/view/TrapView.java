@@ -23,7 +23,6 @@ public class TrapView {
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
 
-        // Creazione del testo di avviso
         final Label trapLabel = new Label("YOU TAKE A TRAP");
         trapLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: bold;");
 
@@ -32,13 +31,11 @@ public class TrapView {
         final Label lifeLabel = new Label("ACTUAL LIFE POINTS: " + controller.getPlayerLife());
         lifeLabel.setStyle("-fx-font-size: 36px;");
 
-        // Creazione del bottone per uscire
         final Button exitButton = new Button("Exit");
         exitButton.setStyle("-fx-font-size: 20px;");
-        exitButton.setOnAction(e -> manager.switchTo("main_floor_view")); // Metodo per tornare indietro
+        exitButton.setOnAction(e -> manager.switchTo("main_floor_view"));
         exitButton.getStyleClass().add("button");
 
-        // Layout verticale per centrare gli elementi
         final VBox layout = new VBox(SPACING, trapLabel, lifeLabel, exitButton);
         layout.setAlignment(Pos.CENTER);
 
