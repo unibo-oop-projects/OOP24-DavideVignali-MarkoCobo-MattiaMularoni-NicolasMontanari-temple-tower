@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
  * Home screen view class that manages the initial game screen and background
  * music. This class is not designed for extension.
  */
-public final class Home {
+public final class StartupView {
 
 
 

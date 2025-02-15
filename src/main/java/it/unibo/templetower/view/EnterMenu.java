@@ -33,9 +33,9 @@ public final class EnterMenu {
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
-                .getResourceAsStream("images/Entermenu.png");
+                .getResourceAsStream("images/main-background.png");
         if (backgroundStream == null) {
-            throw new FileNotFoundException("Could not find background image: images/Entermenu.png");
+            throw new FileNotFoundException("Could not find background image: images/main-background.png");
         }
 
         // Create and configure background

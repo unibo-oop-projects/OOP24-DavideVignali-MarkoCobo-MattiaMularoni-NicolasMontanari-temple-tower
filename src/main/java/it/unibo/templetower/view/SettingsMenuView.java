@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
  * provides the settings menu interface for the game.
  */
 
-public class SettingsMenu {
+public class SettingsMenuView {
 
     static final int BUTTON_HEIGHT = 30;
     static final int BUTTON_WIDTH = 30;
@@ -33,9 +33,9 @@ public class SettingsMenu {
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
-                .getResourceAsStream("images/settings.png");
+                .getResourceAsStream("images/darkened-background.png");
         if (backgroundStream == null) {
-            throw new FileNotFoundException("Could not find background image: images/settings.png");
+            throw new FileNotFoundException("Could not find background image: images/darkened-background.png");
         }
 
         // Create and configure background

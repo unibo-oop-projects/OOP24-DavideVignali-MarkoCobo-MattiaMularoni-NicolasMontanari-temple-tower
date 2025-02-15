@@ -51,8 +51,8 @@ public final class SceneManager {
         try {
             panes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
             panes.put("enter_menu", new EnterMenu().createScene(this));
-            panes.put("settings_menu", new SettingsMenu().createScene(this));
-            panes.put("home", new Home().createScene(this));
+            panes.put("settings_menu", new SettingsMenuView().createScene(this));
+            panes.put("home", new StartupView().createScene(this));
             panes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
