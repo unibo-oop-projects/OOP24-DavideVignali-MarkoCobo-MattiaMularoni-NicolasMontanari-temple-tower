@@ -25,8 +25,8 @@ import javafx.stage.Stage;
  */
 public final class SceneManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(SceneManager.class);
-    private static final double INITIAL_HEIGHT = Screen.getPrimary().getBounds().getHeight();
-    private static final double INITIAL_WIDTH = Screen.getPrimary().getBounds().getWidth();
+    private static final double INITIAL_HEIGHT = Screen.getPrimary().getBounds().getHeight() / 2;
+    private static final double INITIAL_WIDTH = Screen.getPrimary().getBounds().getWidth() / 2;
     private static final String CSS_PATH = "/css/main.css";
 
     private final GameController controller;
@@ -44,6 +44,8 @@ public final class SceneManager {
         this.controller = new GameControllerImpl();
         this.scene = new Scene(new StackPane(), INITIAL_WIDTH, INITIAL_HEIGHT);
         stage.setScene(scene);
+        stage.setTitle("Temple Tower");
+        stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/icon.png")));
         initializeMenu();
     }
 

@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import it.unibo.templetower.controller.ModdingMenuController;
+import it.unibo.templetower.utils.BackgroundUtils;
 import it.unibo.templetower.utils.Pair;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -128,7 +129,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         final Button button = new Button(text);
         button.getStyleClass().add("modding-button");
         button.setPrefWidth(BUTTON_WIDTH);
-        button.setOnAction(e -> action.run());
+        button.setOnAction(_ -> action.run());
         return button;
     }
 
@@ -195,10 +196,10 @@ public final class ModdingMenuView implements SceneActivationListener {
             final Button selectButton = new Button(towerDirName.equals(selectedTowerName) ? "Selected" : "Select");
             selectButton.getStyleClass().addAll("select-button",
                 towerDirName.equals(selectedTowerName) ? "selected-button" : "");
-            selectButton.setOnAction(e -> handleSelectTower(towerDirName));
+            selectButton.setOnAction(_ -> handleSelectTower(towerDirName));
             final Button deleteButton = new Button("X");
             deleteButton.getStyleClass().add("delete-button");
-            deleteButton.setOnAction(e -> handleDeleteTower(towerDirName));
+            deleteButton.setOnAction(_ -> handleDeleteTower(towerDirName));
             buttonsContainer.getChildren().addAll(selectButton, deleteButton);
             itemContainer.getChildren().addAll(towerLabel, buttonsContainer);
             if (towerDirName.equals(selectedTowerName)) {
@@ -244,7 +245,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             noButton
         );
 
-        yesButton.setOnAction(e -> {
+        yesButton.setOnAction(_ -> {
             final Optional<String> error = controller.deleteTower(towerName);
             if (error.isPresent()) {
                 showErrorDialog("Delete Error", error.get());
@@ -261,7 +262,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             popupStage.close();
         });
 
-        noButton.setOnAction(e -> popupStage.close());
+        noButton.setOnAction(_ -> popupStage.close());
         popupStage.showAndWait();
     }
 
@@ -283,7 +284,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             noButton
         );
 
-        yesButton.setOnAction(e -> {
+        yesButton.setOnAction(_ -> {
             final Optional<String> error = this.controller.clearTowersDirectory();
             if (error.isPresent()) {
                 showErrorDialog("Clear Error", error.get());
@@ -298,7 +299,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             popupStage.close();
         });
 
-        noButton.setOnAction(e -> popupStage.close());
+        noButton.setOnAction(_ -> popupStage.close());
         popupStage.showAndWait();
     }
 
@@ -327,27 +328,7 @@ public final class ModdingMenuView implements SceneActivationListener {
      * @param background The background ImageView to be resized
      */
     private void setupBackgroundResizing(final StackPane root, final ImageView background) {
-        root.widthProperty().addListener((obs, old, newVal) -> {
-            double newWidth = newVal.doubleValue();
-            double newHeight = newWidth * background.getImage().getHeight() / background.getImage().getWidth();
-            if (newHeight < root.getHeight()) {
-                newHeight = root.getHeight();
-                newWidth = newHeight * background.getImage().getWidth() / background.getImage().getHeight();
-            }
-            background.setFitWidth(newWidth);
-            background.setFitHeight(newHeight);
-        });
-
-        root.heightProperty().addListener((obs, old, newVal) -> {
-            double newHeight = newVal.doubleValue();
-            double newWidth = newHeight * background.getImage().getWidth() / background.getImage().getHeight();
-            if (newWidth < root.getWidth()) {
-                newWidth = root.getWidth();
-                newHeight = newWidth * background.getImage().getHeight() / background.getImage().getWidth();
-            }
-            background.setFitWidth(newWidth);
-            background.setFitHeight(newHeight);
-        });
+        BackgroundUtils.setupBackgroundResizing(root, background);
     }
 
     /**
@@ -381,7 +362,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         message.setPrefWidth(POPUP_WIDTH - POPUP_PADDING);
         final Button closeButton = new Button("Close");
         closeButton.getStyleClass().add(POPUP_BUTTON_STYLE);
-        closeButton.setOnAction(e -> popupStage.close());
+        closeButton.setOnAction(_ -> popupStage.close());
         popupRoot.getChildren().addAll(message, closeButton);
         final Scene popupScene = new Scene(popupRoot, POPUP_WIDTH, POPUP_HEIGHT);
         popupScene.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());

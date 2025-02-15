@@ -3,6 +3,7 @@ package it.unibo.templetower.view;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import it.unibo.templetower.utils.BackgroundUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -41,11 +42,9 @@ public final class EnterMenu {
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
-        // Make background responsive to window resizing
-        root.widthProperty().addListener((obs, old, newVal)
-                -> background.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, old, newVal)
-                -> background.setFitHeight(newVal.doubleValue()));
+
+        // Make background responsive using BackgroundUtils
+        BackgroundUtils.setupBackgroundResizing(root, background);
 
         // Create content layout
         final VBox content = new VBox(BUTTON_SPACING);
@@ -53,10 +52,7 @@ public final class EnterMenu {
 
         // Add difficulty menu button
         final Button difficultyButton = new Button("Go to Difficulty Menu");
-        difficultyButton.setOnAction(e -> {
-            // Non fermiamo più la musica quando cambiamo scena
-            manager.switchTo("difficulty_menu");
-        });
+        difficultyButton.setOnAction(e -> manager.switchTo("difficulty_menu"));
         content.getChildren().add(difficultyButton);
 
         final VBox rightButtons = new VBox(BUTTON_SPACING);
@@ -75,14 +71,8 @@ public final class EnterMenu {
         leaderBoardButton.setOnAction(e -> {
             // Add your action here
         });
-        moddingButton.setOnAction(e -> {
-            manager.switchTo("modding_menu"); // Switch to modding menu scene
-        });
-        settingsButton.setOnAction(e -> {
-            manager.switchTo("settings_menu");
-        });
-
-
+        moddingButton.setOnAction(e -> manager.switchTo("modding_menu")); // Switch to modding menu scene
+        settingsButton.setOnAction(e -> manager.switchTo("settings_menu"));
 
         // Add buttons to rightButtons in the correct order
         rightButtons.getChildren().addAll(personalizationButton, leaderBoardButton, moddingButton, settingsButton);
@@ -95,9 +85,6 @@ public final class EnterMenu {
         // Combine background and content
         root.getChildren().addAll(background, mainLayout);
 
-        // Return pane directly without storing in a variable
         return root;
-
     }
-
 }

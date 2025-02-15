@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import it.unibo.templetower.controller.MusicController;
+import it.unibo.templetower.utils.BackgroundUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -42,11 +43,8 @@ public class SettingsMenuView {
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
 
-        // Make background responsive to window resizing
-        root.widthProperty().addListener((obs, old, newVal)
-                -> background.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, old, newVal)
-                -> background.setFitHeight(newVal.doubleValue()));
+        // Make background responsive using BackgroundUtils
+        BackgroundUtils.setupBackgroundResizing(root, background);
 
         // Create content layout
         final VBox content = new VBox(10);
