@@ -203,112 +203,64 @@ il motore di un videogioco, sarebbe impossibile riusarlo per costruire un server
 	\item Si tratta in modo inutilmente prolisso la divisione in package, elencando ad esempio le classi una per una.
 \end{itemize}
 
-\subsection*{Esempio minimale (e quindi parziale) di sezione di progetto con UML ben realizzati}
 
-\subsubsection{Personalità intercambiabili}
-
-\begin{figure}[H]
-\centering{}
-\includegraphics[width=\textwidth]{img/strategy}
-\caption{Rappresentazione UML del pattern Strategy per la personalità di GLaDOS}
-\label{img:strategy}
-\end{figure}
-
-\paragraph{Problema} GLaDOS ha più personalità intercambiabili, la cui presenza deve essere trasparente al client.
-
-\paragraph{Soluzione} Il sistema per la gestione della personalità utilizza il \textit{pattern Strategy}, come da
-\Cref{img:strategy}: le implementazioni di \texttt{Personality} possono essere modificate, e la
-modifica impatta direttamente sul comportamento di GLaDOS.
-
-\subsubsection{Riuso del codice delle personalità}
+\subsubsection{Cambio vista}
 
 \begin{figure}[H]
 \centering{}
-\includegraphics[width=\textwidth]{img/template}
-\caption{Rappresentazione UML dell'applicazione del pattern Template Method alla gerarchia delle Personalità}
-\label{img:template}
+\includegraphics[width=\textwidth]{img/scenemanager.png}
+\caption{Rappresentazione UML del pattern Factory per la gestione delle viste (esempio con 2 viste)}
+\label{img:factory}
 \end{figure}
 
-\paragraph{Problema} In fase di sviluppo, sono state sviluppate due personalità, una buona ed una cattiva.
-Quella buona restituisce sempre una torta vera, mentre quella cattiva restituisce sempre la
-promessa di una torta che verrà in realtà disattesa.
-Ci si è accorti che diverse personalità condividevano molto del comportamento,
-portando a classi molto simili e a duplicazione.
-
-\paragraph{Soluzione} Dato che le due personalità differiscono solo per il comportamento da effettuarsi in caso di percorso completato con successo,
-è stato utilizzato il \textit{pattern template method} per massimizzare il riuso, come da \Cref{img:template}.
-Il metodo template è \texttt{onSuccess()}, che chiama un metodo astratto e protetto
-\texttt{makeCake()}.
-
-\subsubsection{Gestione di output multipli}
-
-\begin{figure}[H]
-\centering{}
-\includegraphics[width=.7\textwidth]{img/observer}
-\caption{Il pattern Observer è usato per consentire a GLaDOS di informare tutti i sistemi di output in ascolto}
-\label{img:observer}
-\end{figure}
-
-\paragraph{Problema} Il sistema deve supportare output multipli. In particolare, si richiede che vi sia un logger che stampa a terminale o su file,
-e un'interfaccia grafica che mostri una rappresentazione grafica del sistema.
-
-\paragraph{Soluzione} Dato che i due sistemi di reporting utilizzano le medesime informazioni, si è deciso di raggrupparli dietro l'interfaccia \texttt{Output}.
-A questo punto, le due possibilità erano quelle di far sì che \texttt{GLaDOS} potesse pilotarle entrambe.
-Invece di fare un sistema in cui questi output sono obbligatori e connessi, si è deciso di usare maggior flessibilità (anche in vista di future estensioni)
-e di adottare una comunicazione uno-a-molti fra \texttt{GLaDOS} ed i sistemi di output.
-La scelta è quindi ricaduta sul \textit{pattern Observer}: \texttt{GLaDOS} è observable, e le istanze di \texttt{Output} sono observer.
+\paragraph{Problema} Il gioco ha diverse viste, una per ogni situazione (Menu iniziale, vista sulle stanze, stanze singole ecc...),
 %
-Il suo utilizzo è esemplificato in \Cref{img:observer}
+è necessario gestire la visualizzazione in un modo coerente.
 
-
-\subsection*{Contro-esempio: pessimo diagramma UML}
-
-In \Cref{img:badarch} è mostrato il modo \textbf{sbagliato} di fare le cose.
+\paragraph{Soluzione} Il sistema per la gestione delle viste utilizza il \textit{pattern Factory}, come da
+\Cref{img:factory}: le classi che implementano le viste \texttt{NomevistaView} una volta create, vengono inserite nel mapping
 %
-Questo schema è fatto male perché:
+interno di \texttt{SceneManager} il quale si occupa di: 
 \begin{itemize}
-	\item È caotico.
-	\item È difficile da leggere e capire.
-	\item Vi sono troppe classi, e non si capisce bene quali siano i rapporti che intercorrono fra loro.
-	\item Si mostrano elementi implementativi irrilevanti, come i campi e i metodi privati nella classe \texttt{AbstractEnvironment}.
-	\item Se l'intenzione era quella di costruire un diagramma architetturale, allora lo schema è ancora più sbagliato, perché mostra pezzi di implementazione.
-	\item Una delle classi, in alto al centro, galleggia nello schema, non connessa a nessuna altra classe, e di fatto costituisce da sola un secondo schema UML scorrelato al resto
-	\item Le interfacce presentano tutti i metodi e non una selezione che aiuti il lettore a capire quale parte del sistema si vuol mostrare.
+	\item All'avvio del gioco: inizializzare le viste relative alle schermate inziali.
+	\item Dopo il caricamento della torre: inizializzare le viste degli elementi di gioco.
+	\item Quando si chiama \texttt{switchTo}: caricare il nuovo Pane nella scena e visualizzarlo.
 \end{itemize}
+Questa soluzione permette in ogni parte della view, richiamando \texttt{switchTo} di passare alla view successiva passando il nome di essa,
+%
+permettendo una certa flessibilità nella creazione e linking di eventuali nuove viste.
 
+\subsubsection{Stanze del gioco}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering{}
-\includegraphics[width=\textwidth]{img/badarch}
-\caption{Schema UML mal fatto e con una pessima descrizione, che non aiuta a capire. Don't try this at home.}
-\label{img:badarch}
+\includegraphics[width=\textwidth]{img/behavior.png}
+\caption{Rappresentazione UML del pattern Strategy per le stanze del gioco}
+\label{img:rooms}
 \end{figure}
 
+\paragraph{Problema} Temple Tower ha più stanze, ognuna con un contenuto differente.
+
+\paragraph{Soluzione} Il sistema per la modellazione delle stanze utilizza il \textit{pattern Strategy}, come da
+\Cref{img:rooms}: le implementazioni di \texttt{RoomBehavior} possono essere modificate, e a seconda di cosa si inserisce nel metodo
+%
+\texttt{interact()}, il giocatore subirà o lancierà (a seconda di \texttt{direction}) delle azione da/alla stanza.
+%
+Per esempio un metodo interact dentro Trap toglierà punti vita al Player, mentre la stanza Stairs cambierà il piano di quest'ultimo.
+%
+Questo pattern permette di ampliare i tipi possibili di stanze richiedendo poche modifiche all'interno del codice già esistente. 
 
 \chapter{Sviluppo}
 \section{Testing automatizzato}
-
-Il testing automatizzato è un requisito di qualunque progetto software che si rispetti, e consente di verificare che non vi siano regressioni nelle funzionalità a fronte di aggiornamenti.
-%
-Per quanto riguarda questo progetto è considerato sufficiente un test minimale, a patto che sia completamente automatico.
-%
-Test che richiedono l'intervento da parte dell'utente sono considerati \textit{negativamente} nel computo del punteggio finale.
-
-\subsection*{Elementi positivi}
+Per il testing generale di Temple Tower è stato utilizzata la suite JUnit per il testing automatizzato.
+\subsection*{Controller}
+Sono state testate nel controller, tutte le classi che interagiscono tramite esso, nella view.
 
 \begin{itemize}
- \item Si descrivono molto brevemente i componenti che si è deciso di sottoporre a test automatizzato.
- \item Si utilizzano suite specifiche (e.g. JUnit) per il testing automatico.
-\end{itemize}
-
-\subsection*{Elementi negativi}
-\begin{itemize}
- \item Non si realizza alcun test automatico.
- \item La non presenza di testing viene aggravata dall'adduzione di motivazioni non valide. Ad esempio, si scrive che l'interfaccia grafica non è testata automaticamente perché è \emph{impossibile} farlo\footnote{Testare in modo automatico le interfacce grafiche è possibile (si veda, come esempio, \url{https://github.com/TestFX/TestFX}), semplicemente nel corso non c'è modo e tempo di introdurvi questo livello di complessità. Il fatto che non vi sia stato insegnato come farlo non implica che sia impossibile!}.
- \item Si descrive un testing di tipo manuale in maniera prolissa.
- \item Si descrivono test effettuati manualmente che sarebbero potuti essere automatizzati, ad esempio scrivendo che si è usata l'applicazione manualmente.
- \item Si descrivono test non presenti nei sorgenti del progetto.
- \item I test, quando eseguiti, falliscono.
+ \item Giocatore: vita, cambio stanza e armi.
+ \item Nemico: vita e attacchi.
+ \item Cambio piano.
+ \item Boss finale: sistema di decisione sull'arrivo alla stanza del boss finale.
 \end{itemize}
 
 \section{Note di sviluppo}
@@ -420,6 +372,9 @@ Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink}
 \subsubsection{Utilizzo di Optional}
 Utilizzato in diverse parti qui un esempio: \href{https://google.com}{permalink}/ 
 \subsection{Mularoni}
+\subsubsection{Utilizzo di \texttt{Stream} e lambda expressions} - Esempio: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo di \texttt{Threading e Task} in Javafx per prevenire race condition} - Esempio: \href{https://google.com}{permalink}/ 
+\subsubsection{Utilizzo della libreria SLF4J} - Esempio: \href{https://google.com}{permalink}/ 
 \subsection{Montanari}
 \subsection{Cobo}
 
@@ -466,6 +421,10 @@ Si dovrà anche cercare di descrivere \emph{in modo quanto più obiettivo possib
 Si ricorda, a tal proposito, che ciascuno studente è responsabile solo della propria sezione: non è un problema se ci sono opinioni contrastanti, a patto che rispecchino effettivamente l'opinione di chi le scrive.
 Nel caso in cui si pensasse di portare avanti il progetto, ad esempio perché effettivamente impiegato, o perché sufficientemente ben riuscito da poter esser usato come dimostrazione di esser capaci progettisti, si descriva brevemente verso che direzione portarlo.
 
+\subsubsection{Mularoni}
+Considerando il tempo a disposizione e gli impegni derivanti da lavoro e altri esami, reputo questo progetto "accettabile" ma con un grande potenziale inespresso,
+%
+dovuto sia alla scarsa divisibilità del progetto a livello di idea (è difficile che tutti lavorino a compartimenti stagni) che di organizzazione generale.
 \section{Difficoltà incontrate e commenti per i docenti}
 
 Questa sezione, \textbf{opzionale}, può essere utilizzata per segnalare ai docenti eventuali problemi o difficoltà incontrate nel corso o nello svolgimento del progetto, può essere vista come una seconda possibilità di valutare il corso (dopo quella offerta dalle rilevazioni della didattica) avendo anche conoscenza delle modalità e delle difficoltà collegate all'esame, cosa impossibile da fare usando le valutazioni in aula per ovvie ragioni.
