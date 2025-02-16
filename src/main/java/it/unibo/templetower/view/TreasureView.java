@@ -41,6 +41,7 @@ public final class TreasureView {
     private static final int DIALOG_HEIGHT = 600;
     private static final int VBOX = 50;
     private static final double UNO = 1.5;
+    private static final double RATE = 2.5;
     private static final int VBOX2 = 25;
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
@@ -86,6 +87,8 @@ public final class TreasureView {
         final HBox buttonContainer = new HBox(SPACING4);
         buttonContainer.setAlignment(Pos.CENTER);
         buttonContainer.getChildren().addAll(btOpen, btExit);
+        btOpen.toFront();
+        btExit.toFront();
 
         mainContainer.getChildren().addAll(message, buttonContainer);
         root.getChildren().add(mainContainer);
@@ -106,6 +109,7 @@ public final class TreasureView {
 
             root.getChildren().add(mediaView);
 
+            mediaPlayer.setRate(RATE);
             mediaPlayer.setOnReady(() -> {
                 mediaPlayer.seek(Duration.ZERO);
                 mediaPlayer.play();

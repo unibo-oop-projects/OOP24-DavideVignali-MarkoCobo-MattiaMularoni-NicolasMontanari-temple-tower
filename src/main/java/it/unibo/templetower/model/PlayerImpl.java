@@ -35,6 +35,8 @@ public final class PlayerImpl implements Player {
             this.actualRoom = Optional.of(actualRoom.get());
         }
         weapon.add(startweapon);
+        weapon.add(startweapon);
+
 
         this.life = 100;
         this.experience = 0;
