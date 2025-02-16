@@ -32,6 +32,7 @@ public final class GameControllerImpl implements GameController {
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private SpawnManagerImpl spawnManager;
     private boolean isBoss;
+    private boolean isToReload;
 
     /**
      * Constructs a new GameControllerImpl instance.
@@ -41,6 +42,7 @@ public final class GameControllerImpl implements GameController {
     public GameControllerImpl() {
         currentFloorIndex = 1;
         isBoss = false;
+        isToReload = false;
         assetManager = new AssetManager();
         assetManager.addGenericEntityAsset("combat_view", "Images/enemy.png");
         assetManager.addGenericEntityAsset("treasure_view", "Images/treasure.png");
@@ -57,6 +59,7 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void goToNextFloor() {
+        isToReload = true;
         currentFloorIndex += 1;
         currentRoomIndex = 0;
         rooms.clear();
@@ -258,5 +261,17 @@ public final class GameControllerImpl implements GameController {
     @Override
     public String getBackgroundImage() {
         return currentFloor.spritePath();
+    }
+
+    @Override
+    public String getActualRoomName() {
+        return rooms.get(currentRoomIndex).getName();
+    }
+
+    @Override
+    public Boolean isToReload() {
+        final Boolean tmp = isToReload;
+        isToReload = false;
+        return tmp;
     }
 }

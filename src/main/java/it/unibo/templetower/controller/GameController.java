@@ -9,6 +9,14 @@ import it.unibo.templetower.model.Weapon;
  * including room navigation, game state management, and player actions.
  */
 public interface GameController {
+    /**
+     * @return if the room is to reload.
+     */
+    Boolean isToReload();
+    /**
+     * @return  the actual room name
+     */
+    String getActualRoomName();
 
     /**
      * Moves the player to the next floor in the game.
