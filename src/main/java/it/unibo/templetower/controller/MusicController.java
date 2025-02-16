@@ -60,7 +60,7 @@ public final class MusicController {
 
         try {
             // Prova prima con il path completo
-           final String resourcePath = "sounds/" + musicFile;
+            final String resourcePath = "sounds/" + musicFile;
             LOGGER.info("Trying to load resource from: {}", resourcePath);
 
             InputStream audioStream = getClass().getClassLoader()
@@ -68,7 +68,6 @@ public final class MusicController {
 
             // Se non trova il file, prova senza la cartella sounds
             if (audioStream == null) {
-                LOGGER.warn("File not found in sounds directory, trying direct filename: {}", musicFile);
                 audioStream = getClass().getClassLoader().getResourceAsStream(musicFile);
             }
 
@@ -80,7 +79,7 @@ public final class MusicController {
             }
 
             LOGGER.info("Audio file found, creating AudioInputStream");
-           final AudioInputStream audioInput = AudioSystem.getAudioInputStream(
+            final AudioInputStream audioInput = AudioSystem.getAudioInputStream(
                     new BufferedInputStream(audioStream)
             );
 
@@ -90,7 +89,7 @@ public final class MusicController {
 
             LOGGER.info("Setting up volume control");
             if (currentClip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-              final  FloatControl gainControl
+                final FloatControl gainControl
                         = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(DEFAULT_VOLUME);
                 LOGGER.info("Volume control set successfully");
@@ -118,6 +117,17 @@ public final class MusicController {
     }
 
     /**
+     * Restarts the currently playing music track, if any.
+     */
+    public void restartMusic() {
+        if (musicModel.isPlaying() && currentClip == null) {
+            musicModel.setIsPlaying(true);
+            LOGGER.info("Music restarted successfully");
+        }
+
+    }
+
+    /**
      * Stops the currently playing music track, if any.
      */
     public void stopMusic() {
@@ -134,12 +144,56 @@ public final class MusicController {
     /**
      * Starts a new music track, stopping any currently playing music.
      *
-     * @param musicFile the name of the music file to play, located in the audio resources folder
+     * @param musicFile the name of the music file to play, located in the audio
+     * resources folder
      */
     public void startNewMusic(final String musicFile) {
         if (musicModel.isPlaying() && currentClip != null) {
             currentClip.stop();
             musicModel.setIsPlaying(false);
+        }
+    }
+
+    /**
+     * Turn up the volume current music track.
+     */
+    public void raiseVol() {
+        if (currentClip != null && musicModel.isPlaying()) {
+
+            final FloatControl gainControl = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
+            final float currentVolume = gainControl.getValue();
+            final float maxVol = gainControl.getMaximum();
+            final float raise = 1.0f;
+
+            if (currentVolume + raise > maxVol) {
+                gainControl.setValue(maxVol);
+            } else {
+                gainControl.setValue(currentVolume + raise);
+            }
+            LOGGER.info("Volume raised to: {}", gainControl.getValue());
+
+        }
+
+    }
+
+    /**
+     * Turn down the volume current music track.
+     */
+    public void lowerVol() {
+        if (currentClip != null && musicModel.isPlaying()) {
+
+            final FloatControl gainControl = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
+            final float currentVolume = gainControl.getValue();
+            final float minVol = gainControl.getMinimum();
+            final float lower = -1.0f;
+
+            if (currentVolume + lower < minVol) {
+                gainControl.setValue(minVol);
+            } else {
+                gainControl.setValue(currentVolume + lower);
+            }
+            LOGGER.info("Volume lowered to: {}", gainControl.getValue());
+
         }
     }
 
