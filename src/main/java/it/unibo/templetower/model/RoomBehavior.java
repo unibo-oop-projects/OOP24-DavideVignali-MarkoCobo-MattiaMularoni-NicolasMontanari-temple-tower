@@ -6,20 +6,11 @@ package it.unibo.templetower.model;
  * a monster, a room with a trap, etc.
  */
 public interface RoomBehavior {
-    /**
-     * 
-     */
-    void generateContent();
 
     /**
      * @param player the player that interacts with the room
      * @param direction the direction in which the interaction occurs
      */
     void interact(Player player, int direction);
-
-    /**
-     * @return the element in the Treasure
-     */
-    int getElement();
 
 }

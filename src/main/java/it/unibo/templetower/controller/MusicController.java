@@ -59,21 +59,21 @@ public final class MusicController {
         LOGGER.info("Attempting to start music: {}", musicFile);
 
         try {
-            // Prova prima con il path completo
+            // try first to load the resource from the sounds folder
             final String resourcePath = "sounds/" + musicFile;
             LOGGER.info("Trying to load resource from: {}", resourcePath);
 
             InputStream audioStream = getClass().getClassLoader()
                     .getResourceAsStream(resourcePath);
 
-            // Se non trova il file, prova senza la cartella sounds
+            // if the resource is not found in the sounds folder, try the root
             if (audioStream == null) {
                 audioStream = getClass().getClassLoader().getResourceAsStream(musicFile);
             }
 
             if (audioStream == null) {
                 LOGGER.error("Audio file not found in any location: {}", musicFile);
-                // Stampa tutti i dettagli utili per il debug
+                // print the current working directory to help debug
                 LOGGER.error("Current working directory: {}", System.getProperty("user.dir"));
                 return;
             }

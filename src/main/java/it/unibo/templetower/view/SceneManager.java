@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
-import it.unibo.templetower.controller.GameDataManagerImpl;
+import it.unibo.templetower.controller.GameDataManager;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -153,7 +153,7 @@ public final class SceneManager {
      * @return true if a tower is loaded, false otherwise
      */
     private boolean isTowerLoaded() {
-        return GameDataManagerImpl.getInstance().getTowerPath().isPresent();
+        return GameDataManager.getInstance().getTowerPath().isPresent();
     }
 
     /**
