@@ -10,9 +10,9 @@ import it.unibo.templetower.model.Weapon;
  */
 public interface GameController {
     /**
-     * @return if the room is to reload.
+     * @return list of button to enabled
      */
-    Boolean isToReload();
+    List<Boolean> getEnabledList();
     /**
      * @return  the actual room name
      */
@@ -60,6 +60,11 @@ public interface GameController {
      * Performs an attack action from the enemy towards the player.
      */
     void attackPlayer();
+
+    /**
+     * @param diff
+     */
+    void setPlayerDifficulty(double diff);
 
     /**
      * Gets the current life points of the player.

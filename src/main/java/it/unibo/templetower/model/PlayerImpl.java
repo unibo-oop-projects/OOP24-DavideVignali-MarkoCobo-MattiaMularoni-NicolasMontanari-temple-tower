@@ -3,6 +3,7 @@ package it.unibo.templetower.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,7 @@ public final class PlayerImpl implements Player {
     private Optional<Room> actualRoom;
     private final int experience;
     private int actualWeaponIndex;
+    private double difficulty = 1;
 
     /**
      * Creates a new player with initial weapon and room.
@@ -39,11 +41,17 @@ public final class PlayerImpl implements Player {
         this.actualWeaponIndex = 0;
     }
 
+
+    @Override
+    public void setDifficulty(final double diff) {
+        this.difficulty = diff;
+    }
+
     @Override
     public void attack(final EnemyRoom enemy) {
         if (enemy != null) {
             enemy.takeDamage(weapon.get(actualWeaponIndex).attack().getY()
-                    * actualRoom.get().getMoltiplicator(this.weapon.get(actualWeaponIndex)));
+                    * actualRoom.get().getMoltiplicator(this.weapon.get(actualWeaponIndex)) * difficulty);
         }
     }
 

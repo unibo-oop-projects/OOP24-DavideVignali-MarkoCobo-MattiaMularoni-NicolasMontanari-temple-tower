@@ -18,6 +18,9 @@ public final class DifficultyMenu {
 
     private static final int BUTTON_SPACING = 10;
     private static final String MAIN_ID = "main_floor_view";
+    private static final double EASY = 1.5;
+    private static final double MEDIUM = 1;
+    private static final double STRONG = 0.5;
 
     /**
      * Creates the scene for the difficulty menu.
@@ -52,9 +55,18 @@ public final class DifficultyMenu {
         final Button hardButton = new Button("DIFFICILE");
 
         // Set button actions
-        easyButton.setOnAction(e -> manager.switchTo(MAIN_ID));
-        mediumButton.setOnAction(e -> manager.switchTo(MAIN_ID));
-        hardButton.setOnAction(e -> manager.switchTo(MAIN_ID));
+        easyButton.setOnAction(e -> {
+            manager.switchTo(MAIN_ID);
+            controller.setPlayerDifficulty(EASY);
+        });
+        mediumButton.setOnAction(e -> {
+            manager.switchTo(MAIN_ID);
+            controller.setPlayerDifficulty(MEDIUM);
+        });
+        hardButton.setOnAction(e -> {
+            manager.switchTo(MAIN_ID);
+            controller.setPlayerDifficulty(STRONG);
+        });
 
         // Add buttons to container
         buttonContainer.getChildren().addAll(

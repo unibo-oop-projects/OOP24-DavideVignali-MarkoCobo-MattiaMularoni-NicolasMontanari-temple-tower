@@ -7,6 +7,11 @@ import java.util.List;
  */
 public interface Player {
     /**
+     * @param diff
+     */
+    void setDifficulty(double diff);
+
+    /**
      * @param enemy
      */
     void attack(EnemyRoom enemy);

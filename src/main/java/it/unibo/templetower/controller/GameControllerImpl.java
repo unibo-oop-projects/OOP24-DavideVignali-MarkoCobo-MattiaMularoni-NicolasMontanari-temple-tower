@@ -1,5 +1,7 @@
 package it.unibo.templetower.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,7 +34,7 @@ public final class GameControllerImpl implements GameController {
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private SpawnManagerImpl spawnManager;
     private boolean isBoss;
-    private boolean isToReload;
+    private final List<Boolean> enabledButtons;
 
     /**
      * Constructs a new GameControllerImpl instance.
@@ -42,7 +44,6 @@ public final class GameControllerImpl implements GameController {
     public GameControllerImpl() {
         currentFloorIndex = 1;
         isBoss = false;
-        isToReload = false;
         assetManager = new AssetManager();
         assetManager.addGenericEntityAsset("combat_view", "Images/enemy.png");
         assetManager.addGenericEntityAsset("treasure_view", "Images/treasure.png");
@@ -53,6 +54,7 @@ public final class GameControllerImpl implements GameController {
         // Initialize player
 
         player = new PlayerImpl(startWeapon, Optional.empty());
+        enabledButtons = new ArrayList<>();
     }
 
     /**
@@ -60,12 +62,17 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public void goToNextFloor() {
-        isToReload = true;
         currentFloorIndex += 1;
         currentRoomIndex = 0;
         rooms.clear();
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
         rooms.addAll(currentFloor.rooms());
+
+        enabledButtons.clear();
+
+        rooms.forEach(r -> {
+            enabledButtons.add(false);
+        });
 
         if ("boss_view".equals(rooms.get(0).getName())) {
             isBoss = true;
@@ -155,6 +162,9 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public String enterRoom() {
+        if (!"stairs_view".equals(getActualRoomName())) {
+            enabledButtons.set(currentRoomIndex, true);
+        }
         rooms.get(currentRoomIndex).enter(player);
         return rooms.get(currentRoomIndex).getName();
     }
@@ -192,6 +202,10 @@ public final class GameControllerImpl implements GameController {
         final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
         currentFloor = generatedFloor;
         rooms = generatedFloor.rooms();
+        enabledButtons.clear();
+        rooms.forEach(r -> {
+            enabledButtons.add(false);
+        });
         currentRoomIndex = 0;
     }
 
@@ -270,9 +284,12 @@ public final class GameControllerImpl implements GameController {
     }
 
     @Override
-    public Boolean isToReload() {
-        final Boolean tmp = isToReload;
-        isToReload = false;
-        return tmp;
+    public void setPlayerDifficulty(final double diff) {
+        player.setDifficulty(diff);
+    }
+
+    @Override
+    public List<Boolean> getEnabledList() {
+        return Collections.unmodifiableList(enabledButtons);
     }
 }
