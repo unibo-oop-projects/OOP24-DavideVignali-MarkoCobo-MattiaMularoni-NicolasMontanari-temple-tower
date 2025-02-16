@@ -11,7 +11,7 @@ import it.unibo.templetower.utils.EnemyGenerator;
 /**
  * Manages the spawning of floors and rooms in the temple tower.
  */
-public class SpawnManagerImpl {
+public class SpawnManager {
     private static final double ENEMY_ROOM_CHANCE = 0.5;
     private static final double EMPTY_ROOM_CHANCE = 0.25;
     private static final double TREASURE_ROOM_CHANCE = 0.125;
@@ -33,7 +33,7 @@ public class SpawnManagerImpl {
      *
      * @param towerData the tower record holding floor data among other info
      */
-    public SpawnManagerImpl(final Tower towerData) {
+    public SpawnManager(final Tower towerData) {
         this.passedFloors = 0;
         this.floors = new ArrayList<>(towerData.floors());
         this.random = new Random();

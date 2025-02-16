@@ -57,25 +57,17 @@ public final class EnterMenu {
 
         final VBox rightButtons = new VBox(BUTTON_SPACING);
         rightButtons.setAlignment(Pos.CENTER_RIGHT);
-        rightButtons.setPadding(new Insets(0, RIGHT_PADDING, 0, 0)); // Add right padding
+        rightButtons.setPadding(new Insets(0, RIGHT_PADDING, 0, 0));
 
-        final Button personalizationButton = new Button("Personalization");
-        final Button leaderBoardButton = new Button("LeaderBoard");
         final Button moddingButton = new Button("Modding Menu");
         final Button settingsButton = new Button("Settings");
 
         // Add action handlers for the new buttons
-        personalizationButton.setOnAction(e -> {
-            // Add your action here
-        });
-        leaderBoardButton.setOnAction(e -> {
-            // Add your action here
-        });
-        moddingButton.setOnAction(e -> manager.switchTo("modding_menu")); // Switch to modding menu scene
+        moddingButton.setOnAction(e -> manager.switchTo("modding_menu"));
         settingsButton.setOnAction(e -> manager.switchTo("settings_menu"));
 
         // Add buttons to rightButtons in the correct order
-        rightButtons.getChildren().addAll(personalizationButton, leaderBoardButton, moddingButton, settingsButton);
+        rightButtons.getChildren().addAll(moddingButton, settingsButton);
 
         // Create main layout using BorderPane
         final BorderPane mainLayout = new BorderPane();

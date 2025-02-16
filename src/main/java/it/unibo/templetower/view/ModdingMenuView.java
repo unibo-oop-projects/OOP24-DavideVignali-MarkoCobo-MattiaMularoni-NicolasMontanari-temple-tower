@@ -48,10 +48,10 @@ public final class ModdingMenuView implements SceneActivationListener {
 
     private boolean hasShownPopup;
     private Stage ownerStage;
-    private ListView<HBox> towerList; // Changed from ListView<String> to ListView<HBox>
+    private ListView<HBox> towerList;
     private final List<String> importedTowers;
     private final ModdingMenuController controller;
-    private String selectedTowerName; // Track currently selected tower
+    private String selectedTowerName;
 
     /**
      * Creates a new ModdingMenuView with initialized fields.
@@ -59,7 +59,7 @@ public final class ModdingMenuView implements SceneActivationListener {
     public ModdingMenuView() {
         this.hasShownPopup = false;
         this.ownerStage = null;
-        this.towerList = new ListView<>(); // Now initialized as ListView<HBox>
+        this.towerList = new ListView<>();
         this.importedTowers = new ArrayList<>();
         this.controller = new ModdingMenuController();
         this.selectedTowerName = null;

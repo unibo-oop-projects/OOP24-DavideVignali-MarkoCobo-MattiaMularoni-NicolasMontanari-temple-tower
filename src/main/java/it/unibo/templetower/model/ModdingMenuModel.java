@@ -18,7 +18,7 @@ import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
-import it.unibo.templetower.controller.GameDataManagerImpl;
+import it.unibo.templetower.controller.GameDataManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class ModdingMenuModel {
     private static final String TOWER_CONFIG_FILENAME = "tower.json";
     private final List<String> importedTowers;
     private final Map<String, Pair<String, String>> towerInfo = new HashMap<>();
-    private final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+    private final GameDataManager gameDataManager = GameDataManager.getInstance();
 
     /**
      * Constructs a new ModdingMenuModel and initializes the user towers directory.
@@ -317,7 +317,7 @@ public class ModdingMenuModel {
             FileUtils.deleteDirectory(userDir);
         }
         this.importedTowers.clear();
-        this.towerInfo.clear(); // Clear the tower info map too
+        this.towerInfo.clear();
         if (!initializeUserDirectory()) {
             throw new IOException("Failed to reinitialize user directory after deletion");
         }
@@ -359,7 +359,7 @@ public class ModdingMenuModel {
      */
     public int getTowerHeight(final String towerDirName) {
         final Path towerPath = Paths.get(USER_TOWERS_DIR, towerDirName, TOWER_CONFIG_FILENAME);
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final GameDataManager gameDataManager = GameDataManager.getInstance();
         try {
             gameDataManager.loadGameDataFromTower(towerPath.toString());
             return gameDataManager.getTower().height();
@@ -385,7 +385,7 @@ public class ModdingMenuModel {
 
         try {
             // Validate the tower configuration
-            final GameDataManagerImpl tempManager = GameDataManagerImpl.getInstance();
+            final GameDataManager tempManager = GameDataManager.getInstance();
             tempManager.loadGameDataFromTower(towerPath.toString());
             // If validation succeeds, set the path in the actual manager
             gameDataManager.setTowerPath(towerPath.toString());

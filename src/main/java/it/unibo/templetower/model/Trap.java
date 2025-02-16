@@ -22,14 +22,6 @@ public final class Trap implements RoomBehavior {
      * {@inheritDoc}
      */
     @Override
-    public void generateContent() {
-        // No content needs to be generated for traps
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void interact(final Player player, final int direction) {
         LOGGER.info("Player triggered a trap");
         player.takeDamage(damage);
@@ -41,11 +33,5 @@ public final class Trap implements RoomBehavior {
      */
     public double getDamage() {
         return this.damage;
-    }
-
-    @Override
-    public int getElement() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getElement'");
     }
 }

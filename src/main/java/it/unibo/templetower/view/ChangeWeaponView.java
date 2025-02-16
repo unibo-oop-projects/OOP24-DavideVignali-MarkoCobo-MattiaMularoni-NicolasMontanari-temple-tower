@@ -75,9 +75,9 @@ public class ChangeWeaponView {
     }
 
     /**
-     * Applica lo stile ai bottoni delle armi.
+     * Applies the style to the weapon button.
      * 
-     * @param button il pulsante da stilizzare
+     * @param button the button to style
      */
     private void styleWeaponButton(final Button button) {
         button.setStyle(

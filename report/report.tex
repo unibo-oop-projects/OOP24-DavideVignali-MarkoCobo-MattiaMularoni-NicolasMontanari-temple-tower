@@ -335,38 +335,38 @@ Nel controller sono state testate tutte le classi che vi interagiscono, oltre al
 \section{Note di sviluppo}
 
 \subsection{Cobo}
-\subsubsection{Uso di parti della libreria JDK non spiegate a lezione}
-Uso di \texttt{Clip} per gestire la riproduzione audio \href{https://google.com}{permalink}.
-\subsubsection{Uso di librerie di terze parti}
-Uso di SLF4J per il logging \href{https://google.com}{permalink}.
+\subsubsection{Uso di parti della libreria Javax sound}
+Utilizzata per la riproduzione di audio \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/controller/MusicController.java#L82C1-L84C15}{permalink}.
+\subsubsection{Uso di libreria SLF4J}
+Uso di SLF4J per il logging \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/controller/MusicController.java#L64C1-L64C75}{permalink}.
 
 \subsection{Vignali}
 \subsubsection{Utilizzo della libreria gson}
-Utilizzato principalmente in GameDataManager per l'importazione e il caricamento delle torri: \href{https://google.com}{permalink}.
+Utilizzato principalmente in GameDataManager per l'importazione e il caricamento delle torri: \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/controller/GameDataManagerImpl.java#L52C1-L67C14}{permalink}.
 \subsubsection{Utilizzo della libreria JavaFX}
-Utilizzato all'interno di ModdingMenuView insieme a codice CSS: \href{https://google.com}{permalink}.
+Utilizzato all'interno di ModdingMenuView insieme a codice CSS: \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/ModdingMenuView.java#L49C2-L54C72}{permalink}.
 \subsubsection{Utilizzo della libreria SLF4J}
-Impiego prevalente per la gestione dei log, sia nei test che nel codice: \href{https://google.com}{permalink}.
+Impiego prevalente per la gestione dei log, sia nei test che nel codice: \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/test/java/it/unibo/templetower/AppTest.java#L22C1-L34C6}{permalink}.
 \subsubsection{Utilizzo della libreria Apache Commons IO}
-Impiegata per la gestione dei file, in combinazione con java.util, durante l'importazione: \href{https://google.com}{permalink}.
+Impiegata per la gestione dei file, in combinazione con java.util, durante l'importazione: \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/model/ModdingMenuModel.java#L92C1-L95C10}{permalink}.
 \subsubsection{Utilizzo della libreria Java util zip}
-Utilizzata per la decompressione dei file: \href{https://google.com}{permalink}. 
+Utilizzata per la decompressione dei file: \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/model/ModdingMenuModel.java#L161C1-L192C10}{permalink}. 
 \subsubsection{Utilizzo di stream e lambda expressions}
-Impiego in diverse parti del codice – esempio: \href{https://google.com}{permalink}.
+Impiego in diverse parti del codice – esempio: \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/model/ModdingMenuModel.java#L275C13-L293C31}{permalink}.
 \subsubsection{Utilizzo di Optional}
-Utilizzato in varie parti del codice – esempio: \href{https://google.com}{permalink}.
+Utilizzato in varie parti del codice – esempio: \href{https://github.com/Matt2309/OOP24-temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/controller/GameDataManagerImpl.java#L244C1-L246C6}{permalink}.
 
 \subsection{Mularoni}
-\subsubsection{Utilizzo di \texttt{Stream} e lambda expressions} – Esempio: \href{https://google.com}{permalink}.
-\subsubsection{Utilizzo di \texttt{Threading e Task} in JavaFX per prevenire race condition} – Esempio: \href{https://google.com}{permalink}.
-\subsubsection{Utilizzo della libreria SLF4J} – Esempio: \href{https://google.com}{permalink}.
+\subsubsection{Utilizzo di lambda expressions} – Esempio: \href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/controller/GameControllerImpl.java#L206}{permalink}.
+\subsubsection{Utilizzo di \texttt{Threading e Task} in JavaFX per prevenire race condition} – Esempio: \href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/MainFloorView.java#L90}{permalink}.
+\subsubsection{Utilizzo della libreria SLF4J} – Esempio: \href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/test/java/it/unibo/templetower/ControllerTest.java#L27}{permalink}.
 \subsubsection{Cerchi con JavaFX} – Fonte: \href{https://stackoverflow.com/questions/70876114/click-to-draw-a-shape-circle}{Stackoverflow}.
 \subsubsection{Immagini con JavaFX} – Fonte: \href{https://stackoverflow.com/questions/52229984/javafx-imageview-actions}{Stackoverflow}.
 \subsubsection{Uso di Platform.runLater()} – Fonte: \href{https://stackoverflow.com/questions/13784333/platform-runlater-and-task-in-javafx}{Stackoverflow}.
 
 \subsection{Montanari}
 \subsubsection{Uso di SLF4J per il logging}
-Il progetto utilizza SLF4J per la gestione dei log, garantendo un monitoraggio efficace degli eventi di gioco.\newline
+Il progetto utilizza SLF4J per la gestione dei log, garantendo un monitoraggio efficace degli eventi di gioco. \newline
 Esempio:
 \begin{verbatim}
 private static final Logger LOGGER = LoggerFactory.getLogger(GameControllerImpl.class);
@@ -407,8 +407,14 @@ La UI è costruita utilizzando StackPane, HBox, VBox e BorderPane.\newline
 \chapter{Commenti finali}
 
 \section{Vignali}
-
+All'interno del team mi sono occupato principalmente della gestione dei dati di gioco, oltre ad aver ideato l'idea iniziale e la struttura del progetto.  
+Aver trascorso molto tempo nella fase di progettazione, soprattutto per la gestione dei Gson, si è rivelato molto utile; sfortunatamente, molti dei dati e delle funzioni che volevo includere sono stati scartati per non appesantire troppo i miei compagni, mentre altri sono ancora presenti nel progetto ma non utilizzati.  
+Ritengo che il progetto sia stato penalizzato dalla disparità nei contributi di alcuni membri del gruppo, cosa che ha ovviamente rallentato notevolmente lo sviluppo.  
+Sono soddisfatto del mio lavoro e di come è stata implementata la mia parte, scritta in maniera estendibile per poter essere facilmente ampliata con ulteriori dati e funzioni in caso di lavori futuri.  
+L'unica funzione che ho dovuto scartare è stata quella di creare, tramite un editor integrato nel modding menu, nuove torri, la cui realizzazione avrebbe richiesto ulteriori 15/20 ore. Ho preferito utilizzare questo tempo per sistemare e migliorare altre parti del progetto, anche se non scritte inizialmente da me.
+In conclusione, penso di essere soddisfatto del mio lavoro.
 \section{Mularoni}
+All'interno del team, mi sono occupato della gestione degli elementi di gioco, nonchè della schermata circolare delle stanze e della vista del boss finale.\newline
 Considerando il tempo a disposizione e gli impegni, reputo il progetto "accettabile", sebbene con un grande potenziale inespresso, sia per la scarsa divisibilità del lavoro che per l'organizzazione generale.
 
 \section{Montanari}

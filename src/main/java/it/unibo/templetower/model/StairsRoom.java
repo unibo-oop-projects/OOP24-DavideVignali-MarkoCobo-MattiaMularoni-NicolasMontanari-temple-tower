@@ -7,19 +7,8 @@ package it.unibo.templetower.model;
 public final class StairsRoom implements RoomBehavior {
 
     @Override
-    public void generateContent() {
-        // Empty implementation as stairs room doesn't need content generation
-    }
-
-    @Override
     public void interact(final Player player, final int direction) {
         // Empty implementation as interaction is handled elsewhere
-    }
-
-    @Override
-    public int getElement() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getElement'");
     }
 
 }

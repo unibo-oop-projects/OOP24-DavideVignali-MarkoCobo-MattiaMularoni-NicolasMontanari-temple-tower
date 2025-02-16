@@ -63,9 +63,9 @@ public class SettingsMenuView {
         imageView.setFitWidth(BUTTON_WIDTH);
         imageView.setFitHeight(BUTTON_HEIGHT);
 
-        final Button muteButton = new Button();  // Create button without text
+        final Button muteButton = new Button();
         muteButton.setGraphic(imageView);
-        muteButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
+        muteButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         muteButton.setOnAction(e -> {
             MusicController.getInstance().stopMusic();
         });
@@ -80,17 +80,17 @@ public class SettingsMenuView {
         imageView2.setFitWidth(BUTTON_WIDTH);
         imageView2.setFitHeight(BUTTON_HEIGHT);
 
-        final Button raiseButton = new Button();  // Create button without text
+        final Button raiseButton = new Button();
         raiseButton.setGraphic(imageView1);
-        raiseButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
+        raiseButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         raiseButton.setOnAction(e -> {
             MusicController.getInstance().raiseVol();
 
         });
 
-        final Button lowerButton = new Button();  // Create button without text
+        final Button lowerButton = new Button();
         lowerButton.setGraphic(imageView2);
-        lowerButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
+        lowerButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         lowerButton.setOnAction(e -> {
             MusicController.getInstance().lowerVol();
 
