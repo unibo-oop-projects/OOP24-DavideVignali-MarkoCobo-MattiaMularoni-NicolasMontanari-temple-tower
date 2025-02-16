@@ -93,17 +93,23 @@ public final class SceneManager {
         Pane pane = panes.get(sceneName);
 
         //recreating Panes for resetting the view
-        if ("combat_view".equals(sceneName)) {
-            pane = new CombatView().createScene(this, controller);
-        }
-        if ("select_weapon_view".equals(sceneName)) {
-            pane = new SelectWeaponView().createScene(this, controller);
-        }
-        if ("stairs_view".equals(sceneName)) {
-            pane = new StairsView().createScene(this, controller);
+        switch (sceneName) {
+            case "combat_view" -> pane = new CombatView().createScene(this, controller);
+            case "select_weapon_view" -> pane = new SelectWeaponView().createScene(this, controller);
+            case "stairs_view" -> pane = new StairsView().createScene(this, controller);
+            case "treasure_view" -> pane = new TreasureView().createScene(this, controller);
+            case "main_floor_view" -> {
+                if (controller.isToReload()) {
+                    pane = new MainFloorView().createScene(this, controller);
+                }
+            }
+            default -> {
+                LOGGER.info("Cache");
+            }
         }
         if (pane == null) {
-            throw new IllegalArgumentException("Scene " + sceneName + " not found");
+            LOGGER.info("Scene " + sceneName + " not found");
+            return;
         }
         applyStylesheet(pane);
         updateStage(pane);

@@ -9,7 +9,7 @@
             "minLevel": 1,
             "maxLevel": 5
         },
-        "visibility": 0.75
+        "visibility": 1.00
     },
     {
         "floorName": "Misty Floor",
@@ -33,7 +33,7 @@
             "minLevel": 6,
             "maxLevel": 10
         },
-        "visibility": 0.60
+        "visibility": 0.90
     },
     {
         "floorName": "Dark Floor",
@@ -57,6 +57,6 @@
             "minLevel": 16,
             "maxLevel": 20
         },
-        "visibility": 0.70
+        "visibility": 0.80
     }
 ]

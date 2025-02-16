@@ -2,7 +2,9 @@ package it.unibo.templetower.view;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -55,8 +57,10 @@ public class MainFloorView {
     private Circle outer;
     private Circle inner;
     private HBox buttons;
+    private ToggleButton enter;
     private int nRooms;
     private final Map<Integer, Arc> sectorMap = new HashMap<>();
+    private final List<Boolean> enabledButtons = new ArrayList<>();
 
     /**
      * Creates and returns the main scene for the floor view.
@@ -94,7 +98,7 @@ public class MainFloorView {
     private void createButtons(final GameController controller, final SceneManager manager) {
         final ToggleButton left = new ToggleButton("<");
         final ToggleButton right = new ToggleButton(">");
-        final ToggleButton enter = new ToggleButton("ENTRA");
+        enter = new ToggleButton("ENTRA");
         buttons = new HBox(left, enter, right);
         buttons.getStyleClass().add("buttons");
         buttons.setAlignment(Pos.BOTTOM_CENTER);
@@ -119,11 +123,18 @@ public class MainFloorView {
     // when the room changes, the sector is highlighted
     private void handleRoomChange(final GameController controller, final int direction) {
         controller.changeRoom(direction);
+        if (!enabledButtons.isEmpty()) {
+            enter.setDisable(enabledButtons.get(controller.getPlayerActualRoom()));
+        }
         highlightSector(controller.getPlayerActualRoom());
     }
 
     private void handleRoomEnter(final GameController controller, final SceneManager manager) {
         highlightSector(controller.getPlayerActualRoom());
+        if (!enabledButtons.isEmpty() && !"stairs_view".equals(controller.getActualRoomName())) {
+            enabledButtons.set(controller.getPlayerActualRoom(), true);
+            enter.setDisable(enabledButtons.get(controller.getPlayerActualRoom()));
+        }
         manager.switchTo(controller.enterRoom());
     }
 
@@ -155,6 +166,7 @@ public class MainFloorView {
 
         for (int i = 0; i < controller.getNumberOfRooms(); i++) {
             createRoomAndSector(controller, i, centerX, centerY, roomRadius, controller.isRoomToDisplay());
+            enabledButtons.add(false);
         }
 
         applyInnerCircleTexture();

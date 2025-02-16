@@ -54,6 +54,12 @@ dependencies {
 
     // Apache Commons IO
     implementation("commons-io:commons-io:2.11.0")
+
+    testImplementation("org.testfx:testfx-core:4.0.18")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1")
+    testImplementation("org.testfx:testfx-junit5:4.0.18")
+    testImplementation("org.mockito:mockito-core:5.4.0")
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
 java {
