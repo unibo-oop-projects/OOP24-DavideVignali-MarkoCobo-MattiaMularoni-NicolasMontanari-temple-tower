@@ -1,5 +1,7 @@
 package it.unibo.templetower.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,6 +34,7 @@ public final class GameControllerImpl implements GameController {
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
     private SpawnManagerImpl spawnManager;
     private boolean isBoss;
+    private final List<Boolean> enabledButtons;
 
     /**
      * Constructs a new GameControllerImpl instance.
@@ -47,9 +50,10 @@ public final class GameControllerImpl implements GameController {
         assetManager.addGenericEntityAsset("trap_view", "Images/trap.png");
         assetManager.addGenericEntityAsset("stairs_view", "Images/stairs.png");
         assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
-        final Weapon startWeapon = new Weapon("GUN", 1, new Pair<>("Gun", 1.0), DEFAULT_TOWER_PATH);
+        final Weapon startWeapon = new Weapon("Simple sword", 1, new Pair<>("phisical", 50.0), DEFAULT_TOWER_PATH);
         // Initialize player
         player = new PlayerImpl(startWeapon, Optional.empty());
+        enabledButtons = new ArrayList<>();
     }
 
     /**
@@ -62,6 +66,12 @@ public final class GameControllerImpl implements GameController {
         rooms.clear();
         currentFloor = spawnManager.spawnFloor(currentFloorIndex, ROOMS_NUMBER);
         rooms.addAll(currentFloor.rooms());
+
+        enabledButtons.clear();
+
+        rooms.forEach(r -> {
+            enabledButtons.add(false);
+        });
 
         if ("boss_view".equals(rooms.get(0).getName())) {
             isBoss = true;
@@ -151,6 +161,9 @@ public final class GameControllerImpl implements GameController {
      */
     @Override
     public String enterRoom() {
+        if (!"stairs_view".equals(getActualRoomName())) {
+            enabledButtons.set(currentRoomIndex, true);
+        }
         rooms.get(currentRoomIndex).enter(player);
         return rooms.get(currentRoomIndex).getName();
     }
@@ -188,6 +201,10 @@ public final class GameControllerImpl implements GameController {
         final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
         currentFloor = generatedFloor;
         rooms = generatedFloor.rooms();
+        enabledButtons.clear();
+        rooms.forEach(r -> {
+            enabledButtons.add(false);
+        });
         currentRoomIndex = 0;
     }
 
@@ -246,7 +263,32 @@ public final class GameControllerImpl implements GameController {
     }
 
     @Override
+    public String getEnemyPath() {
+        return this.rooms.get(currentRoomIndex).getEnemyPath();
+    }
+
+    @Override
+    public String getWeaponPath() {
+        return this.rooms.get(currentRoomIndex).getWeapon().spritePath();
+    }
+
+    @Override
+    public String getBackgroundImage() {
+        return currentFloor.spritePath();
+    }
+
+    @Override
+    public String getActualRoomName() {
+        return rooms.get(currentRoomIndex).getName();
+    }
+
+    @Override
     public void setPlayerDifficulty(final double diff) {
         player.setDifficulty(diff);
+    }
+
+    @Override
+    public List<Boolean> getEnabledList() {
+        return Collections.unmodifiableList(enabledButtons);
     }
 }

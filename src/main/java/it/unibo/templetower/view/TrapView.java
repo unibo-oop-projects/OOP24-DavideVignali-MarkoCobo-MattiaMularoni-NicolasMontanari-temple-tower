@@ -8,7 +8,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * {@inheritDoc}.
+ * the trap view class.
  */
 public class TrapView {
     private static final int SPACING = 20;
@@ -22,6 +22,8 @@ public class TrapView {
      */
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
+
+        manager.setBackground(manager, root, controller.getBackgroundImage());
 
         final Label trapLabel = new Label("YOU TAKE A TRAP");
         trapLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: bold;");

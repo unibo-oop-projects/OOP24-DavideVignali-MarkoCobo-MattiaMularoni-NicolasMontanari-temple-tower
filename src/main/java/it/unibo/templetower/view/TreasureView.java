@@ -1,10 +1,13 @@
 package it.unibo.templetower.view;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -20,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 /**
  * View class responsible for displaying the treasure room scene.
@@ -28,17 +32,18 @@ import javafx.scene.media.MediaView;
  */
 public final class TreasureView {
     private static final Logger LOGGER = LoggerFactory.getLogger(TreasureView.class);
-    private static final int BUTTON_FONT_SIZE = 20;
     private static final int DAMAGE_BAR_WIDTH = 200;
     private static final int BUTTON_SPACING = 20;
-    private static final int IMAGE_SIZE = 100;
+    private static final int BUTTON30 = 30;
+    private static final int SPACING4 = 40;
     private static final int PADDING = 10;
     private static final int DIALOG_WIDTH = 800;
     private static final int DIALOG_HEIGHT = 600;
     private static final int VBOX = 50;
+    private static final double UNO = 1.5;
+    private static final int VBOX2 = 25;
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
-    private static final double VELOCITY = 3.0;
     private static final String MAIN_VIEW = "main_floor_view";
 
     /**
@@ -51,61 +56,91 @@ public final class TreasureView {
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
 
+        final VBox mainContainer = new VBox(BUTTON_SPACING); // Contenitore principale con spaziatura
+        mainContainer.setAlignment(Pos.CENTER);
+
+        // Testo con dimensione adattiva
         final Label message = new Label("Do you want to open the chest?");
-        message.setStyle("-fx-font-size: 24px; -fx-text-fill: black; -fx-font-weight: bold;");
+        message.styleProperty().bind(Bindings.concat(
+                "-fx-font-size: ", root.widthProperty().divide(BUTTON_SPACING).asString(),
+                "px; -fx-text-fill: black; -fx-font-weight: bold;"));
+        message.setWrapText(true); // Evita il taglio del testo
 
+        // Background responsivo
         final String imageUrl = getClass().getResource("/images/combat_room.jpg").toExternalForm();
-        root.setStyle("-fx-background-image: url('" + imageUrl + "'); -fx-background-size: cover;");
+        root.setStyle("-fx-background-image: url('" + imageUrl
+                + "'); -fx-background-size: cover; -fx-background-position: center;");
 
+        // Bottoni
         final Button btOpen = new Button("Apri");
         final Button btExit = new Button("Esci");
+
         btOpen.getStyleClass().add("openExitButton");
         btExit.getStyleClass().add("openExitButton");
 
-        btOpen.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
-        btExit.setStyle("-fx-font-size: " + BUTTON_FONT_SIZE + "px; -fx-padding: 15px 30px;");
+        // Stile responsive per i bottoni
+        btOpen.styleProperty().bind(Bindings.concat(
+                "-fx-font-size: ", root.widthProperty().divide(VBOX2).asString(),
+                "px; -fx-padding: ", root.widthProperty().divide(VBOX).asString(), "px; -fx-font-weight: bold;"));
 
-        final HBox buttonContainer = new HBox(BUTTON_SPACING);
+        btExit.styleProperty().bind(Bindings.concat(
+                "-fx-font-size: ", root.widthProperty().divide(VBOX2).asString(),
+                "px; -fx-padding: ", root.widthProperty().divide(VBOX).asString(), "px; -fx-font-weight: bold;"));
+
+        // Contenitore dei bottoni
+        final HBox buttonContainer = new HBox(SPACING4);
         buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.getChildren().addAll(message, btOpen, btExit);
+        buttonContainer.getChildren().addAll(btOpen, btExit);
 
-        root.getChildren().add(buttonContainer);
-
-        final String videoPath = getClass().getResource("/video/treasure.mp4").toExternalForm();
-        final Media media = new Media(videoPath);
-        final MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setRate(VELOCITY);
-        final MediaView mediaView = new MediaView(mediaPlayer);
-
-        mediaView.fitWidthProperty().bind(root.widthProperty());
-        mediaView.fitHeightProperty().bind(root.heightProperty());
-        mediaView.setPreserveRatio(false);
-
-        StackPane.setAlignment(mediaView, Pos.CENTER);
+        // Aggiungo tutto al layout
+        mainContainer.getChildren().addAll(message, buttonContainer);
+        root.getChildren().add(mainContainer);
 
         btOpen.setOnAction(_ -> {
             root.getChildren().remove(buttonContainer);
+
+            // Carichiamo il video correttamente
+            final String videoPath = getClass().getResource("/video/treasure.mp4").toExternalForm();
+
+            final Media media = new Media(videoPath);
+            final MediaPlayer mediaPlayer = new MediaPlayer(media);
+            final MediaView mediaView = new MediaView(mediaPlayer);
+
+            mediaView.fitWidthProperty().bind(root.widthProperty());
+            mediaView.fitHeightProperty().bind(root.heightProperty());
+            mediaView.setPreserveRatio(false);
+            StackPane.setAlignment(mediaView, Pos.CENTER);
+
             root.getChildren().add(mediaView);
-            mediaPlayer.play();
+
+            // Impostiamo correttamente il mediaPlayer
+            mediaPlayer.setOnReady(() -> {
+                mediaPlayer.seek(Duration.ZERO);
+                mediaPlayer.play();
+            });
+
+            // Forziamo il play dopo un breve ritardo (per sicurezza)
+            Platform.runLater(() -> {
+                if (mediaPlayer.getStatus() != MediaPlayer.Status.PLAYING) {
+                    mediaPlayer.seek(Duration.ZERO);
+                    mediaPlayer.play();
+                }
+            });
+
+            mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
+                mediaPlayer.dispose(); // Libera memoria
+
+                if (controller.getElementTreasure() == 1) {
+                    showWeaponPopup(controller, manager, () -> manager.switchTo(MAIN_VIEW));
+                } else if (controller.getElementTreasure() == 2) {
+                    showXpPopup(controller, manager, () -> manager.switchTo(MAIN_VIEW));
+                }
+            }));
+
         });
 
         LOGGER.info("Player chose to exit the room");
-        btExit.setOnAction(_ -> {
-            manager.switchTo(MAIN_VIEW);
-        });
-
-        mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
-            if (controller.getElementTreasure() == 1) {
-                showWeaponPopup(controller, manager, () -> {
-                    manager.switchTo(MAIN_VIEW);
-                });
-            } else if (controller.getElementTreasure() == 2) {
-                showXpPopup(controller, manager, () -> {
-                    manager.switchTo(MAIN_VIEW);
-                });
-            }
-
-        }));
+        btExit.setOnAction(_ -> manager.switchTo(MAIN_VIEW));
 
         root.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
 
@@ -123,27 +158,36 @@ public final class TreasureView {
         LOGGER.info("WEAPON pop");
         final Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Oggetto Trovato!");
-        dialog.setHeaderText("Hai trovato un'arma: " + controller.getTreasureWeapon().name() + " DAMAGE: "
-                + controller.getTreasureWeapon().attack().getY());
+        dialog.setHeaderText("Hai trovato un'arma: " + controller.getTreasureWeapon().name());
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-
         dialog.getDialogPane().setMinSize(DIALOG_WIDTH, DIALOG_HEIGHT);
 
-        final Image image = new Image(getClass().getResource("/images/Gun-PNG-File.png").toExternalForm());
-        final ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(IMAGE_SIZE);
-        imageView.setFitHeight(IMAGE_SIZE);
+        // IMMAGINE PIÙ GRANDE
+        final String imagePath = controller.getWeaponPath();
+        final File file = new File(imagePath);
+        final ImageView imageView = new ImageView(new Image(file.toURI().toString()));
+        final int newImageSize = 200; // Aumentiamo la dimensione
+        imageView.setFitWidth(newImageSize);
+        imageView.setFitHeight(newImageSize);
 
-        final ProgressBar damageBar = new ProgressBar(controller.getTreasureWeapon().attack().getY());
-        damageBar.setPrefWidth(DAMAGE_BAR_WIDTH);
+        // TESTO DEL DANNO PIÙ GRANDE
         final Label damageLabel = new Label("Danno: " + controller.getTreasureWeapon().attack().getY());
+        damageLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: red;");
 
-        final HBox weaponInfo = new HBox(PADDING, imageView, damageLabel);
-        final VBox content = new VBox(PADDING, weaponInfo, damageBar);
+        // PROGRESS BAR PIÙ GRANDE
+        final ProgressBar damageBar = new ProgressBar(controller.getTreasureWeapon().attack().getY());
+        damageBar.setPrefWidth(DAMAGE_BAR_WIDTH * UNO); // Aumentiamo la larghezza
+        damageBar.setPrefHeight(BUTTON30); // Aumentiamo l'altezza
+
+        final VBox content = new VBox(15, imageView, damageLabel, damageBar); // Maggiore spaziatura
+        content.setAlignment(Pos.CENTER);
 
         final Button btTake = new Button("Take");
         final Button leaveButton = new Button("Leave");
+
+        btTake.setStyle("-fx-font-size: 18px; -fx-padding: 10px 20px;");
+        leaveButton.setStyle("-fx-font-size: 18px; -fx-padding: 10px 20px;");
 
         btTake.setOnAction(_ -> {
             if (controller.getPlayerWeapons().size() < 3) {
@@ -151,7 +195,6 @@ public final class TreasureView {
             } else {
                 manager.switchTo("change_weapon_view");
             }
-
             dialog.close();
             if (onClose != null) {
                 onClose.run();
@@ -167,12 +210,14 @@ public final class TreasureView {
             }
         });
 
-        final HBox buttonBox = new HBox(PADDING, btTake, leaveButton);
-        final VBox layout = new VBox(PADDING, content, buttonBox);
-        layout.setPadding(new Insets(PADDING));
+        final HBox buttonBox = new HBox(BUTTON_SPACING, btTake, leaveButton);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        final VBox layout = new VBox(BUTTON_SPACING, content, buttonBox);
+        layout.setPadding(new Insets(BUTTON_SPACING));
+        layout.setAlignment(Pos.CENTER);
 
         dialog.getDialogPane().setContent(layout);
-
         DialogUtil.showDialog(dialog, " DAMAGE: " + controller.getTreasureWeapon().attack().getY(), onClose);
     }
 
@@ -192,10 +237,9 @@ public final class TreasureView {
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
         final Button btLeave = new Button("Leave");
-        btLeave.setStyle(
-            "-fx-font-size: 50px; -fx-font-weight: bold; -fx-text-fill: black; -fx-padding: 15px 30px;");
+        btLeave.setStyle("-fx-text-fill: white; -fx-padding: 15px 30px;");
+        btLeave.setStyle("-fx-font-size: 50px; -fx-font-weight: bold; -fx-background-color: black;");
         btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT);
-
 
         btLeave.setOnAction(_ -> {
             LOGGER.info("Player left the weapon");

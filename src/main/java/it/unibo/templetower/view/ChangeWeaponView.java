@@ -8,7 +8,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * {@inheritDoc}.
+ * Change weapon view class.
  */
 public class ChangeWeaponView {
     private static final int VBOX_SPACING = 20;
@@ -24,6 +24,9 @@ public class ChangeWeaponView {
         final StackPane root = new StackPane();
         final VBox vbox = new VBox(VBOX_SPACING);
         vbox.setAlignment(Pos.CENTER);
+
+        manager.setBackground(manager, root, controller.getBackgroundImage());
+
 
         final Label titleLabel = new Label("Select Weapon to Change");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: black;");

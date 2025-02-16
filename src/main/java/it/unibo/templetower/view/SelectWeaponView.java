@@ -8,7 +8,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * {@inheritDoc}.
+ * select weapon view class.
  */
 public class SelectWeaponView {
     private static final int VBOX_SPACING = 20;
@@ -27,6 +27,8 @@ public class SelectWeaponView {
         final Button weapon1;
         final Button weapon2;
         final Button weapon3;
+
+        manager.setBackground(manager, root, controller.getBackgroundImage());
 
         final Label titleLabel = new Label("Select Weapon to USE");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: black;");
