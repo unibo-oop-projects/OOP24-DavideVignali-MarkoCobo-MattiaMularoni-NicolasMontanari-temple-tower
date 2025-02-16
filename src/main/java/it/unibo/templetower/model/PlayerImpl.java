@@ -42,6 +42,7 @@ public final class PlayerImpl implements Player {
         this.actualWeaponIndex = 0;
     }
 
+
     @Override
     public void setDifficulty(final double diff) {
         this.difficulty = diff;

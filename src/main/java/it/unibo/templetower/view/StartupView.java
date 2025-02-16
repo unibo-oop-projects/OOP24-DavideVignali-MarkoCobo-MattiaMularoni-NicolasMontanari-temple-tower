@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import it.unibo.templetower.controller.MusicController;
+import it.unibo.templetower.utils.BackgroundUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -15,9 +16,7 @@ import javafx.scene.layout.VBox;
  * Home screen view class that manages the initial game screen and background
  * music. This class is not designed for extension.
  */
-public final class Home {
-
-
+public final class StartupView {
 
     /**
      * Creates and returns the home scene with background image and menu button.
@@ -33,18 +32,17 @@ public final class Home {
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
-                .getResourceAsStream("images/Schermatainiziale.png");
+                .getResourceAsStream("images/SchermataIniziale.png");
         if (backgroundStream == null) {
-            throw new FileNotFoundException("Could not find background image: images/Schermatainiziale.png");
+            throw new FileNotFoundException("Could not find background image: images/SchermataIniziale.png");
         }
 
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
 
-        // Make background responsive to window resizing
-        root.widthProperty().addListener((obs, old, newVal) -> background.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, old, newVal) -> background.setFitHeight(newVal.doubleValue()));
+        // Make background responsive using BackgroundUtils
+        BackgroundUtils.setupBackgroundResizing(root, background);
 
         // Create content layout
         final VBox content = new VBox(10);
@@ -52,11 +50,7 @@ public final class Home {
 
         // Add difficulty menu button
         final Button difficultyButton = new Button("Go to Enter Menu");
-        difficultyButton.setOnAction(e -> {
-            // Non fermiamo più la musica quando cambiamo scena
-            manager.switchTo("enter_menu");
-        });
-
+        difficultyButton.setOnAction(e -> manager.switchTo("enter_menu"));
 
         // Add both buttons to the content VBox
         content.getChildren().addAll(difficultyButton);
@@ -64,12 +58,8 @@ public final class Home {
         // Combine background and content
         root.getChildren().addAll(background, content);
 
-
         MusicController.getInstance().startMusic("sounds/musicadisottofondo.wav");
 
         return root;
     }
-
-
-
 }

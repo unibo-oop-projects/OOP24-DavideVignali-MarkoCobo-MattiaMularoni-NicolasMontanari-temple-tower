@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import it.unibo.templetower.controller.MusicController;
+import it.unibo.templetower.utils.BackgroundUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -15,7 +16,7 @@ import javafx.scene.layout.VBox;
  * provides the settings menu interface for the game.
  */
 
-public class SettingsMenu {
+public class SettingsMenuView {
 
     static final int BUTTON_HEIGHT = 30;
     static final int BUTTON_WIDTH = 30;
@@ -33,20 +34,17 @@ public class SettingsMenu {
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
-                .getResourceAsStream("images/settings.png");
+                .getResourceAsStream("images/darkened-background.png");
         if (backgroundStream == null) {
-            throw new FileNotFoundException("Could not find background image: images/settings.png");
+            throw new FileNotFoundException("Could not find background image: images/darkened-background.png");
         }
 
         // Create and configure background
         final ImageView background = new ImageView(new Image(backgroundStream));
         background.setPreserveRatio(false);
 
-        // Make background responsive to window resizing
-        root.widthProperty().addListener((obs, old, newVal)
-                -> background.setFitWidth(newVal.doubleValue()));
-        root.heightProperty().addListener((obs, old, newVal)
-                -> background.setFitHeight(newVal.doubleValue()));
+        // Make background responsive using BackgroundUtils
+        BackgroundUtils.setupBackgroundResizing(root, background);
 
         // Create content layout
         final VBox content = new VBox(10);
