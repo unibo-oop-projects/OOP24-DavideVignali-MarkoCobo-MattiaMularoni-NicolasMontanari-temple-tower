@@ -170,12 +170,12 @@ public final class CombatView {
             enemyHealthBar.setProgress(0 / 100);
         }
 
-        exitBt.setOnAction(_ -> {
+        exitBt.setOnAction(event -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
             manager.switchTo("main_floor_view");
         });
 
-        attackBt.setOnAction(_ -> {
+        attackBt.setOnAction(event -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
 
             final ImageView attackImage = new ImageView(new Image(getClass().getResourceAsStream("/Images/flame.gif")));
@@ -204,14 +204,14 @@ public final class CombatView {
 
             timeline.getKeyFrames().add(kf);
 
-            timeline.setOnFinished(_ -> {
+            timeline.setOnFinished(event1 -> {
                 if (controller.isBossTime()) {
                     ((Pane) attackImage.getParent()).getChildren().remove(attackImage);
                 }
                 controller.attackEnemy();
 
                 final PauseTransition pause = new PauseTransition(Duration.millis(200));
-                pause.setOnFinished(_ -> {
+                pause.setOnFinished(event2 -> {
                     Platform.runLater(() -> {
                         if (controller.getEnemyLifePoints() <= 0) {
                             enemyHpLabel.setText(ZEROHP);
@@ -223,7 +223,7 @@ public final class CombatView {
                             controller.attackPlayer();
 
                             final PauseTransition pause2 = new PauseTransition(Duration.millis(100));
-                            pause2.setOnFinished(_ -> {
+                            pause2.setOnFinished(event3 -> {
                                 playerHealthBar.setProgress(controller.getPlayerLife() / 100.0);
                                 playerHpLabel.setText(controller.getPlayerLife() + "HP");
 
@@ -281,7 +281,7 @@ public final class CombatView {
         highBox.setAlignment(Pos.TOP_RIGHT);
         topBox.getChildren().add(highBox);
 
-        changeWeapon.setOnAction(_ -> {
+        changeWeapon.setOnAction(event -> {
             manager.switchTo("select_weapon_view");
         });
 
@@ -332,7 +332,7 @@ public final class CombatView {
         btLeave.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
         btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT);
 
-        btLeave.setOnAction(_ -> {
+        btLeave.setOnAction(event -> {
             LOGGER.info("Restart the game");
             dialog.setResult(null);
             dialog.close();
@@ -349,7 +349,7 @@ public final class CombatView {
 
         dialog.getDialogPane().setContent(layout);
 
-        dialog.setOnCloseRequest(_ -> {
+        dialog.setOnCloseRequest(event -> {
             LOGGER.info("Popup closed with X");
             dialog.setResult(null);
             if (onClose != null) {

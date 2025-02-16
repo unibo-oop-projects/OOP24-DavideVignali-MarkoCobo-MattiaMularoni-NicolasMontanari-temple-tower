@@ -1,5 +1,8 @@
 package it.unibo.templetower.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -7,8 +10,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
 * Utility class for instantiation gradle build problem.
@@ -35,7 +36,7 @@ public final class DialogUtil {
         loseLabel.getStyleClass().add("label");
 
         final Button btLeave = new Button("Close");
-        btLeave.setOnAction(_ -> {
+        btLeave.setOnAction(event -> {
             dialog.setResult(null);
             dialog.close();
             if (onClose != null) {
@@ -50,7 +51,7 @@ public final class DialogUtil {
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(PADDING));
 
-        dialog.setOnCloseRequest(_ -> {
+        dialog.setOnCloseRequest(event -> {
             LOGGER.info("Popup closed with X");
             dialog.setResult(null);
             if (onClose != null) {

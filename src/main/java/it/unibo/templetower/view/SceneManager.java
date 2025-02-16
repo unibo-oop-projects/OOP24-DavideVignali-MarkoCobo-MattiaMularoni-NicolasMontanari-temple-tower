@@ -14,6 +14,7 @@ import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
 import it.unibo.templetower.controller.GameDataManagerImpl;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -90,7 +91,8 @@ public final class SceneManager {
     public void switchTo(final String sceneName) {
         if ("difficulty_menu".equals(sceneName) && !isTowerLoaded()) {
             LOGGER.warn("No tower loaded. Please load a tower from the modding menu to proceed.");
-            return; // Do not switch scenes automatically
+            showWarningDialog("No Tower Loaded", "Please load a tower from the modding menu before starting the game.");
+            return;
         } else if ("difficulty_menu".equals(sceneName)) {
             controller.resetGame();
             initializeRooms();
@@ -115,6 +117,20 @@ public final class SceneManager {
         }
         applyStylesheet(pane);
         updateStage(pane);
+    }
+
+    /**
+     * Shows a warning dialog with the specified message.
+     *
+     * @param title the title of the warning dialog
+     * @param message the message to display in the dialog
+     */
+    private void showWarningDialog(final String title, final String message) {
+        final Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     /**
