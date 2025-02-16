@@ -16,7 +16,7 @@ import javafx.scene.media.MediaView;
 import javafx.beans.binding.Bindings;
 
 /**
- * {@inheritDoc}.
+ * The stairs view for pass to next floor
  */
 public class StairsView {
     private static final int SPACING = 20;
@@ -37,16 +37,16 @@ public class StairsView {
 
         final String bgImage;
         if (!controller.isBossTime()) {
-            bgImage = controller.getBackgroundImage(); // Se non è il boss, usa l'immagine dal controller
+            bgImage = controller.getBackgroundImage();
         } else {
-            bgImage = "/Images/final_arena.png"; // Se è il boss, usa sempre questa immagine
+            bgImage = "/Images/final_arena.png";
         }
 
         final Image backgroundImage;
         try {
             if (!controller.isBossTime()) {
                 final File file = new File(bgImage);
-                backgroundImage = new Image(file.toURI().toString()); // Carica l'immagine dal percorso
+                backgroundImage = new Image(file.toURI().toString());
             } else {
                 backgroundImage = new Image(StairsView.class.getResource(bgImage).toExternalForm());
             }
