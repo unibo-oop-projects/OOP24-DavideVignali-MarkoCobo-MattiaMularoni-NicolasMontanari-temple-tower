@@ -54,7 +54,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(17)) 
     }
 }
 
@@ -72,7 +72,6 @@ tasks.shadowJar {
     }
     mergeServiceFiles()
     archiveClassifier.set("")
-    minimize()
     
     from("src/main/resources") {
         include("*/.css")
