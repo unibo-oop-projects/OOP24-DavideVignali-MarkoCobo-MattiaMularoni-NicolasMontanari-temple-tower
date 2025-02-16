@@ -10,9 +10,9 @@ import it.unibo.templetower.model.Weapon;
  */
 public interface GameController {
     /**
-     * @return if the room is to reload.
+     * @return list of button to enabled
      */
-    Boolean isToReload();
+    List<Boolean> getEnabledList();
     /**
      * @return  the actual room name
      */

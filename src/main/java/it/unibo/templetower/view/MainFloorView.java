@@ -2,9 +2,7 @@ package it.unibo.templetower.view;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -60,7 +58,6 @@ public class MainFloorView {
     private ToggleButton enter;
     private int nRooms;
     private final Map<Integer, Arc> sectorMap = new HashMap<>();
-    private final List<Boolean> enabledButtons = new ArrayList<>();
 
     /**
      * Creates and returns the main scene for the floor view.
@@ -123,19 +120,18 @@ public class MainFloorView {
     // when the room changes, the sector is highlighted
     private void handleRoomChange(final GameController controller, final int direction) {
         controller.changeRoom(direction);
-        if (!enabledButtons.isEmpty()) {
-            enter.setDisable(enabledButtons.get(controller.getPlayerActualRoom()));
+        if (!controller.getEnabledList().isEmpty()) {
+            enter.setDisable(controller.getEnabledList().get(controller.getPlayerActualRoom()));
         }
         highlightSector(controller.getPlayerActualRoom());
     }
 
     private void handleRoomEnter(final GameController controller, final SceneManager manager) {
         highlightSector(controller.getPlayerActualRoom());
-        if (!enabledButtons.isEmpty() && !"stairs_view".equals(controller.getActualRoomName())) {
-            enabledButtons.set(controller.getPlayerActualRoom(), true);
-            enter.setDisable(enabledButtons.get(controller.getPlayerActualRoom()));
-        }
         manager.switchTo(controller.enterRoom());
+        if (!controller.getEnabledList().isEmpty()) {
+            enter.setDisable(controller.getEnabledList().get(controller.getPlayerActualRoom()));
+        }
     }
 
     private Circle createCircle(final String id, final double radius) {
@@ -166,7 +162,6 @@ public class MainFloorView {
 
         for (int i = 0; i < controller.getNumberOfRooms(); i++) {
             createRoomAndSector(controller, i, centerX, centerY, roomRadius, controller.isRoomToDisplay());
-            enabledButtons.add(false);
         }
 
         applyInnerCircleTexture();

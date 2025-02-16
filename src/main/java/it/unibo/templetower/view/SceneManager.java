@@ -102,11 +102,6 @@ public final class SceneManager {
             case "select_weapon_view" -> pane = new SelectWeaponView().createScene(this, controller);
             case "stairs_view" -> pane = new StairsView().createScene(this, controller);
             case "treasure_view" -> pane = new TreasureView().createScene(this, controller);
-            case "main_floor_view" -> {
-                if (controller.isToReload()) {
-                    pane = new MainFloorView().createScene(this, controller);
-                }
-            }
             default -> {
                 LOGGER.info("Cache");
             }
