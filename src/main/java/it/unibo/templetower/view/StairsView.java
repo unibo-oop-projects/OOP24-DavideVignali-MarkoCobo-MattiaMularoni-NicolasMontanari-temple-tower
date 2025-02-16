@@ -16,7 +16,7 @@ import javafx.scene.media.MediaView;
 import javafx.beans.binding.Bindings;
 
 /**
- * The stairs view for pass to next floor
+ * The stairs view for pass to next floor.
  */
 public class StairsView {
     private static final int SPACING = 20;

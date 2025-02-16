@@ -51,6 +51,7 @@ public final class GameControllerImpl implements GameController {
         assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
         final Weapon startWeapon = new Weapon("Simple sword", 1, new Pair<>("phisical", 50.0), DEFAULT_TOWER_PATH);
         // Initialize player
+
         player = new PlayerImpl(startWeapon, Optional.empty());
     }
 
