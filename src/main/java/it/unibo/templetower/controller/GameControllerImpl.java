@@ -45,11 +45,11 @@ public final class GameControllerImpl implements GameController {
         currentFloorIndex = 1;
         isBoss = false;
         assetManager = new AssetManager();
-        assetManager.addGenericEntityAsset("combat_view", "Images/enemy.png");
-        assetManager.addGenericEntityAsset("treasure_view", "Images/treasure.png");
-        assetManager.addGenericEntityAsset("trap_view", "Images/trap.png");
-        assetManager.addGenericEntityAsset("stairs_view", "Images/stairs.png");
-        assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
+        assetManager.addGenericEntityAsset("combat_view", "images/enemy.png");
+        assetManager.addGenericEntityAsset("treasure_view", "images/treasure.png");
+        assetManager.addGenericEntityAsset("trap_view", "images/trap.png");
+        assetManager.addGenericEntityAsset("stairs_view", "images/stairs.png");
+        assetManager.addGenericEntityAsset("empty_view", "images/smoke.gif");
         final Weapon startWeapon = new Weapon("Simple sword", 1, new Pair<>("phisical", 50.0), DEFAULT_TOWER_PATH);
         // Initialize player
 

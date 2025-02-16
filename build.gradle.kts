@@ -73,24 +73,15 @@ tasks.shadowJar {
     mergeServiceFiles()
     archiveClassifier.set("")
     
-    // Include all resources
     from("src/main/resources") {
-        include("**/*")
+        include("*/.css")
+        include("*/.png")
+        include("*/.jpg")
+        include("*/.gif")
+        include("*/.wav")
+        include("*/.mp4")
     }
-    
-    // Copy resources to both lowercase and uppercase paths
-    from("src/main/resources/Images") {
-        into("images")
-    }
-    
-    from("src/main/resources") {
-        include("**/*.css")
-        include("**/*.png")
-        include("**/*.jpg")
-        include("**/*.gif")
-        include("**/*.wav")
-        include("**/*.mp4")
-    }
+
 }
 
 tasks.distZip {

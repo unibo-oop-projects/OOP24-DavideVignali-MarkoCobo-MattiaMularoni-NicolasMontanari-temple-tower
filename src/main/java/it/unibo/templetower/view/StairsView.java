@@ -39,7 +39,7 @@ public class StairsView {
         if (!controller.isBossTime()) {
             bgImage = controller.getBackgroundImage();
         } else {
-            bgImage = "/Images/final_arena.png";
+            bgImage = "/images/final_arena.png";
         }
 
         final Image backgroundImage;

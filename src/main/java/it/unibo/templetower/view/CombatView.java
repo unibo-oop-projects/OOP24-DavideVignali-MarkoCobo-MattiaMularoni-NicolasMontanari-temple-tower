@@ -68,9 +68,9 @@ public final class CombatView {
         final ImageView backgroundView = new ImageView();
         try {
             if (!controller.isBossTime()) {
-                bgImage = "/Images/combat_room.jpg";
+                bgImage = "/images/combat_room.jpg";
             } else {
-                bgImage = "/Images/final_arena.png";
+                bgImage = "/images/final_arena.png";
             }
             final Image backgroundImage = new Image(getClass().getResource(bgImage).toExternalForm());
             backgroundView.setImage(backgroundImage);
@@ -92,11 +92,11 @@ public final class CombatView {
         final String playerImg;
         final String enemyImg;
         if (!controller.isBossTime()) {
-            playerImg = "/Images/player.png";
+            playerImg = "/images/player.png";
             enemyImage = new ImageView(new Image(file.toURI().toString()));
         } else {
-            playerImg = "/Images/playerback.png";
-            enemyImg = "/Images/boss.png";
+            playerImg = "/images/playerback.png";
+            enemyImg = "/images/boss.png";
             enemyImage = new ImageView(new Image(getClass().getResource(enemyImg).toExternalForm()));
         }
 
@@ -178,7 +178,7 @@ public final class CombatView {
         attackBt.setOnAction(event -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
 
-            final ImageView attackImage = new ImageView(new Image(getClass().getResourceAsStream("/Images/flame.gif")));
+            final ImageView attackImage = new ImageView(new Image(getClass().getResourceAsStream("/images/flame.gif")));
             attackImage.setFitWidth(100);
             attackImage.setFitHeight(100);
             attackImage.setLayoutX(playerImage.getLayoutX() + FIRE_START_X);
