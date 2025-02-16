@@ -1,0 +1,62 @@
+[
+    {
+        "floorName": "Generic Floor",
+        "spritePath": "sprites/generic-lvl.png",
+        "enemyPath": "floors/generic-lvl/enemy-data.json",
+        "weaponsPath": "floors/generic-lvl/weapon-data.json",
+        "spawnWeight": 1,
+        "spawningRange": {
+            "minLevel": 1,
+            "maxLevel": 5
+        },
+        "visibility": 1.00
+    },
+    {
+        "floorName": "Misty Floor",
+        "spritePath": "sprites/misty-lvl.png",
+        "enemyPath": "floors/misty-lvl/enemy-data.json",
+        "weaponsPath": "floors/misty-lvl/weapon-data.json",
+        "spawnWeight": 1,
+        "spawningRange": {
+            "minLevel": 5,
+            "maxLevel": 10
+        },
+        "visibility": 0.50
+    },
+    {
+        "floorName": "Mystic Floor",
+        "spritePath": "sprites/mystic-lvl.png",
+        "enemyPath": "floors/mystic-lvl/enemy-data.json",
+        "weaponsPath": "floors/mystic-lvl/weapon-data.json",
+        "spawnWeight": 1,
+        "spawningRange": {
+            "minLevel": 6,
+            "maxLevel": 10
+        },
+        "visibility": 0.90
+    },
+    {
+        "floorName": "Dark Floor",
+        "spritePath": "sprites/dark-lvl.png",
+        "enemyPath": "floors/dark-lvl/enemy-data.json",
+        "weaponsPath": "floors/dark-lvl/weapon-data.json",
+        "spawnWeight": 1,
+        "spawningRange": {
+            "minLevel": 11,
+            "maxLevel": 15
+        },
+        "visibility": 0.00
+    },
+    {
+        "floorName": "Ancient Floor",
+        "spritePath": "sprites/ancient-lvl.png",
+        "enemyPath": "floors/ancient-lvl/enemy-data.json",
+        "weaponsPath": "floors/ancient-lvl/weapon-data.json",
+        "spawnWeight": 1,
+        "spawningRange": {
+            "minLevel": 16,
+            "maxLevel": 20
+        },
+        "visibility": 0.80
+    }
+]

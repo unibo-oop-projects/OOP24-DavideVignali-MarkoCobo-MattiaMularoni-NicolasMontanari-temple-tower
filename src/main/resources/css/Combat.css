@@ -1,0 +1,54 @@
+/* Background color for root */
+.root {
+    -fx-background-color: #2d2d2d;
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-size: 14px; /* Standard property */
+    -fx-padding: 10px 20px;
+}
+
+/* Label styling */
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px; /* Standard property */
+}
+
+/* Progress bar styling */
+.progress-bar {
+    -fx-accent: #76c7c0;
+}
+
+/* Health bars styling */
+.health-bar-player {
+    -fx-accent: green;
+}
+
+.health-bar-enemy {
+    -fx-accent: red;
+}
+
+/* Align health bars and buttons */
+.hbox {
+    -fx-alignment: bottom-center;
+    -fx-padding: 10px;
+    -fx-spacing: 20px;
+}
+/* Positioning for player health bar */
+.player-health-bar {
+    -fx-alignment: bottom-left;
+}
+
+/* Positioning for enemy health bar */
+.enemy-health-bar {
+    -fx-alignment: bottom-right;
+}
+
+/* Positioning for buttons */
+.button-container {
+    -fx-alignment: bottom-center;
+    -fx-spacing: 10px; /* Space between buttons */
+}

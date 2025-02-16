@@ -1,0 +1,28 @@
+[
+    {
+        "attackId": "physical",
+        "effectPath": "sprites/physical-attack.png"
+    },
+    {
+        "attackId": "dark",
+        "effectPath": "sprites/dark-attack.png"
+    },
+    {
+        "attackId": "magical",
+        "effectPath": "sprites/magical-attack.png"
+    },
+    {
+        "attackId": "fire",
+        "effectPath": "sprites/fire-attack.png"
+    },
+    {
+        "attackId": "poison",
+        "effectPath": "sprites/poison-attack.png"
+    },
+    {
+        "attackId": "ice",
+        "name": "Ice Attack",
+        "effectPath": "sprites/ice-attack.png"
+    }
+]
+

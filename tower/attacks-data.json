@@ -1,0 +1,19 @@
+[
+    {
+      "attackId": "phisical",
+      "effectPath": "sprites/phisical-attack.jpg"
+    },
+    {
+      "attackId": "magical",
+      "effectPath": "sprites/magical-attack.jpg"
+    },
+    {
+      "attackId": "fire",
+      "effectPath": "sprites/fire-attack.jpg"
+    },
+    {
+      "attackId": "poison",
+      "effectPath": "sprites/poison-attack.jpg"
+    }
+]
+

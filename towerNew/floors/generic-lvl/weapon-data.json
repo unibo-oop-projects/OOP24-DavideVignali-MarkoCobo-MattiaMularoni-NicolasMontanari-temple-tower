@@ -1,0 +1,22 @@
+[
+    {
+      "name": "simple sword",
+      "level": 1,
+      "attack": {
+        "attackId": "physical",
+        "damage": 50.0
+      },
+      "spritePath": "sprites/sword.png"
+    },
+    {
+      "name": "Rusty Axe",
+      "level": 2,
+      "attack": {
+        "attackId": "physical",
+        "damage": 60.0
+      },
+      "spritePath": "sprites/axe.png"
+    }
+]
+
+
