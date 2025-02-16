@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class Trap implements RoomBehavior {
     private static final Logger LOGGER = LoggerFactory.getLogger(Trap.class);
-    private final int damage;
+    private final double damage;
 
     /**
      * Constructs a new trap with specified damage.
      * @param damage the amount of damage this trap deals
      */
-    public Trap(final int damage) {
+    public Trap(final double damage) {
         this.damage = damage;
     }
 
@@ -39,7 +39,7 @@ public final class Trap implements RoomBehavior {
      * Gets the damage amount of this trap.
      * @return the damage amount
      */
-    public int getDamage() {
+    public double getDamage() {
         return this.damage;
     }
 

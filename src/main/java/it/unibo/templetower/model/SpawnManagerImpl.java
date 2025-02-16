@@ -19,6 +19,7 @@ public class SpawnManagerImpl {
     private static final int BUDGET_MULTIPLIER = 5;
     private static final double TREASURE_HEALTH_CHANCE = 0.5;
     private static final double TREASURE_WEAPON_CHANCE = 0.5;
+    private static final double TRAP_BASE_DAMAGE = 1.5;
 
     private final List<FloorData> floors;
     private final Random random;
@@ -96,7 +97,7 @@ public class SpawnManagerImpl {
                     generatedRooms.add(new Room(new TreasureRoom(randomWeapon, 
                         TREASURE_HEALTH_CHANCE, TREASURE_WEAPON_CHANCE), "treasure_view", i));
                 } else {
-                    generatedRooms.add(new Room(new Trap(1), "trap_view", i));
+                    generatedRooms.add(new Room(new Trap(TRAP_BASE_DAMAGE * level), "trap_view", i));
                 }
             }
         }
