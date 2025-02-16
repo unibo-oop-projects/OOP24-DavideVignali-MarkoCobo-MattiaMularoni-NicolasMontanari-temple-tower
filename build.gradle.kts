@@ -19,11 +19,12 @@ val javaFXModules = listOf(
 )
 
 dependencies {
-    val javaFxVersion = "23.0.2"
+    val javaFxVersion = "17.0.2"
 
-    // Use JavaFX from Maven Central
-    for (module in javaFXModules) {
-        implementation("org.openjfx:javafx-$module:$javaFxVersion:win")
+    listOf("win", "mac", "linux", "mac-aarch64").forEach { targetPlatform ->
+        javaFXModules.forEach { module ->
+            implementation("org.openjfx:javafx-$module:$javaFxVersion:$targetPlatform")
+        }
     }
 
     // Suppressions for SpotBugs
