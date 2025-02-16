@@ -371,7 +371,7 @@ Esempio:
 \begin{verbatim}
 private static final Logger LOGGER = LoggerFactory.getLogger(GameControllerImpl.class);
 \end{verbatim}
-\href{https://github.com/}{Link al codice su GitHub}.
+\href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/CombatView.java#L82}{PermaLink}.
 
 \subsubsection{Uso di Lambda Expressions}
 Per gestire gli eventi, il codice utilizza espressioni lambda che migliorano la leggibilità e riducono la verbosità.\newline
@@ -379,15 +379,15 @@ Esempio:
 \begin{verbatim}
 attackBt.setOnAction(e -> this.performAttack());
 \end{verbatim}
-\href{https://github.com/}{Link al codice su GitHub}.
+\href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/CombatView.java#L178}{PermaLink}.
 
 \subsubsection{Gestione del multithreading con Platform.runLater}
 JavaFX richiede che gli aggiornamenti dell'interfaccia avvengano nel thread principale; \texttt{Platform.runLater} garantisce operazioni sicure.\newline
 Esempio:
 \begin{verbatim}
-Platform.runLater(() -> playerHpBar.setProgress(newHealth / (double) maxHealth));
+    Platform.runLater(() -> popUp(() -> manager.switchTo("home")));
 \end{verbatim}
-\href{https://github.com/}{Link al codice su GitHub}.
+\href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/CombatView.java#L259}{PermaLink}.
 
 \subsubsection{Utilizzo di Timeline e KeyFrame per le animazioni}
 Il codice impiega \texttt{Timeline} e \texttt{KeyFrame} per creare effetti visivi durante attacchi e riduzioni della vita.\newline
@@ -398,11 +398,15 @@ new KeyFrame(Duration.seconds(0.5), e -> enemyHpBar.setProgress(newEnemyHp / (do
 );
 attackAnimation.play();
 \end{verbatim}
-\href{https://github.com/}{Link al codice su GitHub}.
+\href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/CombatView.java#L205}{PermaLink}.
 
 \subsubsection{Utilizzo di JavaFX Scene Graph}
 La UI è costruita utilizzando StackPane, HBox, VBox e BorderPane.\newline
-\href{https://github.com/}{Link al codice su GitHub}.
+\href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/CombatView.java#L65}{PermaLink}.
+
+\subsubsection{Utilizzo di Bindings}
+Utilizzo il Bindings per rendere responsive gli elementi della UI.\newline
+\href{https://github.com/Matt2309/temple-tower/blob/297b37062035f41c3e9258656beace208905a368/src/main/java/it/unibo/templetower/view/TreasureView.java#L79}{PermaLink}.
 
 \chapter{Commenti finali}
 
