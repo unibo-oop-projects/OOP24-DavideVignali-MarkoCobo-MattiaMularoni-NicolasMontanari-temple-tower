@@ -93,7 +93,7 @@ public final class TreasureView {
         mainContainer.getChildren().addAll(message, buttonContainer);
         root.getChildren().add(mainContainer);
 
-        btOpen.setOnAction(_ -> {
+        btOpen.setOnAction(event -> {
             root.getChildren().remove(buttonContainer);
 
             final String videoPath = getClass().getResource("/video/treasure.mp4").toExternalForm();
@@ -139,7 +139,7 @@ public final class TreasureView {
         });
 
         LOGGER.info("Player chose to exit the room");
-        btExit.setOnAction(_ -> manager.switchTo(MAIN_VIEW));
+        btExit.setOnAction(event -> manager.switchTo(MAIN_VIEW));
 
         root.getStylesheets().add(getClass().getResource("/css/Treasure.css").toExternalForm());
 
@@ -185,7 +185,7 @@ public final class TreasureView {
         btTake.setStyle("-fx-font-size: 18px; -fx-padding: 10px 20px;");
         leaveButton.setStyle("-fx-font-size: 18px; -fx-padding: 10px 20px;");
 
-        btTake.setOnAction(_ -> {
+        btTake.setOnAction(event -> {
             if (controller.getPlayerWeapons().size() < 3) {
                 controller.addPlayerWeapon(controller.getTreasureWeapon(), PADDING);
             } else {
@@ -197,7 +197,7 @@ public final class TreasureView {
             }
         });
 
-        leaveButton.setOnAction(_ -> {
+        leaveButton.setOnAction(event -> {
             LOGGER.info("Player left the weapon");
             manager.switchTo(MAIN_VIEW);
             dialog.close();
@@ -237,7 +237,7 @@ public final class TreasureView {
         btLeave.setStyle("-fx-font-size: 50px; -fx-font-weight: bold; -fx-background-color: black;");
         btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT);
 
-        btLeave.setOnAction(_ -> {
+        btLeave.setOnAction(event -> {
             LOGGER.info("Player left the weapon");
             manager.switchTo(MAIN_VIEW);
             dialog.close();

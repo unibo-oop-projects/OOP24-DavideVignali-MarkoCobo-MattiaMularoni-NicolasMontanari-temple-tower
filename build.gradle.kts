@@ -54,68 +54,18 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(23))
+        languageVersion.set(JavaLanguageVersion.of(21)) 
     }
 }
 
 tasks.withType<Test> {
+    // Enables JUnit 5 Jupiter module
     useJUnitPlatform()
 }
 
-tasks.shadowJar {
-    manifest {
-        attributes(
-            "Main-Class" to "it.unibo.templetower.App",
-            "Multi-Release" to "true"
-        )
-    }
-    mergeServiceFiles()
-    archiveClassifier.set("")
-    
-    // Include all resources
-    from("src/main/resources") {
-        include("**/*")
-    }
-    
-    // Copy resources to both lowercase and uppercase paths
-    from("src/main/resources/Images") {
-        into("images")
-    }
-    
-    from("src/main/resources") {
-        include("**/*.css")
-        include("**/*.png")
-        include("**/*.jpg")
-        include("**/*.gif")
-        include("**/*.wav")
-        include("**/*.mp4")
-    }
-}
-
-tasks.distZip {
-    dependsOn(tasks.shadowJar)
-}
-
-tasks.distTar {
-    dependsOn(tasks.shadowJar)
-}
-
-tasks.startScripts {
-    dependsOn(tasks.shadowJar)
-}
-
-tasks.startShadowScripts {
-    dependsOn(tasks.jar)
-}
+val main: String by project
 
 application {
-    mainClass.set("it.unibo.templetower.App")
-}
-
-// Configure the run task to use the module path
-tasks.withType<JavaExec> {
-    jvmArgs = listOf(
-        "--module-path", classpath.asPath,
-        "--add-modules", javaFXModules.joinToString(",") { "javafx.$it" }
-    )
+    // Define the main class for the application
+    mainClass.set(main)
 }

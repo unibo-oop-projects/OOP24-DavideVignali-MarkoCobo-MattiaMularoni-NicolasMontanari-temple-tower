@@ -3,6 +3,7 @@ package it.unibo.templetower.view;
 import java.io.File;
 
 import it.unibo.templetower.controller.GameController;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.beans.binding.Bindings;
 
 /**
  * The stairs view for pass to next floor.
@@ -83,7 +83,7 @@ public class StairsView {
         layout.getChildren().addAll(message, btYes, btNo);
         root.getChildren().add(layout);
 
-        btYes.setOnAction(_ -> {
+        btYes.setOnAction(event -> {
             controller.goToNextFloor();
             root.getChildren().clear();
 
