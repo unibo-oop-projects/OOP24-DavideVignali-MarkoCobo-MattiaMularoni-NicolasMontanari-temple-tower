@@ -126,7 +126,11 @@ public final class TreasureView {
                 mediaPlayer.dispose();
 
                 if (controller.getElementTreasure() == 1) {
-                    showWeaponPopup(controller, manager, () -> manager.switchTo(MAIN_VIEW));
+                    showWeaponPopup(controller, manager, () -> {
+                        if (controller.getPlayerWeapons().size() < 3) {
+                            manager.switchTo(MAIN_VIEW); 
+                        }
+                    });
                 } else if (controller.getElementTreasure() == 2) {
                     showXpPopup(controller, manager, () -> manager.switchTo(MAIN_VIEW));
                 }

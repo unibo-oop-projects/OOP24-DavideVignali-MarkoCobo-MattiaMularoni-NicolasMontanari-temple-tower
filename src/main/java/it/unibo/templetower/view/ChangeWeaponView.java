@@ -36,7 +36,7 @@ public class ChangeWeaponView {
 
         vbox.getChildren().add(titleLabel);
 
-        if (controller.getPlayerWeapons().size() == 1) {
+        if (!controller.getPlayerWeapons().isEmpty()) {
             final Button weapon1 = new Button(controller.getPlayerWeapons().get(0).name() + " - Damage: "
                     + controller.getPlayerWeapons().get(0).attack().getY());
             weapon1.setOnAction(e -> {
@@ -47,7 +47,7 @@ public class ChangeWeaponView {
             vbox.getChildren().add(weapon1);
         }
 
-        if (controller.getPlayerWeapons().size() > 1) {
+        if (controller.getPlayerWeapons().size() >= 2) {
             final Button weapon2 = new Button(controller.getPlayerWeapons().get(1).name() + " - Damage: "
                     + controller.getPlayerWeapons().get(1).attack().getY());
             weapon2.setOnAction(e -> {
@@ -58,7 +58,7 @@ public class ChangeWeaponView {
             vbox.getChildren().add(weapon2);
         }
 
-        if (controller.getPlayerWeapons().size() > 2) {
+        if (controller.getPlayerWeapons().size() == 3) {
             final Button weapon3 = new Button(controller.getPlayerWeapons().get(2).name() + " - Damage: "
                     + controller.getPlayerWeapons().get(2).attack().getY());
             weapon3.setOnAction(e -> {
