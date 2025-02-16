@@ -301,14 +301,12 @@ public final class CombatView {
     private void resetCombat(final GameController controller) {
         kill = true;
 
-        // Resetta le barre della vita
         playerHealthBar.setProgress(controller.getPlayerLife() / 100);
         enemyHealthBar.setProgress(controller.getEnemyLifePoints() / 100);
 
         final Label playerHpLabel = new Label();
         final Label enemyHpLabel = new Label();
 
-        // Aggiorna le etichette della vita
         playerHpLabel.setText(controller.getPlayerLife() + "HP");
         enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
     }
@@ -321,25 +319,22 @@ public final class CombatView {
     private void popUp(final Runnable onClose) {
         final Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("GAME OVER");
-        dialog.setHeaderText(null); // Rimuove il titolo predefinito
+        dialog.setHeaderText(null);
 
         dialog.getDialogPane().setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         final Label loseLabel = new Label("YOU LOSE THE GAME");
         loseLabel.setStyle("-fx-font-size: 50px; -fx-font-weight: bold; -fx-text-fill: red;");
 
-        // Aggiungiamo un ButtonType fittizio per abilitare la chiusura con la X
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
-        // Bottone "Leave"
         final Button btLeave = new Button("Leave");
         btLeave.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
-        btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT); // Aumenta le dimensioni del bottone
+        btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT);
 
-        // Azione del bottone per chiudere la finestra
         btLeave.setOnAction(_ -> {
             LOGGER.info("Restart the game");
-            dialog.setResult(null); // Imposta un risultato per chiudere la dialog
+            dialog.setResult(null);
             dialog.close();
             if (onClose != null) {
                 onClose.run();
@@ -349,14 +344,11 @@ public final class CombatView {
         final HBox btContainer = new HBox(btLeave);
         btContainer.setAlignment(Pos.CENTER);
 
-        // Contenitore principale con testo e bottone
         final VBox layout = new VBox(VBOX, loseLabel, btContainer);
         layout.setAlignment(Pos.CENTER);
 
-        // Imposta il contenuto della finestra
         dialog.getDialogPane().setContent(layout);
 
-        // Permette la chiusura con la X
         dialog.setOnCloseRequest(_ -> {
             LOGGER.info("Popup closed with X");
             dialog.setResult(null);
@@ -365,7 +357,6 @@ public final class CombatView {
             }
         });
 
-        // Mostra la finestra di dialogo
         dialog.showAndWait();
     }
 

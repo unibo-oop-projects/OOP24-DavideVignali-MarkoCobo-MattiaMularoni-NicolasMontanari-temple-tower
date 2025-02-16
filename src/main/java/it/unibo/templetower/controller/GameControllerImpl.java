@@ -22,7 +22,7 @@ import it.unibo.templetower.utils.Pair;
  */
 public final class GameControllerImpl implements GameController {
     private List<Room> rooms;
-    private int currentFloorIndex; // traccia il piano attuale
+    private int currentFloorIndex;
     private int currentRoomIndex;
     private final Player player;
     @SuppressWarnings("unused")
@@ -52,6 +52,7 @@ public final class GameControllerImpl implements GameController {
         assetManager.addGenericEntityAsset("empty_view", "Images/smoke.gif");
         final Weapon startWeapon = new Weapon("Simple sword", 1, new Pair<>("phisical", 50.0), DEFAULT_TOWER_PATH);
         // Initialize player
+
         player = new PlayerImpl(startWeapon, Optional.empty());
         enabledButtons = new ArrayList<>();
     }

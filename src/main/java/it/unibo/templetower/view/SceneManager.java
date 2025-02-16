@@ -49,7 +49,7 @@ public final class SceneManager {
         this.scene = new Scene(new StackPane(), INITIAL_WIDTH, INITIAL_HEIGHT);
         stage.setScene(scene);
         stage.setTitle("Temple Tower");
-        stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/icon.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/icon.png")));
         initializeMenu();
     }
 
@@ -59,7 +59,7 @@ public final class SceneManager {
             panes.put("enter_menu", new EnterMenu().createScene(this));
             panes.put("settings_menu", new SettingsMenuView().createScene(this));
             panes.put("home", new StartupView().createScene(this));
-            panes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
+            panes.put("modding_menu", new ModdingMenuView().createScene(this));
         } catch (FileNotFoundException e) {
             LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
             throw new IllegalStateException("Failed to initialize scenes", e);
@@ -104,6 +104,7 @@ public final class SceneManager {
             case "select_weapon_view" -> pane = new SelectWeaponView().createScene(this, controller);
             case "stairs_view" -> pane = new StairsView().createScene(this, controller);
             case "treasure_view" -> pane = new TreasureView().createScene(this, controller);
+            case "trap_view" -> pane = new TrapView().createScene(this, controller);
             default -> {
                 LOGGER.info("Cache");
             }

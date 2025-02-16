@@ -12,12 +12,15 @@ import javafx.scene.layout.VBox;
  */
 public class ChangeWeaponView {
     private static final int VBOX_SPACING = 20;
+    private static final int BT_WIDTH = 600;
+    private static final int BT_HEIGHT = 300;
+
 
     /**
      * Creates and returns the change weapon scene with all necessary UI elements.
      * 
-     * @param manager the scene manager to handle scene transitions
-     * @param controller 
+     * @param manager    the scene manager to handle scene transitions
+     * @param controller
      * @return the created change weapon scene
      */
     public StackPane createScene(final SceneManager manager, final GameController controller) {
@@ -29,7 +32,7 @@ public class ChangeWeaponView {
 
 
         final Label titleLabel = new Label("Select Weapon to Change");
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: black;");
+        titleLabel.setStyle("-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: black;");
 
         vbox.getChildren().add(titleLabel);
 
@@ -38,8 +41,9 @@ public class ChangeWeaponView {
                     + controller.getPlayerWeapons().get(0).attack().getY());
             weapon1.setOnAction(e -> {
                 controller.addPlayerWeapon(controller.getTreasureWeapon(), 0);
+                manager.switchTo("main_floor_view");
             });
-            weapon1.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+            styleWeaponButton(weapon1);
             vbox.getChildren().add(weapon1);
         }
 
@@ -48,8 +52,9 @@ public class ChangeWeaponView {
                     + controller.getPlayerWeapons().get(1).attack().getY());
             weapon2.setOnAction(e -> {
                 controller.addPlayerWeapon(controller.getTreasureWeapon(), 1);
+                manager.switchTo("main_floor_view");
             });
-            weapon2.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+            styleWeaponButton(weapon2);
             vbox.getChildren().add(weapon2);
         }
 
@@ -58,13 +63,31 @@ public class ChangeWeaponView {
                     + controller.getPlayerWeapons().get(2).attack().getY());
             weapon3.setOnAction(e -> {
                 controller.addPlayerWeapon(controller.getTreasureWeapon(), 2);
+                manager.switchTo("main_floor_view");
             });
-            weapon3.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+            styleWeaponButton(weapon3);
             vbox.getChildren().add(weapon3);
         }
 
         root.getChildren().add(vbox);
 
         return root;
+    }
+
+    /**
+     * Applica lo stile ai bottoni delle armi.
+     * 
+     * @param button il pulsante da stilizzare
+     */
+    private void styleWeaponButton(final Button button) {
+        button.setStyle(
+                "-fx-font-size: 24px; "
+                        + "-fx-font-weight: bold; "
+                        + "-fx-text-fill: white; "
+                        + "-fx-background-color: black; "
+                        + "-fx-padding: 15px 30px;");
+        button.setMinWidth(BT_HEIGHT);
+        button.setMaxWidth(BT_WIDTH);
+        button.setWrapText(true);
     }
 }
