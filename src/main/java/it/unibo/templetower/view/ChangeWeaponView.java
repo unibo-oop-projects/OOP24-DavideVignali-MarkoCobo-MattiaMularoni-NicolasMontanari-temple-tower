@@ -12,7 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * {@inheritDoc}.
+ * Change weapon view class.
  */
 public class ChangeWeaponView {
     private static final int VBOX_SPACING = 20;

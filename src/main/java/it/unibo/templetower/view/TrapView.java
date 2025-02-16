@@ -12,7 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
- * {@inheritDoc}.
+ * the trap view class.
  */
 public class TrapView {
     private static final int SPACING = 20;
