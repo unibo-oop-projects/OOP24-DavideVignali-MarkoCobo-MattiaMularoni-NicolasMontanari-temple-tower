@@ -170,7 +170,7 @@ public class MainFloorView {
 
     private void applyInnerCircleTexture() {
         try {
-            final URL imageUrl = MainFloorView.class.getResource("/Images/inner_circle_background.png");
+            final URL imageUrl = MainFloorView.class.getResource("/images/inner_circle_background.png");
             if (imageUrl != null) {
                 inner.setFill(new ImagePattern(new Image(imageUrl.toExternalForm(), false)));
             }
@@ -213,12 +213,12 @@ public class MainFloorView {
         if (isToDisplay) {
             path = controller.getRoomImagePath(roomIndex);
         } else {
-            path = "Images/smoke.gif";
+            path = "images/smoke.gif";
         }
         final InputStream stream = getClass().getClassLoader()
                 .getResourceAsStream(path != null
                         ? path
-                        : "Images/smoke.gif");
+                        : "images/smoke.gif");
         final ImageView spriteImg = new ImageView(new Image(stream));
 
         spriteImg.setTranslateX(x);

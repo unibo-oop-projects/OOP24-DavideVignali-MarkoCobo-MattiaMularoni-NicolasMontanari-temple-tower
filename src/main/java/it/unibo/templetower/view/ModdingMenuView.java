@@ -81,7 +81,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         final StackPane root = new StackPane();
         root.setAlignment(Pos.CENTER);
 
-        final ImageView background = new ImageView(getClass().getResource("/Images/main-background.png").toExternalForm());
+        final ImageView background = new ImageView(getClass().getResource("/images/main-background.png").toExternalForm());
         background.setPreserveRatio(true);
         background.setFitWidth(windowWidth);
         background.setFitHeight(windowHeight);

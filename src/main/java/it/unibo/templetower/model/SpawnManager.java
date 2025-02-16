@@ -71,7 +71,7 @@ public class SpawnManager {
         if (passedFloors >= floorBeforeBoss) {
             final var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
             final Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
-            return new Floor("boss", "Images/boss.png", List.of(new Room(new EnemyRoom(selectedEnemy), "boss_view", 1)), 1);
+            return new Floor("boss", "images/boss.png", List.of(new Room(new EnemyRoom(selectedEnemy), "boss_view", 1)), 1);
         }
 
         for (int i = 0; i < roomNumber; i++) {
