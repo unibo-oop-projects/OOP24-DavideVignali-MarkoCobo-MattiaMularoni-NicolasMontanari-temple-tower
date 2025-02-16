@@ -50,7 +50,7 @@ public final class SceneManager {
         this.scene = new Scene(new StackPane(), INITIAL_WIDTH, INITIAL_HEIGHT);
         stage.setScene(scene);
         stage.setTitle("Temple Tower");
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/icon.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
         initializeMenu();
     }
 

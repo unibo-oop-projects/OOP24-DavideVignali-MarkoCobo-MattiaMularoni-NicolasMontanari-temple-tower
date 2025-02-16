@@ -54,7 +54,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21)) 
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -72,25 +72,17 @@ tasks.shadowJar {
     }
     mergeServiceFiles()
     archiveClassifier.set("")
-    
-    // Include all resources
-    from("src/main/resources") {
-        include("**/*")
-    }
-    
-    // Copy resources to both lowercase and uppercase paths
-    from("src/main/resources/Images") {
-        into("images")
-    }
+    minimize()
     
     from("src/main/resources") {
-        include("**/*.css")
-        include("**/*.png")
-        include("**/*.jpg")
-        include("**/*.gif")
-        include("**/*.wav")
-        include("**/*.mp4")
+        include("*/.css")
+        include("*/.png")
+        include("*/.jpg")
+        include("*/.gif")
+        include("*/.wav")
+        include("*/.mp4")
     }
+
 }
 
 tasks.distZip {
