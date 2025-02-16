@@ -166,4 +166,16 @@ public final class Room {
         return 0;
     }
 
+    /**
+     * Retrives Enemy image path.
+     * 
+     * @return Enemy image path.
+     */
+    public String getEnemyPath() {
+        if (behavior instanceof EnemyRoom enemyRoom) {
+            return enemyRoom.getEnemy().spritePath();
+        }
+        return "";
+    }
+
 }

@@ -35,13 +35,12 @@ public final class PlayerImpl implements Player {
             this.actualRoom = Optional.of(actualRoom.get());
         }
         weapon.add(startweapon);
-        weapon.add(startweapon);
 
         this.life = 100;
         this.experience = 0;
         this.actualWeaponIndex = 0;
     }
-    
+
 
     @Override
     public void setDifficulty(final double diff) {

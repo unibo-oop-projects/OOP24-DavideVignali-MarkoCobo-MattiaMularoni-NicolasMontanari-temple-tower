@@ -1,5 +1,7 @@
 package it.unibo.templetower.view;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +77,6 @@ public final class CombatView {
             backgroundView.setPreserveRatio(false);
             backgroundView.fitWidthProperty().bind(root.widthProperty());
             backgroundView.fitHeightProperty().bind(root.heightProperty());
-
             root.getChildren().add(backgroundView);
         } catch (IllegalArgumentException e) {
             LOGGER.error("Failed to load background image: {}", e.getMessage());
@@ -85,18 +86,21 @@ public final class CombatView {
             return root;
         }
 
+        final ImageView enemyImage;
+        final String imagePath = controller.getEnemyPath();
+        final File file = new File(imagePath);
         final String playerImg;
         final String enemyImg;
         if (!controller.isBossTime()) {
             playerImg = "/Images/player.png";
-            enemyImg = "/Images/enemy.png";
+            enemyImage = new ImageView(new Image(file.toURI().toString()));
         } else {
             playerImg = "/Images/playerback.png";
             enemyImg = "/Images/boss.png";
+            enemyImage = new ImageView(new Image(getClass().getResource(enemyImg).toExternalForm()));
         }
 
         final ImageView playerImage = new ImageView(new Image(getClass().getResource(playerImg).toExternalForm()));
-        final ImageView enemyImage = new ImageView(new Image(getClass().getResource(enemyImg).toExternalForm()));
 
         playerImage.setFitWidth(CHARACTER_SIZE);
         playerImage.setFitHeight(CHARACTER_SIZE);
@@ -156,6 +160,16 @@ public final class CombatView {
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
+        if (controller.getEnemyLifePoints() > 0) {
+            exitBt.setDisable(true);
+        }
+
+        if (controller.getEnemyLifePoints() <= 0.0) {
+            attackBt.setDisable(true);
+            enemyHpLabel.setText("0HP");
+            enemyHealthBar.setProgress(0 / 100);
+        }
+
         exitBt.setOnAction(_ -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
             manager.switchTo("main_floor_view");
@@ -193,7 +207,7 @@ public final class CombatView {
             timeline.setOnFinished(_ -> {
                 if (controller.isBossTime()) {
                     ((Pane) attackImage.getParent()).getChildren().remove(attackImage);
-                } 
+                }
                 controller.attackEnemy();
 
                 final PauseTransition pause = new PauseTransition(Duration.millis(200));
@@ -233,6 +247,7 @@ public final class CombatView {
                             enemyHealthBar.setProgress(0 / 100.0);
                             enemyHpLabel.setText(ZEROHP);
                             attackBt.setDisable(true);
+                            exitBt.setDisable(false);
                             if (controller.getPlayerLife() < 100) {
                                 controller.resetPlayerLife();
                             }
@@ -284,17 +299,14 @@ public final class CombatView {
     }
 
     private void resetCombat(final GameController controller) {
-        attackBt.setDisable(false);
         kill = true;
 
-        // Resetta le barre della vita
         playerHealthBar.setProgress(controller.getPlayerLife() / 100);
         enemyHealthBar.setProgress(controller.getEnemyLifePoints() / 100);
 
         final Label playerHpLabel = new Label();
         final Label enemyHpLabel = new Label();
 
-        // Aggiorna le etichette della vita
         playerHpLabel.setText(controller.getPlayerLife() + "HP");
         enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
     }
@@ -307,25 +319,22 @@ public final class CombatView {
     private void popUp(final Runnable onClose) {
         final Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("GAME OVER");
-        dialog.setHeaderText(null); // Rimuove il titolo predefinito
+        dialog.setHeaderText(null);
 
         dialog.getDialogPane().setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         final Label loseLabel = new Label("YOU LOSE THE GAME");
         loseLabel.setStyle("-fx-font-size: 50px; -fx-font-weight: bold; -fx-text-fill: red;");
 
-        // Aggiungiamo un ButtonType fittizio per abilitare la chiusura con la X
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 
-        // Bottone "Leave"
         final Button btLeave = new Button("Leave");
         btLeave.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
-        btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT); // Aumenta le dimensioni del bottone
+        btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT);
 
-        // Azione del bottone per chiudere la finestra
         btLeave.setOnAction(_ -> {
             LOGGER.info("Restart the game");
-            dialog.setResult(null); // Imposta un risultato per chiudere la dialog
+            dialog.setResult(null);
             dialog.close();
             if (onClose != null) {
                 onClose.run();
@@ -335,14 +344,11 @@ public final class CombatView {
         final HBox btContainer = new HBox(btLeave);
         btContainer.setAlignment(Pos.CENTER);
 
-        // Contenitore principale con testo e bottone
         final VBox layout = new VBox(VBOX, loseLabel, btContainer);
         layout.setAlignment(Pos.CENTER);
 
-        // Imposta il contenuto della finestra
         dialog.getDialogPane().setContent(layout);
 
-        // Permette la chiusura con la X
         dialog.setOnCloseRequest(_ -> {
             LOGGER.info("Popup closed with X");
             dialog.setResult(null);
@@ -351,7 +357,6 @@ public final class CombatView {
             }
         });
 
-        // Mostra la finestra di dialogo
         dialog.showAndWait();
     }
 

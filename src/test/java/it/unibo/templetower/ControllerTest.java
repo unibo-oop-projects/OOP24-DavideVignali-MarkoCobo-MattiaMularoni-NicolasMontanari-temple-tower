@@ -70,9 +70,9 @@ class ControllerTest {
 
     @Test
     void testWeaponManagement() {
-        final Weapon newWeapon = new Weapon("SWORD", 2, new Pair<>("Sword", 2.0), "path/to/asset");
+        final Weapon newWeapon = new Weapon("Simple sword", 2, new Pair<>("Sword", 2.0), "path/to/asset");
         gameController.addPlayerWeapon(newWeapon, 1);
-        assertEquals("SWORD", gameController.getPlayerWeapons().get(2).name(), "The weapon should be correctly added");
+        assertEquals("Simple sword", gameController.getPlayerWeapons().get(1).name(), "The weapon should be correctly added");
     }
 
     @Test

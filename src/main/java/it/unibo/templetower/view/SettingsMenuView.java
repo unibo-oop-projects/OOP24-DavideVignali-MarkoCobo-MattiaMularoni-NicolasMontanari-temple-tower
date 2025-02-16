@@ -68,7 +68,6 @@ public class SettingsMenuView {
         muteButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         muteButton.setOnAction(e -> {
             MusicController.getInstance().stopMusic();
-
         });
 
         final Image image1 = new Image("images/alzavol.png");
@@ -85,6 +84,7 @@ public class SettingsMenuView {
         raiseButton.setGraphic(imageView1);
         raiseButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         raiseButton.setOnAction(e -> {
+            MusicController.getInstance().raiseVol();
 
         });
 
@@ -92,6 +92,7 @@ public class SettingsMenuView {
         lowerButton.setGraphic(imageView2);
         lowerButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);  // Set fixed size for square button
         lowerButton.setOnAction(e -> {
+            MusicController.getInstance().lowerVol();
 
         });
 

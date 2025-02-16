@@ -25,6 +25,9 @@ public final class EnemyRoom implements RoomBehavior {
      */
     public void takeDamage(final Double damage) {
         this.lifePoints = this.lifePoints - damage;
+        if (this.lifePoints < 0) {
+            this.lifePoints = 0.0;
+        }
     }
 
     /**
@@ -36,7 +39,11 @@ public final class EnemyRoom implements RoomBehavior {
     }
 
     /**
-     * {@inheritDoc}
+     * calculate moltiplicator weapon.
+     * 
+     * @param attackId
+     * 
+     * @return moltiplicator for the weapon
      */
     public double calculateMulti(final String attackId) {
         if (enemy.damageMultipliers().containsKey(attackId)) {
@@ -99,7 +106,7 @@ public final class EnemyRoom implements RoomBehavior {
     }
 
     /**
-     * {@inheritDoc}
+     * @return enemy
      */
     public Enemy getEnemy() {
         return this.enemy;

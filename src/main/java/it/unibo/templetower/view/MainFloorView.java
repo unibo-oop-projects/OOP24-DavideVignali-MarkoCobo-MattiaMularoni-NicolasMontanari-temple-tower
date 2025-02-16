@@ -55,6 +55,7 @@ public class MainFloorView {
     private Circle outer;
     private Circle inner;
     private HBox buttons;
+    private ToggleButton enter;
     private int nRooms;
     private final Map<Integer, Arc> sectorMap = new HashMap<>();
 
@@ -94,7 +95,7 @@ public class MainFloorView {
     private void createButtons(final GameController controller, final SceneManager manager) {
         final ToggleButton left = new ToggleButton("<");
         final ToggleButton right = new ToggleButton(">");
-        final ToggleButton enter = new ToggleButton("ENTRA");
+        enter = new ToggleButton("ENTRA");
         buttons = new HBox(left, enter, right);
         buttons.getStyleClass().add("buttons");
         buttons.setAlignment(Pos.BOTTOM_CENTER);
@@ -119,12 +120,18 @@ public class MainFloorView {
     // when the room changes, the sector is highlighted
     private void handleRoomChange(final GameController controller, final int direction) {
         controller.changeRoom(direction);
+        if (!controller.getEnabledList().isEmpty()) {
+            enter.setDisable(controller.getEnabledList().get(controller.getPlayerActualRoom()));
+        }
         highlightSector(controller.getPlayerActualRoom());
     }
 
     private void handleRoomEnter(final GameController controller, final SceneManager manager) {
         highlightSector(controller.getPlayerActualRoom());
         manager.switchTo(controller.enterRoom());
+        if (!controller.getEnabledList().isEmpty()) {
+            enter.setDisable(controller.getEnabledList().get(controller.getPlayerActualRoom()));
+        }
     }
 
     private Circle createCircle(final String id, final double radius) {

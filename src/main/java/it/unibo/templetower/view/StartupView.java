@@ -32,9 +32,9 @@ public final class StartupView {
 
         // Set up background image
         final InputStream backgroundStream = getClass().getClassLoader()
-                .getResourceAsStream("images/Schermatainiziale.png");
+                .getResourceAsStream("images/SchermataIniziale.png");
         if (backgroundStream == null) {
-            throw new FileNotFoundException("Could not find background image: images/Schermatainiziale.png");
+            throw new FileNotFoundException("Could not find background image: images/SchermataIniziale.png");
         }
 
         // Create and configure background

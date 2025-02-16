@@ -9,6 +9,14 @@ import it.unibo.templetower.model.Weapon;
  * including room navigation, game state management, and player actions.
  */
 public interface GameController {
+    /**
+     * @return list of button to enabled
+     */
+    List<Boolean> getEnabledList();
+    /**
+     * @return  the actual room name
+     */
+    String getActualRoomName();
 
     /**
      * Moves the player to the next floor in the game.
@@ -163,4 +171,22 @@ public interface GameController {
      * @return if is time to show the boss view
      */
     Boolean isBossTime();
+
+    /**
+     * 
+     * @return enemy image path
+     */
+    String getEnemyPath();
+
+    /**
+     * 
+     * @return weapon image path
+     */
+    String getWeaponPath();
+
+    /**
+     * 
+     * @return background floor image path
+     */
+    String getBackgroundImage();
 }

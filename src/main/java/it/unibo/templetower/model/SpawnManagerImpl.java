@@ -19,12 +19,13 @@ public class SpawnManagerImpl {
     private static final int BUDGET_MULTIPLIER = 5;
     private static final double TREASURE_HEALTH_CHANCE = 0.5;
     private static final double TREASURE_WEAPON_CHANCE = 0.5;
+    private static final double TRAP_BASE_DAMAGE = 1.5;
 
     private final List<FloorData> floors;
     private final Random random;
     private final int towerHeight;
 
-    private static final int FLOOR_BEFORE_BOSS = 2;
+    private final int floorBeforeBoss;
     private int passedFloors;
 
     /**
@@ -37,6 +38,7 @@ public class SpawnManagerImpl {
         this.floors = new ArrayList<>(towerData.floors());
         this.random = new Random();
         this.towerHeight = towerData.height();
+        floorBeforeBoss = towerData.height();
     }
 
     /**
@@ -66,7 +68,7 @@ public class SpawnManagerImpl {
         final int stairsIndex = random.nextInt(roomNumber);
         int enemyBudget = level * BUDGET_MULTIPLIER;
 
-        if (passedFloors >= FLOOR_BEFORE_BOSS) {
+        if (passedFloors >= floorBeforeBoss) {
             final var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
             final Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
             return new Floor("boss", "Images/boss.png", List.of(new Room(new EnemyRoom(selectedEnemy), "boss_view", 1)), 1);
@@ -96,7 +98,7 @@ public class SpawnManagerImpl {
                     generatedRooms.add(new Room(new TreasureRoom(randomWeapon, 
                         TREASURE_HEALTH_CHANCE, TREASURE_WEAPON_CHANCE), "treasure_view", i));
                 } else {
-                    generatedRooms.add(new Room(new Trap(1), "trap_view", i));
+                    generatedRooms.add(new Room(new Trap(TRAP_BASE_DAMAGE * level), "trap_view", i));
                 }
             }
         }
