@@ -18,23 +18,12 @@ val javaFXModules = listOf(
     "graphics"
 )
 
-// Detect OS architecture
-val osName = System.getProperty("os.name").toLowerCase()
-val arch = System.getProperty("os.arch")
-val platform = when {
-    osName.contains("mac") && arch.contains("aarch64") -> "mac-aarch64"
-    osName.contains("mac") -> "mac"
-    osName.contains("win") -> "win"
-    osName.contains("linux") -> "linux"
-    else -> throw GradleException("Piattaforma non supportata: $osName $arch")
-}
-
 dependencies {
-    val javaFxVersion = "17.0.2"
+    val javaFxVersion = "23.0.2"
 
-    // JavaFX modules
+    // Use JavaFX from Maven Central
     for (module in javaFXModules) {
-        implementation("org.openjfx:javafx-$module:$javaFxVersion:$platform")
+        implementation("org.openjfx:javafx-$module:$javaFxVersion:win")
     }
 
     // Suppressions for SpotBugs
@@ -54,6 +43,12 @@ dependencies {
 
     // Apache Commons IO
     implementation("commons-io:commons-io:2.11.0")
+
+    testImplementation("org.testfx:testfx-core:4.0.18")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1")
+    testImplementation("org.testfx:testfx-junit5:4.0.18")
+    testImplementation("org.mockito:mockito-core:5.4.0")
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
 java {
@@ -63,13 +58,63 @@ java {
 }
 
 tasks.withType<Test> {
-    // Enables JUnit 5 Jupiter module
     useJUnitPlatform()
 }
 
-val main: String by project
+tasks.shadowJar {
+    manifest {
+        attributes(
+            "Main-Class" to "it.unibo.templetower.App",
+            "Multi-Release" to "true"
+        )
+    }
+    mergeServiceFiles()
+    archiveClassifier.set("")
+    
+    // Include all resources
+    from("src/main/resources") {
+        include("**/*")
+    }
+    
+    // Copy resources to both lowercase and uppercase paths
+    from("src/main/resources/Images") {
+        into("images")
+    }
+    
+    from("src/main/resources") {
+        include("**/*.css")
+        include("**/*.png")
+        include("**/*.jpg")
+        include("**/*.gif")
+        include("**/*.wav")
+        include("**/*.mp4")
+    }
+}
+
+tasks.distZip {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.distTar {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.startScripts {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.startShadowScripts {
+    dependsOn(tasks.jar)
+}
 
 application {
-    // Define the main class for the application
-    mainClass.set(main)
+    mainClass.set("it.unibo.templetower.App")
+}
+
+// Configure the run task to use the module path
+tasks.withType<JavaExec> {
+    jvmArgs = listOf(
+        "--module-path", classpath.asPath,
+        "--add-modules", javaFXModules.joinToString(",") { "javafx.$it" }
+    )
 }

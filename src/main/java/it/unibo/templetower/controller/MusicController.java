@@ -68,7 +68,6 @@ public final class MusicController {
 
             // Se non trova il file, prova senza la cartella sounds
             if (audioStream == null) {
-                LOGGER.warn("File not found in sounds directory, trying direct filename: {}", musicFile);
                 audioStream = getClass().getClassLoader().getResourceAsStream(musicFile);
             }
 

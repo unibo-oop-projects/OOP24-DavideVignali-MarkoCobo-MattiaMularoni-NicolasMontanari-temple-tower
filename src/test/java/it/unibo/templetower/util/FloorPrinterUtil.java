@@ -3,6 +3,8 @@ package it.unibo.templetower.util;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.ConsoleHandler;
 import it.unibo.templetower.model.FloorData;
 
 /**
@@ -11,6 +13,18 @@ import it.unibo.templetower.model.FloorData;
 public final class FloorPrinterUtil {
 
     private static final Logger LOGGER = Logger.getLogger(FloorPrinterUtil.class.getName());
+
+    static {
+        LOGGER.setUseParentHandlers(false);
+        final ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new SimpleFormatter() {
+            @Override
+            public String format(final java.util.logging.LogRecord record) {
+                return record.getMessage() + "\n";
+            }
+        });
+        LOGGER.addHandler(handler);
+    }
 
     private FloorPrinterUtil() {
         // Utility class constructor
@@ -22,7 +36,6 @@ public final class FloorPrinterUtil {
      * @param floors the list of floor data to print
      */
     public static void printFloorDetails(final List<FloorData> floors) {
-        LOGGER.info("\n=== Floor Data Details ===");
         for (int i = 0; i < floors.size(); i++) {
             final FloorData floor = floors.get(i);
             LOGGER.info("\nFloor #" + (i + 1));
@@ -39,9 +52,11 @@ public final class FloorPrinterUtil {
             LOGGER.info("\nEnemies:");
             floor.enemies().ifPresent(enemies ->
                 enemies.forEach(enemy -> {
-                    LOGGER.info("- " + enemy.name() + " (Level " + enemy.level() 
-                        + ", Health: " + enemy.health() + ")");
-                    LOGGER.info("  Sprite: " + enemy.spritePath());
+                    // Modified: include sprite path in the summary line for each enemy
+                    LOGGER.info("- " + enemy.name() 
+                        + " (Level " + enemy.level() 
+                        + ", Health: " + enemy.health() 
+                        + ", Sprite: " + enemy.spritePath() + ")");
                     enemy.attacks().forEach(attack -> 
                         LOGGER.info("  Attack: " + attack.getX() + " - Damage: " + attack.getY()));
                     LOGGER.info("  Damage Multipliers:");
@@ -63,6 +78,5 @@ public final class FloorPrinterUtil {
                 })
             );
         }
-        LOGGER.info("\n=== End of Floor Data ===\n");
     }
 }

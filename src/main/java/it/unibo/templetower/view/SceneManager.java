@@ -1,5 +1,6 @@
 package it.unibo.templetower.view;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.HashMap;
@@ -13,6 +14,9 @@ import it.unibo.templetower.controller.GameController;
 import it.unibo.templetower.controller.GameControllerImpl;
 import it.unibo.templetower.controller.GameDataManagerImpl;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
@@ -25,8 +29,8 @@ import javafx.stage.Stage;
  */
 public final class SceneManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(SceneManager.class);
-    private static final double INITIAL_HEIGHT = Screen.getPrimary().getBounds().getHeight();
-    private static final double INITIAL_WIDTH = Screen.getPrimary().getBounds().getWidth();
+    private static final double INITIAL_HEIGHT = Screen.getPrimary().getBounds().getHeight() / 2;
+    private static final double INITIAL_WIDTH = Screen.getPrimary().getBounds().getWidth() / 2;
     private static final String CSS_PATH = "/css/main.css";
 
     private final GameController controller;
@@ -44,27 +48,35 @@ public final class SceneManager {
         this.controller = new GameControllerImpl();
         this.scene = new Scene(new StackPane(), INITIAL_WIDTH, INITIAL_HEIGHT);
         stage.setScene(scene);
-        initializePanes();
+        stage.setTitle("Temple Tower");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/icon.png")));
+        initializeMenu();
+    }
+
+    private void initializeMenu() {
+        try {
+            panes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
+            panes.put("enter_menu", new EnterMenu().createScene(this));
+            panes.put("settings_menu", new SettingsMenuView().createScene(this));
+            panes.put("home", new StartupView().createScene(this));
+            panes.put("modding_menu", new ModdingMenuView().createScene(this));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
+            throw new IllegalStateException("Failed to initialize scenes", e);
+        }
     }
 
     /**
      * Initializes all game panes.
      */
-    private void initializePanes() {
-        try {
-            panes.put("difficulty_menu", new DifficultyMenu().createScene(this, controller));
-            panes.put("main_floor_view", new MainFloorView().createScene(this, controller));
-            panes.put("combat_view", new CombatView().createScene(this, controller));
-            panes.put("treasure_view", new TreasureView().createScene(this, controller));
-            panes.put("stairs_view", new StairsView().createScene(this, controller));
-            panes.put("enter_menu", new EnterMenu().createScene(this));
-            panes.put("settings_menu", new SettingsMenu().createScene(this));
-            panes.put("home", new Home().createScene(this));
-            panes.put("modding_menu", new ModdingMenuView().createScene(this)); // Add modding menu scene
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Failed to initialize scenes: {}", e.getMessage(), e);
-            throw new IllegalStateException("Failed to initialize scenes", e);
-        }
+    private  void initializeRooms() {
+        panes.put("main_floor_view", new MainFloorView().createScene(this, controller));
+        panes.put("combat_view", new CombatView().createScene(this, controller));
+        panes.put("treasure_view", new TreasureView().createScene(this, controller));
+        panes.put("stairs_view", new StairsView().createScene(this, controller));
+        panes.put("change_weapon_view", new ChangeWeaponView().createScene(this, controller));
+        panes.put("select_weapon_view", new SelectWeaponView().createScene(this, controller));
+        panes.put("trap_view", new TrapView().createScene(this, controller));
     }
 
     /**
@@ -79,13 +91,27 @@ public final class SceneManager {
         if ("difficulty_menu".equals(sceneName) && !isTowerLoaded()) {
             LOGGER.warn("No tower loaded. Please load a tower from the modding menu to proceed.");
             return; // Do not switch scenes automatically
+        } else if ("difficulty_menu".equals(sceneName)) {
+            controller.resetGame();
+            initializeRooms();
         }
+
         Pane pane = panes.get(sceneName);
-        if ("combat_view".equals(sceneName)) {
-            pane = new CombatView().createScene(this, controller);
+
+        //recreating Panes for resetting the view
+        switch (sceneName) {
+            case "combat_view" -> pane = new CombatView().createScene(this, controller);
+            case "select_weapon_view" -> pane = new SelectWeaponView().createScene(this, controller);
+            case "stairs_view" -> pane = new StairsView().createScene(this, controller);
+            case "treasure_view" -> pane = new TreasureView().createScene(this, controller);
+            case "trap_view" -> pane = new TrapView().createScene(this, controller);
+            default -> {
+                LOGGER.info("Cache");
+            }
         }
         if (pane == null) {
-            throw new IllegalArgumentException("Scene " + sceneName + " not found");
+            LOGGER.info("Scene " + sceneName + " not found");
+            return;
         }
         applyStylesheet(pane);
         updateStage(pane);
@@ -146,5 +172,40 @@ public final class SceneManager {
         stageProxy.setFullScreen(stage.isFullScreen());
         stageProxy.setMaximized(stage.isMaximized());
         return stageProxy;
+    }
+
+
+    /**
+     * @param path of the image
+     * @return background image from path
+     */
+    public ImageView getImage(final String path) {
+        final Image backgroundImage;
+        final File file = new File(path);
+        backgroundImage = new Image(file.toURI().toString());
+        final ImageView backgroundView = new ImageView(backgroundImage);
+        backgroundView.setPreserveRatio(false);
+        return backgroundView;
+    }
+
+    /**
+     * Loads an image and binds it to the given StackPane.
+     * 
+     * @param manager    the SceneManager responsible for managing images.
+     * @param root       the StackPane where the background image will be set.
+     * @param imagePath  the path of the image.
+     */
+    public void setBackground(final SceneManager manager, final StackPane root, final String imagePath) {
+        try {
+            final ImageView backgroundView = manager.getImage(imagePath);
+            backgroundView.setPreserveRatio(false);
+            backgroundView.fitWidthProperty().bind(root.widthProperty());
+            backgroundView.fitHeightProperty().bind(root.heightProperty());
+            root.getChildren().add(backgroundView);
+        } catch (IllegalArgumentException e) {
+            final Label errorLabel = new Label("Background image not found.");
+            errorLabel.getStyleClass().add("label");
+            root.getChildren().add(errorLabel);
+        }
     }
 }

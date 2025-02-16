@@ -1,22 +1,28 @@
 package it.unibo.templetower.view;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.unibo.templetower.controller.GameController;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -26,48 +32,51 @@ import javafx.util.Duration;
  * This class is responsible for creating and managing the combat scene.
  */
 public final class CombatView {
-    private static final int SPACING_LARGE = 20;
-    private static final int SPACING_SMALL = 5;
+    private static final int WINDOW_WIDTH = 800;
+    private static final int WINDOW_HEIGHT = 600;
+    private static final int DIALOG_WIDTH = 250;
+    private static final int DIALOG_HEIGHT = 80;
+    private static final int VBOX = 50;
     private static final int CHARACTER_SIZE = 150;
     private static final int BUTTON_WIDTH = 150;
     private static final int HEALTH_BAR_WIDTH = 200;
-    private static final int ATTACK_DISTANCE = 30;
-    private static final double INITIAL_HEALTH = 1.0;
-    private static final int MAX_HEALTH = 100;
+    private static final String ZEROHP = "0HP";
+    private static final int FIRE_START_X = 40;
+    private static final int FIRE_START_Y = 200;
+    private static final int DISTANCE_FROM_ENEMY = 30;
+    private static final int DISTANCE_FROM_BOSS = 700;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CombatView.class);
 
     private ProgressBar playerHealthBar;
     private ProgressBar enemyHealthBar;
-    private Button attackButton;
-    private Button exitButton;
+    private Button attackBt;
+    private Button exitBt;
+    private Boolean kill = true;
 
     /**
      * Creates and returns the combat scene with all necessary UI elements.
      * 
      * @param manager    the scene manager to handle scene transitions
      * @param controller the game controller to handle game logic
-     * @return          the created combat scene
+     * @return the created combat scene
      */
     public StackPane createScene(final SceneManager manager, final GameController controller) {
         final StackPane root = new StackPane();
         root.getStyleClass().add("root");
-
+        final String bgImage;
         final ImageView backgroundView = new ImageView();
         try {
-            final Image backgroundImage = new Image(getClass().getResource("/Images/combat_room.jpg").toExternalForm());
+            if (!controller.isBossTime()) {
+                bgImage = "/Images/combat_room.jpg";
+            } else {
+                bgImage = "/Images/final_arena.png";
+            }
+            final Image backgroundImage = new Image(getClass().getResource(bgImage).toExternalForm());
             backgroundView.setImage(backgroundImage);
             backgroundView.setPreserveRatio(false);
-            backgroundView.setFitWidth(Region.USE_COMPUTED_SIZE);
-            backgroundView.setFitHeight(Region.USE_COMPUTED_SIZE);
-
-            root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-                backgroundView.setFitWidth(newWidth.doubleValue());
-            });
-            root.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-                backgroundView.setFitHeight(newHeight.doubleValue());
-            });
-
+            backgroundView.fitWidthProperty().bind(root.widthProperty());
+            backgroundView.fitHeightProperty().bind(root.heightProperty());
             root.getChildren().add(backgroundView);
         } catch (IllegalArgumentException e) {
             LOGGER.error("Failed to load background image: {}", e.getMessage());
@@ -77,124 +86,210 @@ public final class CombatView {
             return root;
         }
 
-        final VBox contentBox = new VBox(SPACING_LARGE);
-        contentBox.setAlignment(Pos.BOTTOM_CENTER);
+        final ImageView enemyImage;
+        final String imagePath = controller.getEnemyPath();
+        final File file = new File(imagePath);
+        final String playerImg;
+        final String enemyImg;
+        if (!controller.isBossTime()) {
+            playerImg = "/Images/player.png";
+            enemyImage = new ImageView(new Image(file.toURI().toString()));
+        } else {
+            playerImg = "/Images/playerback.png";
+            enemyImg = "/Images/boss.png";
+            enemyImage = new ImageView(new Image(getClass().getResource(enemyImg).toExternalForm()));
+        }
 
-        final HBox charactersBox = new HBox(SPACING_LARGE);
-        charactersBox.setAlignment(Pos.BOTTOM_CENTER);
-
-        final ImageView playerImage = new ImageView(new Image(getClass().getResource("/Images/player.png").toExternalForm()));
-        final ImageView enemyImage = new ImageView(new Image(getClass().getResource("/Images/enemy.png").toExternalForm()));
+        final ImageView playerImage = new ImageView(new Image(getClass().getResource(playerImg).toExternalForm()));
 
         playerImage.setFitWidth(CHARACTER_SIZE);
         playerImage.setFitHeight(CHARACTER_SIZE);
         enemyImage.setFitWidth(CHARACTER_SIZE);
         enemyImage.setFitHeight(CHARACTER_SIZE);
 
-        // **Inizializziamo i pulsanti PRIMA del listener**
-        attackButton = new Button("Attack!");
-        attackButton.getStyleClass().add("button");
+        attackBt = new Button("Attack!");
+        attackBt.getStyleClass().add("button");
 
-        exitButton = new Button("Exit");
-        exitButton.getStyleClass().add("button");
+        exitBt = new Button("Exit");
+        exitBt.getStyleClass().add("button");
 
-        playerHealthBar = new ProgressBar(INITIAL_HEALTH);
+        playerHealthBar = new ProgressBar(controller.getPlayerLife() / 100);
         playerHealthBar.getStyleClass().add("health-bar-player");
 
-        enemyHealthBar = new ProgressBar(INITIAL_HEALTH);
+        enemyHealthBar = new ProgressBar(controller.getEnemyLifePoints() / 100);
         enemyHealthBar.getStyleClass().add("health-bar-enemy");
 
-        // **Listener per il ridimensionamento di immagini, bottoni e progress bar**
         root.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            final double scaleFactor = newWidth.doubleValue() / root.getWidth();
-            final double newSize = CHARACTER_SIZE * scaleFactor;
-
-            playerImage.setFitWidth(newSize);
-            playerImage.setFitHeight(newSize);
-            enemyImage.setFitWidth(newSize);
-            enemyImage.setFitHeight(newSize);
-
-            // Ridimensiona i bottoni e le progress bar
-            final double newButtonWidth = BUTTON_WIDTH * scaleFactor;
-            final double newProgressBarWidth = HEALTH_BAR_WIDTH * scaleFactor;
-
-            attackButton.setPrefWidth(newButtonWidth);
-            exitButton.setPrefWidth(newButtonWidth);
-
-            playerHealthBar.setPrefWidth(newProgressBarWidth);
-            enemyHealthBar.setPrefWidth(newProgressBarWidth);
+            final double scaleFactor = newWidth.doubleValue() / WINDOW_WIDTH;
+            playerImage.setFitWidth(CHARACTER_SIZE * scaleFactor);
+            playerImage.setFitHeight(CHARACTER_SIZE * scaleFactor);
+            enemyImage.setFitWidth(CHARACTER_SIZE * scaleFactor);
+            enemyImage.setFitHeight(CHARACTER_SIZE * scaleFactor);
+            attackBt.setPrefWidth(BUTTON_WIDTH * scaleFactor);
+            exitBt.setPrefWidth(BUTTON_WIDTH * scaleFactor);
+            playerHealthBar.setPrefWidth(HEALTH_BAR_WIDTH * scaleFactor);
+            enemyHealthBar.setPrefWidth(HEALTH_BAR_WIDTH * scaleFactor);
         });
-
-        charactersBox.getChildren().addAll(playerImage, enemyImage);
-
+        final HBox charactersBox = new HBox(20);
         final VBox rootBox = new VBox();
         rootBox.setAlignment(Pos.BOTTOM_CENTER);
+
+        final VBox spriteContainer = new VBox(100);
+        if (!controller.isBossTime()) {
+            charactersBox.setAlignment(Pos.BOTTOM_CENTER);
+            charactersBox.getChildren().addAll(playerImage, enemyImage);
+        } else {
+            rootBox.setAlignment(Pos.BOTTOM_CENTER);
+            spriteContainer.getChildren().addAll(enemyImage, playerImage);
+            spriteContainer.setStyle("-fx-alignment: center;");
+            rootBox.getChildren().add(spriteContainer);
+        }
 
         final BorderPane healthBarsPane = new BorderPane();
         healthBarsPane.setPadding(new Insets(10));
 
-        final Label playerHpLabel = new Label("100 HP");
+        final Label playerHpLabel = new Label(controller.getPlayerLife() + "HP");
         playerHpLabel.getStyleClass().add("label");
-        final VBox playerHealthBox = new VBox(SPACING_SMALL, playerHpLabel, playerHealthBar);
+        final VBox playerHealthBox = new VBox(5, playerHpLabel, playerHealthBar);
         playerHealthBox.setAlignment(Pos.BOTTOM_LEFT);
         healthBarsPane.setLeft(playerHealthBox);
 
-        final Label enemyHpLabel = new Label("100 HP");
+        final Label enemyHpLabel = new Label(controller.getEnemyLifePoints() + "HP");
         enemyHpLabel.getStyleClass().add("label");
-        final VBox enemyHealthBox = new VBox(SPACING_SMALL, enemyHpLabel, enemyHealthBar);
+        final VBox enemyHealthBox = new VBox(5, enemyHpLabel, enemyHealthBar);
         enemyHealthBox.setAlignment(Pos.BOTTOM_RIGHT);
         healthBarsPane.setRight(enemyHealthBox);
 
-        exitButton.setOnAction(e -> {
+        if (controller.getEnemyLifePoints() > 0) {
+            exitBt.setDisable(true);
+        }
+
+        if (controller.getEnemyLifePoints() <= 0.0) {
+            attackBt.setDisable(true);
+            enemyHpLabel.setText("0HP");
+            enemyHealthBar.setProgress(0 / 100);
+        }
+
+        exitBt.setOnAction(_ -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
             manager.switchTo("main_floor_view");
         });
 
-        attackButton.setOnAction(event -> {
+        attackBt.setOnAction(_ -> {
             LOGGER.debug("Enemy life points: {}", controller.getEnemyLifePoints());
+
+            final ImageView attackImage = new ImageView(new Image(getClass().getResourceAsStream("/Images/flame.gif")));
+            attackImage.setFitWidth(100);
+            attackImage.setFitHeight(100);
+            attackImage.setLayoutX(playerImage.getLayoutX() + FIRE_START_X);
+            attackImage.setLayoutY(playerImage.getLayoutY() + FIRE_START_Y);
+
+            ((Pane) playerImage.getParent()).getChildren().add(attackImage);
+
+            final double distance;
+            final KeyValue kv;
+            final KeyFrame kf;
+
             final Timeline timeline = new Timeline();
-            final double distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - ATTACK_DISTANCE;
-            final KeyValue kv = new KeyValue(playerImage.translateXProperty(), distance);
-            final KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
+            if (controller.isBossTime()) {
+                distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - DISTANCE_FROM_BOSS;
+                kv = new KeyValue(attackImage.translateYProperty(), distance);
+                kf = new KeyFrame(Duration.seconds(1), kv);
+            } else {
+                ((Pane) attackImage.getParent()).getChildren().remove(attackImage);
+                distance = enemyImage.getLayoutX() - playerImage.getLayoutX() - DISTANCE_FROM_ENEMY;
+                kv = new KeyValue(playerImage.translateXProperty(), distance);
+                kf = new KeyFrame(Duration.seconds(0.5), kv);
+            }
+
             timeline.getKeyFrames().add(kf);
-            timeline.setOnFinished(e -> {
+
+            timeline.setOnFinished(_ -> {
+                if (controller.isBossTime()) {
+                    ((Pane) attackImage.getParent()).getChildren().remove(attackImage);
+                }
                 controller.attackEnemy();
-                final double enemyDamage = controller.getEnemyLifePoints();
-                // Attacca il player e ottieni il danno inflitto
-                controller.attackPlayer();
-                final double playerDamage = controller.getPlayerLife();
 
-                // Aggiorna le barre di salute
-                double playerHealth = playerHealthBar.getProgress() - playerDamage / MAX_HEALTH;
-                double enemyHealth = enemyHealthBar.getProgress() - enemyDamage / MAX_HEALTH;
+                final PauseTransition pause = new PauseTransition(Duration.millis(200));
+                pause.setOnFinished(_ -> {
+                    Platform.runLater(() -> {
+                        if (controller.getEnemyLifePoints() <= 0) {
+                            enemyHpLabel.setText(ZEROHP);
+                            attackBt.setDisable(true);
+                            controller.resetPlayerLife();
+                            enemyHealthBar.setProgress(0 / 100.0);
+                            kill = false;
+                        } else if (kill) {
+                            controller.attackPlayer();
 
-                if (playerHealth < 0) {
-                    playerHealth = 0;
-                }
-                if (enemyHealth < 0) {
-                    enemyHealth = 0;
-                }
+                            final PauseTransition pause2 = new PauseTransition(Duration.millis(100));
+                            pause2.setOnFinished(_ -> {
+                                playerHealthBar.setProgress(controller.getPlayerLife() / 100.0);
+                                playerHpLabel.setText(controller.getPlayerLife() + "HP");
 
-                playerHealthBar.setProgress(playerHealth);
-                enemyHealthBar.setProgress(enemyHealth);
+                                if (controller.getPlayerLife() <= 0) {
+                                    attackBt.setDisable(true);
+                                    playerHpLabel.setText(ZEROHP);
+                                    controller.resetGame();
+                                    popUp(() -> manager.switchTo("home"));
+                                }
+                            });
+                            pause2.play();
+                        }
 
-                playerHpLabel.setText((int) (playerHealth * MAX_HEALTH) + " HP");
-                enemyHpLabel.setText((int) (enemyHealth * MAX_HEALTH) + " HP");
+                        playerHealthBar.setProgress(controller.getPlayerLife() / 100.0);
+                        enemyHealthBar.setProgress(controller.getEnemyLifePoints() / 100.0);
 
-                if (playerHealth <= 0 || enemyHealth <= 0) {
-                    attackButton.setDisable(true);
-                }
+                        playerHpLabel.setText(controller.getPlayerLife() + "HP");
+                        enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
 
-                playerImage.setTranslateX(0);
+                        if (controller.getEnemyLifePoints() <= 0) {
+                            enemyHealthBar.setProgress(0 / 100.0);
+                            enemyHpLabel.setText(ZEROHP);
+                            attackBt.setDisable(true);
+                            exitBt.setDisable(false);
+                            if (controller.getPlayerLife() < 100) {
+                                controller.resetPlayerLife();
+                            }
+                        } else if (controller.getPlayerLife() <= 0) {
+                            playerHealthBar.setProgress(0 / 100.0);
+                            attackBt.setDisable(true);
+                            playerHpLabel.setText(ZEROHP);
+                            controller.resetGame();
+                            Platform.runLater(() -> popUp(() -> manager.switchTo("home")));
+                        }
+
+                        playerImage.setTranslateX(0);
+                    });
+                });
+                pause.play();
             });
+
             timeline.play();
         });
 
-        final HBox buttonBox = new HBox(SPACING_LARGE, attackButton, exitButton);
+        final HBox buttonBox = new HBox(20, attackBt, exitBt);
         buttonBox.setAlignment(Pos.BOTTOM_CENTER);
         healthBarsPane.setBottom(buttonBox);
 
-        rootBox.getChildren().addAll(charactersBox, healthBarsPane);
+        final VBox topBox = new VBox();
+        topBox.setAlignment(Pos.TOP_RIGHT);
+
+        final Button changeWeapon = new Button("CHANGE WEAPON");
+        changeWeapon.getStyleClass().add("button");
+        final HBox highBox = new HBox(changeWeapon);
+        highBox.setAlignment(Pos.TOP_RIGHT);
+        topBox.getChildren().add(highBox);
+
+        changeWeapon.setOnAction(_ -> {
+            manager.switchTo("select_weapon_view");
+        });
+
+        if (!controller.isBossTime()) {
+            rootBox.getChildren().addAll(charactersBox, healthBarsPane, topBox);
+        } else {
+            rootBox.getChildren().addAll(healthBarsPane, topBox);
+        }
         root.getChildren().add(rootBox);
 
         root.getStylesheets().add(getClass().getResource("/css/Combat.css").toExternalForm());
@@ -204,21 +299,65 @@ public final class CombatView {
     }
 
     private void resetCombat(final GameController controller) {
-        attackButton.setDisable(false);
+        kill = true;
 
-        // Resetta le barre della vita
         playerHealthBar.setProgress(controller.getPlayerLife() / 100);
         enemyHealthBar.setProgress(controller.getEnemyLifePoints() / 100);
 
         final Label playerHpLabel = new Label();
         final Label enemyHpLabel = new Label();
 
-        // Aggiorna le etichette della vita
         playerHpLabel.setText(controller.getPlayerLife() + "HP");
         enemyHpLabel.setText(controller.getEnemyLifePoints() + "HP");
     }
+
+    /**
+     * Shows a popup dialog for the end of the game.
+     * 
+     * @param onClose callback to be executed when the dialog is closed.
+     */
+    private void popUp(final Runnable onClose) {
+        final Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("GAME OVER");
+        dialog.setHeaderText(null);
+
+        dialog.getDialogPane().setPrefSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        final Label loseLabel = new Label("YOU LOSE THE GAME");
+        loseLabel.setStyle("-fx-font-size: 50px; -fx-font-weight: bold; -fx-text-fill: red;");
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+        final Button btLeave = new Button("Leave");
+        btLeave.setStyle("-fx-font-size: 20px; -fx-padding: 15px 30px;");
+        btLeave.setPrefSize(DIALOG_WIDTH, DIALOG_HEIGHT);
+
+        btLeave.setOnAction(_ -> {
+            LOGGER.info("Restart the game");
+            dialog.setResult(null);
+            dialog.close();
+            if (onClose != null) {
+                onClose.run();
+            }
+        });
+
+        final HBox btContainer = new HBox(btLeave);
+        btContainer.setAlignment(Pos.CENTER);
+
+        final VBox layout = new VBox(VBOX, loseLabel, btContainer);
+        layout.setAlignment(Pos.CENTER);
+
+        dialog.getDialogPane().setContent(layout);
+
+        dialog.setOnCloseRequest(_ -> {
+            LOGGER.info("Popup closed with X");
+            dialog.setResult(null);
+            if (onClose != null) {
+                onClose.run();
+            }
+        });
+
+        dialog.showAndWait();
+    }
+
 }
-
-
-
-

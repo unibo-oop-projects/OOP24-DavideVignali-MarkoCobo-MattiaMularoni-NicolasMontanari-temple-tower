@@ -2,12 +2,10 @@
     {
       "name": "simple sword",
       "level": 1,
-      "attacks": [
-        {
+      "attack": {
           "attackId": "phisical",
           "damage": 50.0
-        }
-      ],
+        },
       "spritePath": "sprites/sword.png"
     }
 ]

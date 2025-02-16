@@ -54,7 +54,8 @@ public final class GameDataManagerImpl {
             final String name = jsonObject.get(NAME_KEY).getAsString();
             final Double health = jsonObject.get("health").getAsDouble();
             final int level = jsonObject.get("level").getAsInt();
-            final String spritePath = jsonObject.get("spritePath").getAsString();
+            final String rawSprite = jsonObject.get("spritePath").getAsString();
+            final String absoluteSprite = new File(baseDir, rawSprite).getAbsolutePath();
 
             final List<Pair<String, Double>> attacks = new ArrayList<>();
             final JsonArray attacksArray = jsonObject.getAsJsonArray("attacks");
@@ -76,22 +77,23 @@ public final class GameDataManagerImpl {
                 }
             }
 
-            return new Enemy(name, health, level, attacks, multipliersMap, spritePath);
+            return new Enemy(name, health, level, attacks, multipliersMap, absoluteSprite);
         };
 
         // Custom deserializer for Weapon class
         final JsonDeserializer<Weapon> weaponDeserializer = (json, typeOfT, context) -> {
             final JsonObject jsonObject = json.getAsJsonObject();
+            if (!jsonObject.has("attack") || !jsonObject.get("attack").isJsonObject()) {
+                throw new IllegalArgumentException("Weapon JSON missing or invalid 'attack' property");
+            }
             final String name = jsonObject.get(NAME_KEY).getAsString();
             final Integer level = jsonObject.get("level").getAsInt();
-            final String spritePath = jsonObject.get("spritePath").getAsString();
-
-            final JsonArray attacksArray = jsonObject.getAsJsonArray("attacks");
-            final JsonObject attackObj = attacksArray.get(0).getAsJsonObject();
+            final String rawSprite = jsonObject.get("spritePath").getAsString();
+            final String absoluteSprite = new File(baseDir, rawSprite).getAbsolutePath();
+            final JsonObject attackObj = jsonObject.getAsJsonObject("attack");
             final String attackId = attackObj.get(ATTACK_ID_KEY).getAsString();
             final Double damage = attackObj.get("damage").getAsDouble();
-
-            return new Weapon(name, level, new Pair<>(attackId, damage), spritePath);
+            return new Weapon(name, level, new Pair<>(attackId, damage), absoluteSprite);
         };
 
         // Configure Gson with custom deserializers
@@ -254,6 +256,7 @@ public final class GameDataManagerImpl {
                 final String weaponsPath = Paths.get(baseDir, weaponsPathRel).toString();
                 final String floorName = floorObj.get("floorName").getAsString();
                 final String spritePath = floorObj.get("spritePath").getAsString();
+                final String absoluteSprite = new File(baseDir, spritePath).getAbsolutePath();
                 final int spawnWeight = floorObj.get("spawnWeight").getAsInt();
                 final JsonObject spawnRange = floorObj.get("spawningRange").getAsJsonObject();
                 final int minLevel = spawnRange.get("minLevel").getAsInt();
@@ -265,7 +268,7 @@ public final class GameDataManagerImpl {
 
                 floors.add(new FloorData(
                     floorName,
-                    spritePath,
+                    absoluteSprite,
                     enemies,
                     weapons,
                     new Pair<>(minLevel, maxLevel),
@@ -284,7 +287,14 @@ public final class GameDataManagerImpl {
             return Optional.empty();
         }
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(enemyPath), StandardCharsets.UTF_8)) {
-            final List<Enemy> enemies = gson.fromJson(reader, new TypeToken<List<Enemy>>() { }.getType());
+            final JsonElement root = JsonParser.parseReader(reader);
+            final JsonArray enemiesArray;
+            if (root.isJsonObject() && root.getAsJsonObject().has("enemies")) {
+                enemiesArray = root.getAsJsonObject().get("enemies").getAsJsonArray();
+            } else {
+                enemiesArray = root.getAsJsonArray();
+            }
+            final List<Enemy> enemies = gson.fromJson(enemiesArray, new TypeToken<List<Enemy>>() { }.getType());
             return enemies != null && !enemies.isEmpty() ? Optional.of(enemies) : Optional.empty();
         } catch (final IOException e) {
             LOGGER.error("Error loading enemies: {}", e.getMessage(), e);
@@ -297,11 +307,19 @@ public final class GameDataManagerImpl {
             return Optional.empty();
         }
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(weaponsPath), StandardCharsets.UTF_8)) {
-            final List<Weapon> weapons = gson.fromJson(reader, new TypeToken<List<Weapon>>() { }.getType());
+            final JsonElement root = JsonParser.parseReader(reader);
+            final JsonArray weaponsArray;
+            if (root.isJsonObject() && root.getAsJsonObject().has("weapons")) {
+                weaponsArray = root.getAsJsonObject().get("weapons").getAsJsonArray();
+            } else {
+                weaponsArray = root.getAsJsonArray();
+            }
+            final List<Weapon> weapons = gson.fromJson(weaponsArray, new TypeToken<List<Weapon>>() { }.getType());
             return weapons != null && !weapons.isEmpty() ? Optional.of(weapons) : Optional.empty();
         } catch (final IOException e) {
-            LOGGER.error("Error loading weapons: {}", e.getMessage(), e);
-            return Optional.empty();
+            final String errorMsg = "Failed to load weapons at " + weaponsPath + ": " + e.getMessage();
+            LOGGER.error(errorMsg, e);
+            throw new IllegalArgumentException(errorMsg, e);
         }
     }
 

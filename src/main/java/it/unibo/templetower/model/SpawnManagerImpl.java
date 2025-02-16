@@ -18,12 +18,15 @@ public class SpawnManagerImpl {
     private static final int DEFAULT_ROOM_NUMBER = 7;
     private static final int BUDGET_MULTIPLIER = 5;
     private static final double TREASURE_HEALTH_CHANCE = 0.5;
-    private static final double TREASURE_WEAPON_CHANCE = 0.1;
-    private static final double TREASURE_COIN_CHANCE = 0.4;
+    private static final double TREASURE_WEAPON_CHANCE = 0.5;
+    private static final double TRAP_BASE_DAMAGE = 1.5;
 
     private final List<FloorData> floors;
     private final Random random;
     private final int towerHeight;
+
+    private final int floorBeforeBoss;
+    private int passedFloors;
 
     /**
      * Creates a new SpawnManager using the tower configuration.
@@ -31,9 +34,11 @@ public class SpawnManagerImpl {
      * @param towerData the tower record holding floor data among other info
      */
     public SpawnManagerImpl(final Tower towerData) {
+        this.passedFloors = 0;
         this.floors = new ArrayList<>(towerData.floors());
         this.random = new Random();
         this.towerHeight = towerData.height();
+        floorBeforeBoss = towerData.height();
     }
 
     /**
@@ -57,10 +62,17 @@ public class SpawnManagerImpl {
      * @return a Floor with all the rooms generated
      */
     public Floor spawnFloor(final int level, final int roomNumber) {
+        passedFloors++;
         final FloorData generatedFloor = selectFloortype(level);
         final List<Room> generatedRooms = new ArrayList<>();
         final int stairsIndex = random.nextInt(roomNumber);
         int enemyBudget = level * BUDGET_MULTIPLIER;
+
+        if (passedFloors >= floorBeforeBoss) {
+            final var enemies = generatedFloor.enemies().orElse(Collections.emptyList());
+            final Enemy selectedEnemy = EnemyGenerator.pickEnemyByBudget(enemies, enemyBudget, random);
+            return new Floor("boss", "Images/boss.png", List.of(new Room(new EnemyRoom(selectedEnemy), "boss_view", 1)), 1);
+        }
 
         for (int i = 0; i < roomNumber; i++) {
             if (i == stairsIndex) {
@@ -83,10 +95,10 @@ public class SpawnManagerImpl {
                     final Optional<Weapon> randomWeapon = weapons.isEmpty() 
                         ? Optional.empty() 
                         : Optional.of(weapons.get(random.nextInt(weapons.size())));
-                    generatedRooms.add(new Room(new TreasureRoom(level, randomWeapon, 
-                        TREASURE_HEALTH_CHANCE, TREASURE_WEAPON_CHANCE, TREASURE_COIN_CHANCE), "treasure_view", i));
+                    generatedRooms.add(new Room(new TreasureRoom(randomWeapon, 
+                        TREASURE_HEALTH_CHANCE, TREASURE_WEAPON_CHANCE), "treasure_view", i));
                 } else {
-                    generatedRooms.add(new Room(new Trap(1), "trap_view", i));
+                    generatedRooms.add(new Room(new Trap(TRAP_BASE_DAMAGE * level), "trap_view", i));
                 }
             }
         }

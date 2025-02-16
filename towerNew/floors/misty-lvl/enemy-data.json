@@ -1,0 +1,63 @@
+[
+  {
+    "name": "Misty Phantom",
+    "health": 120.0,
+    "level": 12,
+    "attacks": [
+      {
+        "attackId": "dark",
+        "damage": 50.0
+      },
+      {
+        "attackId": "poison",
+        "damage": 30.0
+      }
+    ],
+    "damageMultipliers": [
+      {
+        "attackId": "physical",
+        "multiplier": 1.2
+      },
+      {
+        "attackId": "dark",
+        "multiplier": 0.8
+      }
+    ],
+    "spritePath": "sprites/misty-phantom.png"
+  },
+  {
+    "name": "Fire Elemental",
+    "health": 140.0,
+    "level": 11,
+    "attacks": [
+      {
+        "attackId": "fire",
+        "damage": 70.0
+      }
+    ],
+    "damageMultipliers": [
+      {
+        "attackId": "water",
+        "multiplier": 1.5
+      },
+      {
+        "attackId": "fire",
+        "multiplier": 0.5
+      }
+    ],
+    "spritePath": "sprites/fire-elemental.png"
+  },
+  {
+    "name": "Sewer Rat",
+    "health": 50.0,
+    "level": 1,
+    "attacks": [
+      {
+        "attackId": "physical",
+        "damage": 25.0
+      }
+    ],
+    "damageMultipliers": [],
+    "spritePath": "sprites/rat.png"
+  }
+]
