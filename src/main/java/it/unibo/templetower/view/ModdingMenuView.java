@@ -48,10 +48,10 @@ public final class ModdingMenuView implements SceneActivationListener {
 
     private boolean hasShownPopup;
     private Stage ownerStage;
-    private ListView<HBox> towerList; // Changed from ListView<String> to ListView<HBox>
+    private ListView<HBox> towerList;
     private final List<String> importedTowers;
     private final ModdingMenuController controller;
-    private String selectedTowerName; // Track currently selected tower
+    private String selectedTowerName;
 
     /**
      * Creates a new ModdingMenuView with initialized fields.
@@ -59,7 +59,7 @@ public final class ModdingMenuView implements SceneActivationListener {
     public ModdingMenuView() {
         this.hasShownPopup = false;
         this.ownerStage = null;
-        this.towerList = new ListView<>(); // Now initialized as ListView<HBox>
+        this.towerList = new ListView<>();
         this.importedTowers = new ArrayList<>();
         this.controller = new ModdingMenuController();
         this.selectedTowerName = null;
@@ -129,7 +129,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         final Button button = new Button(text);
         button.getStyleClass().add("modding-button");
         button.setPrefWidth(BUTTON_WIDTH);
-        button.setOnAction(_ -> action.run());
+        button.setOnAction(event -> action.run());
         return button;
     }
 
@@ -196,10 +196,10 @@ public final class ModdingMenuView implements SceneActivationListener {
             final Button selectButton = new Button(towerDirName.equals(selectedTowerName) ? "Selected" : "Select");
             selectButton.getStyleClass().addAll("select-button",
                 towerDirName.equals(selectedTowerName) ? "selected-button" : "");
-            selectButton.setOnAction(_ -> handleSelectTower(towerDirName));
+            selectButton.setOnAction(event -> handleSelectTower(towerDirName));
             final Button deleteButton = new Button("X");
             deleteButton.getStyleClass().add("delete-button");
-            deleteButton.setOnAction(_ -> handleDeleteTower(towerDirName));
+            deleteButton.setOnAction(event -> handleDeleteTower(towerDirName));
             buttonsContainer.getChildren().addAll(selectButton, deleteButton);
             itemContainer.getChildren().addAll(towerLabel, buttonsContainer);
             if (towerDirName.equals(selectedTowerName)) {
@@ -245,7 +245,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             noButton
         );
 
-        yesButton.setOnAction(_ -> {
+        yesButton.setOnAction(event -> {
             final Optional<String> error = controller.deleteTower(towerName);
             if (error.isPresent()) {
                 showErrorDialog("Delete Error", error.get());
@@ -262,7 +262,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             popupStage.close();
         });
 
-        noButton.setOnAction(_ -> popupStage.close());
+        noButton.setOnAction(event -> popupStage.close());
         popupStage.showAndWait();
     }
 
@@ -284,7 +284,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             noButton
         );
 
-        yesButton.setOnAction(_ -> {
+        yesButton.setOnAction(event -> {
             final Optional<String> error = this.controller.clearTowersDirectory();
             if (error.isPresent()) {
                 showErrorDialog("Clear Error", error.get());
@@ -299,7 +299,7 @@ public final class ModdingMenuView implements SceneActivationListener {
             popupStage.close();
         });
 
-        noButton.setOnAction(_ -> popupStage.close());
+        noButton.setOnAction(event -> popupStage.close());
         popupStage.showAndWait();
     }
 
@@ -362,7 +362,7 @@ public final class ModdingMenuView implements SceneActivationListener {
         message.setPrefWidth(POPUP_WIDTH - POPUP_PADDING);
         final Button closeButton = new Button("Close");
         closeButton.getStyleClass().add(POPUP_BUTTON_STYLE);
-        closeButton.setOnAction(_ -> popupStage.close());
+        closeButton.setOnAction(event -> popupStage.close());
         popupRoot.getChildren().addAll(message, closeButton);
         final Scene popupScene = new Scene(popupRoot, POPUP_WIDTH, POPUP_HEIGHT);
         popupScene.getStylesheets().add(getClass().getResource(MODDING_MENU_CSS).toExternalForm());

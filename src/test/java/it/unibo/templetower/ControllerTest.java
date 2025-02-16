@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.templetower.controller.GameControllerImpl;
-import it.unibo.templetower.controller.GameDataManagerImpl;
+import it.unibo.templetower.controller.GameDataManager;
 import it.unibo.templetower.model.Enemy;
 import it.unibo.templetower.model.EnemyRoom;
 import it.unibo.templetower.model.Player;
@@ -31,7 +31,7 @@ class ControllerTest {
     @BeforeEach
     void setUp() {
         LOGGER.info("Init Controller Test");
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final GameDataManager gameDataManager = GameDataManager.getInstance();
         gameDataManager.loadGameDataFromTower(TEST_TOWER_PATH);
         gameDataManager.setTowerPath(TEST_TOWER_PATH);
         gameController = new GameControllerImpl();

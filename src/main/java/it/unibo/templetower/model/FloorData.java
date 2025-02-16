@@ -8,7 +8,6 @@ import it.unibo.templetower.utils.Pair;
 /**
  * Record representing a floor's data in the game.
  * Contains information about the floor's name, sprite, enemies, weapons, spawn range, spawn weight and visibility.
- * Visibility (a double between 0 and 1) indicates the probability of viewing the floor's tiles.
  * 
  * @param floorName the name of the floor
  * @param spritePath path to the floor's sprite resource

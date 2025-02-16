@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for loading and managing floor configurations, including their associated
  * enemies and weapons data from JSON configuration files.
  */
-public final class GameDataManagerImpl {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameDataManagerImpl.class);
+public final class GameDataManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameDataManager.class);
     private static final String ATTACK_ID_KEY = "attackId";
     private static final String NAME_KEY = "name";
     private final List<FloorData> floors;
@@ -45,7 +45,7 @@ public final class GameDataManagerImpl {
     private Tower towerData;
     private String selectedTowerPath;
 
-    private GameDataManagerImpl() {
+    private GameDataManager() {
         this.floors = new ArrayList<>();
 
         // Create custom deserializer for Enemy class
@@ -104,7 +104,7 @@ public final class GameDataManagerImpl {
     }
 
     private static final class InstanceHolder {
-        private static final GameDataManagerImpl INSTANCE = new GameDataManagerImpl();
+        private static final GameDataManager INSTANCE = new GameDataManager();
     }
 
     /**
@@ -112,7 +112,7 @@ public final class GameDataManagerImpl {
      * Using initialization-on-demand holder idiom for thread-safe lazy initialization
      * @return the singleton instance
      */
-    public static GameDataManagerImpl getInstance() {
+    public static GameDataManager getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
@@ -174,7 +174,7 @@ public final class GameDataManagerImpl {
         }
     }
 
-    // NEW: Helper method to load attacks data from JSON file
+    // Helper method to load attacks data from JSON file
     private Map<String, String> loadAttacksData(final String attacksPath) {
         final Map<String, String> attacksMap = new HashMap<>();
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(attacksPath), StandardCharsets.UTF_8)) {

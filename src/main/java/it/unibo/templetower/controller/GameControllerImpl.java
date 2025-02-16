@@ -10,7 +10,7 @@ import it.unibo.templetower.model.Floor;
 import it.unibo.templetower.model.Player;
 import it.unibo.templetower.model.PlayerImpl;
 import it.unibo.templetower.model.Room;
-import it.unibo.templetower.model.SpawnManagerImpl;
+import it.unibo.templetower.model.SpawnManager;
 import it.unibo.templetower.model.Tower;
 import it.unibo.templetower.model.Weapon;
 import it.unibo.templetower.utils.AssetManager;
@@ -26,13 +26,13 @@ public final class GameControllerImpl implements GameController {
     private int currentRoomIndex;
     private final Player player;
     @SuppressWarnings("unused")
-    private Floor currentFloor;
+    private Floor currentFloor; //false positive
     private final AssetManager assetManager;
     private static final int PLAYERDIRECTION = 1;
     private static final int ENEMYDIRECTION = 0;
     private static final int ROOMS_NUMBER = 7;
     private static final String DEFAULT_TOWER_PATH = "tower/tower.json";
-    private SpawnManagerImpl spawnManager;
+    private SpawnManager spawnManager;
     private boolean isBoss;
     private final List<Boolean> enabledButtons;
 
@@ -195,10 +195,10 @@ public final class GameControllerImpl implements GameController {
     @Override
     public void resetGame() {
         isBoss = false;
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final GameDataManager gameDataManager = GameDataManager.getInstance();
         gameDataManager.loadGameDataFromTower(gameDataManager.getTowerPath().get());
         final Tower towerData = gameDataManager.getTower();
-        spawnManager = new SpawnManagerImpl(towerData);
+        spawnManager = new SpawnManager(towerData);
         final Floor generatedFloor = spawnManager.spawnFloor(1, ROOMS_NUMBER);
         currentFloor = generatedFloor;
         rooms = generatedFloor.rooms();

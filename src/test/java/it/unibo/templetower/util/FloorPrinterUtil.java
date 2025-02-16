@@ -52,7 +52,7 @@ public final class FloorPrinterUtil {
             LOGGER.info("\nEnemies:");
             floor.enemies().ifPresent(enemies ->
                 enemies.forEach(enemy -> {
-                    // Modified: include sprite path in the summary line for each enemy
+
                     LOGGER.info("- " + enemy.name() 
                         + " (Level " + enemy.level() 
                         + ", Health: " + enemy.health() 

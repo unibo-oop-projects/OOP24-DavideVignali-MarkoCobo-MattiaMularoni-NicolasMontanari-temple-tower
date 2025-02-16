@@ -88,7 +88,10 @@ public final class TreasureRoom implements RoomBehavior {
         }
     }
 
-    @Override
+    /**
+     * 
+     * @return the index of the element in the treasure
+     */
     public int getElement() {
         return indexElement;
     }
@@ -99,16 +102,6 @@ public final class TreasureRoom implements RoomBehavior {
      */
     public Weapon getWeapon() {
         return this.weapon.get();
-    }
-
-    /**
-     * Generates the content for this room.
-     * This method is currently not implemented.
-     */
-    @Override
-    public void generateContent() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
     }
 
     /**

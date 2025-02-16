@@ -54,11 +54,12 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(23))
+        languageVersion.set(JavaLanguageVersion.of(21)) 
     }
 }
 
 tasks.withType<Test> {
+    // Enables JUnit 5 Jupiter module
     useJUnitPlatform()
 }
 
@@ -107,15 +108,9 @@ tasks.startScripts {
 tasks.startShadowScripts {
     dependsOn(tasks.jar)
 }
+val main: String by project
 
 application {
-    mainClass.set("it.unibo.templetower.App")
-}
-
-// Configure the run task to use the module path
-tasks.withType<JavaExec> {
-    jvmArgs = listOf(
-        "--module-path", classpath.asPath,
-        "--add-modules", javaFXModules.joinToString(",") { "javafx.$it" }
-    )
+    // Define the main class for the application
+    mainClass.set(main)
 }

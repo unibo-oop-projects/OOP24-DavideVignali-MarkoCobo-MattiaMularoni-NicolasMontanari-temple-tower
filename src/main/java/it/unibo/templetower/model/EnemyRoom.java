@@ -31,14 +31,6 @@ public final class EnemyRoom implements RoomBehavior {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void generateContent() {
-        throw new UnsupportedOperationException("Unimplemented method 'generateContent'");
-    }
-
-    /**
      * calculate moltiplicator weapon.
      * 
      * @param attackId
@@ -94,15 +86,6 @@ public final class EnemyRoom implements RoomBehavior {
      */
     public String getName() {
         return this.enemy.name();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getElement() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getElement'");
     }
 
     /**

@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import it.unibo.templetower.controller.GameDataManagerImpl;
+import it.unibo.templetower.controller.GameDataManager;
 import it.unibo.templetower.model.EnemyRoom;
-import it.unibo.templetower.model.SpawnManagerImpl;
+import it.unibo.templetower.model.SpawnManager;
 import it.unibo.templetower.model.Trap;
 import it.unibo.templetower.model.Tower;
 import it.unibo.templetower.util.FloorPrinterUtil;
@@ -40,7 +40,7 @@ class AppTest {
 
     @Test
     void testVerifyPath() {
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final GameDataManager gameDataManager = GameDataManager.getInstance();
         final String testPath = "towerNew/tower.json";
         gameDataManager.loadGameDataFromTower(testPath);
         final Tower towerData = gameDataManager.getTower();
@@ -54,7 +54,7 @@ class AppTest {
      */
     @Test
     void testLoadAndPrintFloorData() {
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final GameDataManager gameDataManager = GameDataManager.getInstance();
         final String testTowerPath = "towerNew/tower.json";
         gameDataManager.loadGameDataFromTower(testTowerPath);
         final Tower towerData = gameDataManager.getTower();
@@ -66,12 +66,12 @@ class AppTest {
     @Test
     void testSpawnManager() {
         final int level = 1;
-        final GameDataManagerImpl gameDataManager = GameDataManagerImpl.getInstance();
+        final GameDataManager gameDataManager = GameDataManager.getInstance();
         final String testTowerPath = "towerNew/tower.json";
         gameDataManager.loadGameDataFromTower(testTowerPath);
         final Tower towerData = gameDataManager.getTower();
         // Instantiate SpawnManagerImpl with the tower data
-        final SpawnManagerImpl spawnManager = new SpawnManagerImpl(towerData);
+        final SpawnManager spawnManager = new SpawnManager(towerData);
         final var generatedFloor = spawnManager.spawnFloor(level);
         // Print generated floor details
         LOGGER.info("\n=== Dettagli del Piano Generato ===");
