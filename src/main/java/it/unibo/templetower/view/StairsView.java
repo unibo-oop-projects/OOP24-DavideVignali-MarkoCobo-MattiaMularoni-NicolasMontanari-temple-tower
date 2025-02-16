@@ -87,7 +87,6 @@ public class StairsView {
             controller.goToNextFloor();
             root.getChildren().clear();
 
-            // Creiamo un nuovo MediaPlayer ogni volta per evitare problemi di stato
             final Media media = new Media(StairsView.class.getResource("/video/stairs.mp4").toExternalForm());
             final MediaPlayer newMediaPlayer = new MediaPlayer(media);
             final MediaView newMediaView = new MediaView(newMediaPlayer);
@@ -98,7 +97,6 @@ public class StairsView {
 
             root.getChildren().add(newMediaView);
 
-            // Aspettiamo che sia pronto prima di avviare
             newMediaPlayer.setOnReady(() -> {
                 newMediaPlayer.play();
             });
@@ -109,10 +107,9 @@ public class StairsView {
                 } else {
                     manager.switchTo("combat_view");
                 }
-                newMediaPlayer.dispose(); // Libera le risorse
+                newMediaPlayer.dispose();
             });
 
-            // Se per qualche motivo il video è già pronto, avviarlo subito
             if (newMediaPlayer.getStatus() == MediaPlayer.Status.READY) {
                 newMediaPlayer.play();
             }
